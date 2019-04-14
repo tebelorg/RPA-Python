@@ -1,2 +1,8 @@
+# exclude python packaging files
 dist/
 MANIFEST
+
+# exclude entry flow log files
+/tagui_python.log
+/tagui_python.raw
+/tagui_python.js
