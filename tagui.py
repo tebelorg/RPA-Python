@@ -4,15 +4,6 @@ import subprocess
 import sys
 import time
 
-tagui_flow = [
-    'https://ca.yahoo.com',
-    'type search-box as github',
-    'show search-box',
-    'click search-button',
-    'snap page',
-    'snap logo'
-]
-
 # entry command to invoke tagui
 tagui_cmd = 'tagui tagui_python chrome'
 
@@ -24,57 +15,152 @@ process = subprocess.Popen(
     stderr=subprocess.PIPE
 )
 
-# flag to track that tagui is ready to receive instructions
-tagui_ready = False
-
 # id to track instruction count between tagui-python and tagui
 tagui_id = 0
 
-while True:
-    # use readline instead of read, not expecting user input to tagui
-    tagui_out = process.stdout.readline()
+def tagui_open():
+# connect to tagui process by checking tagui live mode readiness
 
-    # failsafe exit when tagui process gets killed, due to error etc
-    if tagui_out == '' and process.poll() is not None:
-        break
+    global process, tagui_id
 
-    # process output from tagui process
-    if tagui_out != '':
+    try:
+        # loop until tagui live mode is ready or tagui process has ended
+        while True:
+
+            # failsafe exit if tagui process gets killed for whatever reason
+            if process.poll() is not None: return False
+
+            # use readline instead of read, not expecting user input to tagui
+            tagui_out = process.stdout.readline()
+
+            # output for use in development
+            sys.stdout.write(tagui_out)
+            sys.stdout.flush()
+
+            # check that tagui live mode is ready then start listening for inputs
+            if 'LIVE MODE - type done to quit' in tagui_out:
+                # print new line to clear live mode backspace character before listening
+                process.stdin.write('echo ""\n')
+                process.stdin.flush()
+                process.stdin.write('echo "[tagui][started listening]"\n')
+                process.stdin.flush()
+                process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
+                process.stdin.flush()
+                return True
+
+    except Exception as e:
+        print('[ERROR] ' + str(e))
+        return False
+
+def tagui_ready():
+# check whether tagui is ready to receive instructions
+
+    global process, tagui_id
+
+    try:
+
+        # failsafe exit if tagui process gets killed for whatever reason
+        if process.poll() is not None: return False
+
+        # use readline instead of read, not expecting user input to tagui
+        tagui_out = process.stdout.readline()
+
+        # output for use in development
         sys.stdout.write(tagui_out)
         sys.stdout.flush()
 
-        # initial sync by checking that tagui live mode is ready and start listening
-        if 'LIVE MODE - type done to quit' in tagui_out:
-            # print new line before listening to clear live mode backspace character
-            process.stdin.write('echo ""\n')
-            #process.stdin.write('echo "[tagui][start]"\n')
-            process.stdin.flush()
-            process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
-            process.stdin.flush()
+        # check if tagui live mode is listening for inputs and return result
+        if tagui_out.strip().startswith('[tagui][') and tagui_out.strip().endswith('] - listening for inputs'):
+            return True
+        else:
+            return False
 
-        # subsequent sync by checking that tagui live mode is listening for inputs
-        elif tagui_out.strip().startswith('[tagui][') and tagui_out.strip().endswith('] - listening for inputs'):
-            tagui_ready = True
+    except Exception as e:
+        print('[ERROR] ' + str(e))
+        return False
 
-        # send next live mode instruction to tagui for processing if tagui is ready
-        if tagui_ready:
-            tagui_ready = False
-            if tagui_id == 4: time.sleep(5)
-            if tagui_id == 6:
-                process.stdin.write('done\n')
-                process.stdin.flush()
-                break
+def tagui_send(tagui_instruction):
+# send next live mode instruction to tagui for processing if tagui is ready
 
-            # echo live mode instruction to be executed
-            process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - ' + tagui_flow[tagui_id] + '"\n')
-            process.stdin.flush()
+    global process, tagui_id
 
-            # send live mode instruction to be executed
-            process.stdin.write(tagui_flow[tagui_id] + '\n')
-            process.stdin.flush()
+    if tagui_instruction is None or tagui_instruction == '': return False
 
-            # increment id and prepare for next instruction
-            tagui_id = tagui_id + 1
-            process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
-            process.stdin.flush()
+    try:
+        # failsafe exit if tagui process gets killed for whatever reason
+        if process.poll() is not None: return False
 
+        # loop until tagui live mode is ready and listening for inputs
+        while not tagui_ready(): pass
+
+        # echo live mode instruction to be executed
+        process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - ' + tagui_instruction + '"\n')
+        process.stdin.flush()
+
+        # send live mode instruction to be executed
+        process.stdin.write(tagui_instruction + '\n')
+        process.stdin.flush()
+
+        # increment id and prepare for next instruction
+        tagui_id = tagui_id + 1
+        process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
+        process.stdin.flush()
+
+        return True
+
+    except Exception as e:
+        print('[ERROR] ' + str(e))
+        return False
+
+def tagui_close():
+# disconnect from tagui process by sending done instruction
+
+    global process, tagui_id
+
+    try:
+        # failsafe exit if tagui process gets killed for whatever reason
+        if process.poll() is not None: return False
+
+        # loop until tagui live mode is ready and listening for inputs
+        while not tagui_ready(): pass
+
+        # send done instruction to terminate live mode and exit tagui
+        process.stdin.write('echo "[tagui][finished listening]"\n')
+        process.stdin.flush()
+        process.stdin.write('done\n')
+        process.stdin.flush()
+
+        # loop until tagui process has closed before returning control
+        while process.poll() is None: pass
+
+        return True
+
+    except Exception as e:
+        print('[ERROR] ' + str(e))
+        return False
+
+def tagui_wait(delay_in_seconds):
+    if delay_in_seconds is None: delay_in_seconds = 5
+    time.sleep(delay_in_seconds)
+    return True
+
+# testing code for development
+
+tagui_flow = [
+    'https://ca.yahoo.com',
+    'type search-box as github',
+    'show search-box',
+    'click search-button',
+    'snap page',
+    'snap logo'
+]
+
+tagui_open()
+tagui_send(tagui_flow[0])
+tagui_send(tagui_flow[1])
+tagui_send(tagui_flow[2])
+tagui_send(tagui_flow[3])
+tagui_wait(5)
+tagui_send(tagui_flow[4])
+tagui_send(tagui_flow[5])
+tagui_close()

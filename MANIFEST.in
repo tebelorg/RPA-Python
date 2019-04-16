@@ -1,1 +1,3 @@
-include *.txt
+include LICENSE.txt
+include README.md
+include tagui_python
