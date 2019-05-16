@@ -33,10 +33,6 @@ def tagui_open():
             # use readline instead of read, not expecting user input to tagui
             tagui_out = process.stdout.readline()
 
-            # output for use in development
-            sys.stdout.write(tagui_out)
-            sys.stdout.flush()
-
             # check that tagui live mode is ready then start listening for inputs
             if 'LIVE MODE - type done to quit' in tagui_out:
                 # print new line to clear live mode backspace character before listening
@@ -49,7 +45,7 @@ def tagui_open():
                 return True
 
     except Exception as e:
-        print('[ERROR] ' + str(e))
+        print('[ERROR] - ' + str(e))
         return False
 
 def tagui_ready():
@@ -76,7 +72,7 @@ def tagui_ready():
             return False
 
     except Exception as e:
-        print('[ERROR] ' + str(e))
+        print('[ERROR] - ' + str(e))
         return False
 
 def tagui_send(tagui_instruction):
@@ -84,7 +80,7 @@ def tagui_send(tagui_instruction):
 
     global process, tagui_id
 
-    if tagui_instruction is None or tagui_instruction == '': return False
+    if tagui_instruction is None or tagui_instruction == '': return True
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
@@ -109,7 +105,7 @@ def tagui_send(tagui_instruction):
         return True
 
     except Exception as e:
-        print('[ERROR] ' + str(e))
+        print('[ERROR] - ' + str(e))
         return False
 
 def tagui_close():
@@ -136,12 +132,44 @@ def tagui_close():
         return True
 
     except Exception as e:
-        print('[ERROR] ' + str(e))
+        print('[ERROR] - ' + str(e))
         return False
 
+def tagui_present(element_identifier):
+    if element_identifier is None or element_identifier == '':
+        return False
+
+    tagui_timeout = time.time() + 10
+    while time.time() < tagui_timeout:
+        tagui_send('present_result = present(\'' + element_identifier + '\')')
+        tagui_send('dump present_result.toString() to /tmp/tagui_python.txt')
+        tagui_send('load /tmp/tagui_python.txt to present_result')
+
+        tagui_text = open('/tmp/tagui_python.txt', mode='r')
+        element_present = tagui_text.read(); tagui_text.close()
+        if element_present == 'true':
+            return True
+
+    return False
+ 
+def tagui_click(element_identifier):
+    if element_identifier is None or element_identifier == '':
+        print('[ERROR] - target missing for click()')
+        return False
+
+    elif tagui_present(element_identifier) == False:
+        print('[ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif tagui_send('click ' + element_identifier) == False:
+        return False
+
+    else:
+        return True
+
 def tagui_wait(delay_in_seconds):
-    if delay_in_seconds is None: delay_in_seconds = 5
-    time.sleep(delay_in_seconds)
+    if delay_in_seconds is None: delay_in_seconds = 5.0
+    time.sleep(float(delay_in_seconds))
     return True
 
 # testing code for development
@@ -152,15 +180,23 @@ tagui_flow = [
     'show search-box',
     'click search-button',
     'snap page',
-    'snap logo'
+    'snap logo',
+    'https://duckduckgo.com',
+    'type search_form_input_homepage as The search engine that doesnt track you.',
 ]
 
 tagui_open()
+
 tagui_send(tagui_flow[0])
 tagui_send(tagui_flow[1])
 tagui_send(tagui_flow[2])
 tagui_send(tagui_flow[3])
+
 tagui_wait(5)
+
 tagui_send(tagui_flow[4])
 tagui_send(tagui_flow[5])
+tagui_send(tagui_flow[6])
+tagui_send(tagui_flow[7])
+
 tagui_close()
