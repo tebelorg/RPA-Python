@@ -1,6 +1,12 @@
 # exclude python packaging files
-dist/
-MANIFEST
+/dist/
+/MANIFEST
+
+# exclude pycache directory
+/__pycache__
+
+# exclude generated .pyc file
+/tagui.pyc
 
 # exclude entry flow log files
 /tagui_python.log
