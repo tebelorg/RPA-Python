@@ -18,6 +18,27 @@ process = subprocess.Popen(
 # id to track instruction count between tagui-python and tagui
 tagui_id = 0
 
+def python2_env():
+# function to check python version for compatibility handling
+    if sys.version_info[0] < 3: return True
+    else: return False
+
+def python3_env():
+# function to check python version for compatibility handling
+    return not python2_env()
+
+def py23_decode(input_variable):
+# function for python 2 and 3 str-byte compatibility handling
+    if input_variable is None: return None
+    elif python2_env(): return input_variable
+    else: return input_variable.decode('utf-8')
+
+def py23_encode(input_variable):
+# function for python 2 and 3 str-byte compatibility handling
+    if input_variable is None: return None
+    elif python2_env(): return input_variable
+    else: return input_variable.encode('utf-8')
+
 def tagui_open():
 # connect to tagui process by checking tagui live mode readiness
 
@@ -31,16 +52,16 @@ def tagui_open():
             if process.poll() is not None: return False
 
             # use readline instead of read, not expecting user input to tagui
-            tagui_out = process.stdout.readline()
+            tagui_out = py23_decode(process.stdout.readline())
 
             # check that tagui live mode is ready then start listening for inputs
             if 'LIVE MODE - type done to quit' in tagui_out:
                 # print new line to clear live mode backspace character before listening
-                process.stdin.write('echo ""\n')
+                process.stdin.write(py23_encode('echo ""\n'))
                 process.stdin.flush()
-                process.stdin.write('echo "[tagui][started listening]"\n')
+                process.stdin.write(py23_encode('echo "[tagui][started listening]"\n'))
                 process.stdin.flush()
-                process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
+                process.stdin.write(py23_encode('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n'))
                 process.stdin.flush()
                 return True
 
@@ -59,7 +80,7 @@ def tagui_ready():
         if process.poll() is not None: return False
 
         # use readline instead of read, not expecting user input to tagui
-        tagui_out = process.stdout.readline()
+        tagui_out = py23_decode(process.stdout.readline())
 
         # output for use in development
         sys.stdout.write(tagui_out)
@@ -89,17 +110,18 @@ def tagui_send(tagui_instruction):
         # loop until tagui live mode is ready and listening for inputs
         while not tagui_ready(): pass
 
-        # echo live mode instruction to be executed
-        process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - ' + tagui_instruction + '"\n')
+        # echo live mode instruction, first remove quotes to be echo-safe
+        safe_tagui_instruction = tagui_instruction.replace("'", "").replace('"','')
+        process.stdin.write(py23_encode('echo "[tagui][' + str(tagui_id) + '] - ' + safe_tagui_instruction + '"\n'))
         process.stdin.flush()
 
         # send live mode instruction to be executed
-        process.stdin.write(tagui_instruction + '\n')
+        process.stdin.write(py23_encode(tagui_instruction + '\n'))
         process.stdin.flush()
 
         # increment id and prepare for next instruction
         tagui_id = tagui_id + 1
-        process.stdin.write('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n')
+        process.stdin.write(py23_encode('echo "[tagui][' + str(tagui_id) + '] - listening for inputs"\n'))
         process.stdin.flush()
 
         return True
@@ -121,9 +143,9 @@ def tagui_close():
         while not tagui_ready(): pass
 
         # send done instruction to terminate live mode and exit tagui
-        process.stdin.write('echo "[tagui][finished listening]"\n')
+        process.stdin.write(py23_encode('echo "[tagui][finished listening]"\n'))
         process.stdin.flush()
-        process.stdin.write('done\n')
+        process.stdin.write(py23_encode('done\n'))
         process.stdin.flush()
 
         # loop until tagui process has closed before returning control
@@ -190,7 +212,7 @@ tagui_open()
 tagui_send(tagui_flow[0])
 tagui_send(tagui_flow[1])
 tagui_send(tagui_flow[2])
-tagui_send(tagui_flow[3])
+tagui_click("search-button")
 
 tagui_wait(5)
 
