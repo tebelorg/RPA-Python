@@ -15,10 +15,10 @@ t.init()
 
 t.send(tagui_flow[0])
 t.type('search-box','github')
-t.send(tagui_flow[2])
+t.show('search-box')
 t.click("search-button")
 
-t.wait(5)
+t.wait()
 
 t.send(tagui_flow[4])
 t.send(tagui_flow[5])
