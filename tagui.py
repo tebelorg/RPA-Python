@@ -66,7 +66,7 @@ def init():
                 return True
 
     except Exception as e:
-        print('[ERROR] - ' + str(e))
+        print('[TAGUI ERROR] - ' + str(e))
         return False
 
 def ready():
@@ -93,7 +93,7 @@ def ready():
             return False
 
     except Exception as e:
-        print('[ERROR] - ' + str(e))
+        print('[TAGUI ERROR] - ' + str(e))
         return False
 
 def send(tagui_instruction):
@@ -127,7 +127,7 @@ def send(tagui_instruction):
         return True
 
     except Exception as e:
-        print('[ERROR] - ' + str(e))
+        print('[TAGUI ERROR] - ' + str(e))
         return False
 
 def close():
@@ -154,7 +154,7 @@ def close():
         return True
 
     except Exception as e:
-        print('[ERROR] - ' + str(e))
+        print('[TAGUI ERROR] - ' + str(e))
         return False
 
 def present(element_identifier):
@@ -176,14 +176,97 @@ def present(element_identifier):
  
 def click(element_identifier):
     if element_identifier is None or element_identifier == '':
-        print('[ERROR] - target missing for click()')
+        print('[TAGUI ERROR] - target missing for click()')
         return False
 
-    elif present(element_identifier) == False:
-        print('[ERROR] - cannot find ' + element_identifier)
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif send('click ' + element_identifier) == False:
+    elif not send('click ' + element_identifier):
+        return False
+
+    else:
+        return True
+
+def rclick(element_identifier):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI ERROR] - target missing for rclick()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('rclick ' + element_identifier):
+        return False
+
+    else:
+        return True
+
+def dclick(element_identifier):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI ERROR] - target missing for dclick()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('dclick ' + element_identifier):
+        return False
+
+    else:
+        return True
+
+def hover(element_identifier):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI ERROR] - target missing for hover()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('hover ' + element_identifier):
+        return False
+
+    else:
+        return True
+
+def type(element_identifier, text_to_type):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI ERROR] - target missing for type()')
+        return False
+
+    elif text_to_type is None or text_to_type == '':
+        print('[TAGUI ERROR] - text missing for type()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('type ' + element_identifier + ' as ' + text_to_type):
+        return False
+
+    else:
+        return True
+
+def select(element_identifier, option_value):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI ERROR] - target missing for select()')
+        return False
+
+    elif option_value is None or option_value == '':
+        print('[TAGUI ERROR] - option missing for select()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('select ' + element_identifier + ' as ' + option_value):
         return False
 
     else:

@@ -14,7 +14,7 @@ tagui_flow = [
 t.init()
 
 t.send(tagui_flow[0])
-t.send(tagui_flow[1])
+t.type('search-box','github')
 t.send(tagui_flow[2])
 t.click("search-button")
 
@@ -23,6 +23,6 @@ t.wait(5)
 t.send(tagui_flow[4])
 t.send(tagui_flow[5])
 t.send(tagui_flow[6])
-t.send(tagui_flow[7])
+t.type('search_form_input_homepage','The search engine that doesnt track you.')
 
 t.close()
