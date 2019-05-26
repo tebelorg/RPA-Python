@@ -62,7 +62,7 @@ def tagui_output():
         # don't splurge cpu cycles in while loop
         global tagui_delay; time.sleep(tagui_delay) 
 
-    tagui_output_file = open('tagui_python.txt', mode='r')
+    tagui_output_file = open('tagui_python.txt', 'r')
     tagui_output_text = tagui_output_file.read()
     tagui_output_file.close()
     os.remove('tagui_python.txt')
@@ -190,7 +190,21 @@ def present(element_identifier = None):
         global tagui_delay; time.sleep(tagui_delay)
 
     return False
- 
+
+def url(webpage_url = None):
+    if webpage_url is not None and webpage_url != '':
+        if webpage_url.startswith('http://') or webpage_url.startswith('https://'):
+            if not send(webpage_url):
+                return False
+            else:
+                return True
+        else:
+            print('[TAGUI][ERROR] - URL does not begin with http:// or https:// ')
+            return False
+
+    else:
+        return False
+
 def click(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for click()')
@@ -319,6 +333,93 @@ def show(element_identifier = None):
         show_result = tagui_output()
         print(show_result)
         return show_result
+
+def save(element_identifier = None, filename_to_save = None):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI][ERROR] - target missing for save()')
+        return False
+
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for save()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('save ' + element_identifier + ' to ' + filename_to_save):
+        return False
+
+    else:
+        return True
+
+def snap(element_identifier = None, filename_to_save = None):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI][ERROR] - target missing for snap()')
+        return False
+
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for snap()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('snap ' + element_identifier + ' to ' + filename_to_save):
+        return False
+
+    else:
+        return True
+
+def load(filename_to_load = None):
+    if filename_to_load is None or filename_to_load == '':
+        print('[TAGUI][ERROR] - filename missing for load()')
+        return ''
+
+    elif not os.path.isfile(filename_to_load):
+        print('[TAGUI][ERROR] - cannot find ' + filename_to_load)
+        return ''
+
+    else:
+        load_input_file = open(filename_to_load, 'r')
+        load_input_file_text = load_input_file.read()
+        load_input_file.close()
+        return load_input_file_text
+
+def echo(text_to_echo = ''):
+    print(text_to_echo)
+    return True
+
+def dump(text_to_dump = None, filename_to_save = None):
+    if text_to_dump is None:
+        print('[TAGUI][ERROR] - text missing for dump()')
+        return False
+
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for dump()')
+        return False
+
+    else:
+        dump_output_file = open(filename_to_save, 'w')
+        dump_output_file.write(text_to_dump)
+        dump_output_file.close()
+        return True
+
+def write(text_to_write = None, filename_to_save = None):
+    if text_to_write is None:
+        print('[TAGUI][ERROR] - text missing for write()')
+        return False
+
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for write()')
+        return False
+
+    else:
+        write_output_file = open(filename_to_save, 'a')
+        write_output_file.write(text_to_write)
+        write_output_file.close()
+        return True
 
 def ask(text_to_prompt = ''):
     if python2_env(): return raw_input(text_to_prompt + ' ')
