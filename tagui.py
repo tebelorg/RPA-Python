@@ -5,7 +5,10 @@ import os
 import sys
 import time
 
-# entry command to invoke tagui
+# default delay in seconds in while loops
+tagui_delay = 0.1
+
+# entry command to invoke tagui process
 tagui_cmd = 'tagui tagui_python chrome'
 
 # launch tagui using subprocess
@@ -19,18 +22,8 @@ process = subprocess.Popen(
 # id to track instruction count between tagui-python and tagui
 tagui_id = 0
 
-def tagui_output():
-# function to read tagui output text and initialise the file
-    if os.path.isfile('tagui_python.txt'):
-        tagui_output_file = open('tagui_python.txt', mode='r')
-        tagui_output_text = tagui_output_file.read()
-        tagui_output_file.close()
-        tagui_output_file = open('tagui_python.txt', mode='w')
-        tagui_output_file.close()
-        return tagui_output_text
-
-    else:
-        return ''
+# delete tagui temp output text file to avoid reading old data 
+if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
 
 def python2_env():
 # function to check python version for compatibility handling
@@ -53,6 +46,28 @@ def py23_encode(input_variable = None):
     elif python2_env(): return input_variable
     else: return input_variable.encode('utf-8')
 
+def tagui_read():
+# function to read from tagui process live mode interface
+    # readline instead of read, not expecting user input to tagui
+    global process; return py23_decode(process.stdout.readline())
+
+def tagui_write(input_text = ''):
+# function to write to tagui process live mode interface
+    global process; process.stdin.write(py23_encode(input_text))
+    process.stdin.flush(); # flush to ensure immediate delivery
+
+def tagui_output():
+# function to wait for tagui output file to read and delete it
+    while not os.path.isfile('tagui_python.txt'):
+        # don't splurge cpu cycles in while loop
+        global tagui_delay; time.sleep(tagui_delay) 
+
+    tagui_output_file = open('tagui_python.txt', mode='r')
+    tagui_output_text = tagui_output_file.read()
+    tagui_output_file.close()
+    os.remove('tagui_python.txt')
+    return tagui_output_text
+
 def init():
 # connect to tagui process by checking tagui live mode readiness
 
@@ -65,18 +80,15 @@ def init():
             # failsafe exit if tagui process gets killed for whatever reason
             if process.poll() is not None: return False
 
-            # use readline instead of read, not expecting user input to tagui
-            tagui_out = py23_decode(process.stdout.readline())
+            # read next line of output from tagui process live mode interface
+            tagui_out = tagui_read()
 
             # check that tagui live mode is ready then start listening for inputs
             if 'LIVE MODE - type done to quit' in tagui_out:
                 # print new line to clear live mode backspace character before listening
-                process.stdin.write(py23_encode('echo ""\n'))
-                process.stdin.flush()
-                process.stdin.write(py23_encode('echo "[TAGUI][STARTED]"\n'))
-                process.stdin.flush()
-                process.stdin.write(py23_encode('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n'))
-                process.stdin.flush()
+                tagui_write('echo ""\n')
+                tagui_write('echo "[TAGUI][STARTED]"\n')
+                tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n')
                 return True
 
     except Exception as e:
@@ -89,12 +101,11 @@ def ready():
     global process, tagui_id
 
     try:
-
         # failsafe exit if tagui process gets killed for whatever reason
         if process.poll() is not None: return False
 
-        # use readline instead of read, not expecting user input to tagui
-        tagui_out = py23_decode(process.stdout.readline())
+        # read next line of output from tagui process live mode interface
+        tagui_out = tagui_read()
 
         # output for use in development
         sys.stdout.write(tagui_out)
@@ -126,17 +137,14 @@ def send(tagui_instruction = None):
 
         # echo live mode instruction, first remove quotes to be echo-safe
         safe_tagui_instruction = tagui_instruction.replace("'", "").replace('"','')
-        process.stdin.write(py23_encode('echo "[TAGUI][' + str(tagui_id) + '] - ' + safe_tagui_instruction + '"\n'))
-        process.stdin.flush()
+        tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - ' + safe_tagui_instruction + '"\n')
 
         # send live mode instruction to be executed
-        process.stdin.write(py23_encode(tagui_instruction + '\n'))
-        process.stdin.flush()
+        tagui_write(tagui_instruction + '\n')
 
         # increment id and prepare for next instruction
         tagui_id = tagui_id + 1
-        process.stdin.write(py23_encode('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n'))
-        process.stdin.flush()
+        tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n')
 
         return True
 
@@ -157,10 +165,8 @@ def close():
         while not ready(): pass
 
         # send done instruction to terminate live mode and exit tagui
-        process.stdin.write(py23_encode('echo "[TAGUI][FINISHED]"\n'))
-        process.stdin.flush()
-        process.stdin.write(py23_encode('done\n'))
-        process.stdin.flush()
+        tagui_write('echo "[TAGUI][FINISHED]"\n')
+        tagui_write('done\n')
 
         # loop until tagui process has closed before returning control
         while process.poll() is None: pass
@@ -179,9 +185,9 @@ def present(element_identifier = None):
     while time.time() < tagui_timeout:
         send('present_result = present(\'' + element_identifier + '\')')
         send('dump present_result.toString() to tagui_python.txt')
-        element_present = tagui_output()
-        if element_present == 'true':
-            return True
+        if tagui_output() == 'true': return True
+        # don't splurge cpu cycles in while loop
+        global tagui_delay; time.sleep(tagui_delay)
 
     return False
  
@@ -314,12 +320,9 @@ def show(element_identifier = None):
         print(show_result)
         return show_result
 
-def ask(text_to_prompt = None):
-    if text_to_prompt is None: text_to_prompt = ''
+def ask(text_to_prompt = ''):
     if python2_env(): return raw_input(text_to_prompt + ' ')
     else: return input(text_to_prompt + ' ')
 
-def wait(delay_in_seconds = None):
-    if delay_in_seconds is None: delay_in_seconds = 5.0
-    time.sleep(float(delay_in_seconds))
-    return True
+def wait(delay_in_seconds = 5.0):
+    time.sleep(float(delay_in_seconds)); return True
