@@ -425,5 +425,132 @@ def ask(text_to_prompt = ''):
     if python2_env(): return raw_input(text_to_prompt + ' ')
     else: return input(text_to_prompt + ' ')
 
+def keyboard(keys_and_modifiers = None):
+    if keys_and_modifiers is None or keys_and_modifiers == '':
+        print('[TAGUI][ERROR] - keys to type missing for keyboard()')
+        return False
+
+    elif not send('keyboard ' + keys_and_modifiers):
+        return False
+
+    else:
+        return True
+
+def mouse(mouse_action = None):
+    if mouse_action is None or mouse_action == '':
+        print('[TAGUI][ERROR] - down / up missing for mouse()')
+        return False
+
+    elif mouse_action.lower() != 'down' and mouse_action.lower() != 'up':
+        print('[TAGUI][ERROR] - down / up missing for mouse()')
+        return False
+
+    elif not send('mouse ' + mouse_action):
+        return False
+
+    else:
+        return True
+
+def table(element_identifier = None, filename_to_save = None):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI][ERROR] - target missing for table()')
+        return False
+
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for table()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('table ' + element_identifier + ' to ' + filename_to_save):
+        return False
+
+    else:
+        return True
+
 def wait(delay_in_seconds = 5.0):
     time.sleep(float(delay_in_seconds)); return True
+
+def check(condition_to_check = None, text_if_true = '', text_if_false = ''):
+    if condition_to_check is None:
+        print('[TAGUI][ERROR] - condition missing for check()')
+        return False
+
+    if condition_to_check:
+        print(text_if_true)
+
+    else:
+        print(text_if_false)
+
+    return True
+
+def upload(element_identifier = None, filename_to_upload = None):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI][ERROR] - target missing for upload()')
+        return False
+
+    elif filename_to_upload is None or filename_to_upload == '':
+        print('[TAGUI][ERROR] - filename missing for upload()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('upload ' + element_identifier + ' as ' + filename_to_upload):
+        return False
+
+    else:
+        return True
+
+def download(element_identifier = None, filename_to_save = None):
+    if element_identifier is None or element_identifier == '':
+        print('[TAGUI][ERROR] - target missing for download()')
+        return False
+    
+    elif filename_to_save is None or filename_to_save == '':
+        print('[TAGUI][ERROR] - filename missing for download()')
+        return False
+
+    elif not present(element_identifier):
+        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
+        return False
+
+    elif not send('download ' + element_identifier + ' to ' + filename_to_save):
+        return False
+
+    else:
+        return True
+
+def run(command_to_run = None):
+    if command_to_run is None or command_to_run == '':
+        print('[TAGUI][ERROR] - command to run missing for run()')
+        return ''
+
+    else:
+        run_result = ''
+        return run_result
+
+def vision(command_to_run = None):
+    if command_to_run is None or command_to_run == '':
+        print('[TAGUI][ERROR] - command to run missing for vision()')
+        return ''
+
+    elif not send('vision ' + command_to_run):
+        return False
+
+    else:
+        return True  
+
+def timeout(timeout_in_seconds = None):
+    if timeout_in_seconds is None:
+        print('[TAGUI][ERROR] - time in seconds missing for timeout()')
+        return False
+
+    elif not send('timeout ' + str(timeout_in_seconds)):
+        return False
+
+    else:
+        return True
