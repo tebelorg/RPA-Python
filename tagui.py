@@ -5,6 +5,9 @@ import os
 import sys
 import time
 
+# default timeout in seconds for UI element
+tagui_timeout = 10.0
+
 # default delay in seconds in while loops
 tagui_delay = 0.1
 
@@ -177,19 +180,17 @@ def close():
         print('[TAGUI][ERROR] - ' + str(e))
         return False
 
-def present(element_identifier = None):
+def exist(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
-    tagui_timeout = time.time() + 10
-    while time.time() < tagui_timeout:
-        send('present_result = present(\'' + element_identifier + '\')')
-        send('dump present_result.toString() to tagui_python.txt')
-        if tagui_output() == 'true': return True
-        # don't splurge cpu cycles in while loop
-        global tagui_delay; time.sleep(tagui_delay)
-
-    return False
+    else:
+        send('exist_result = exist(\'' + element_identifier + '\')')
+        send('dump exist_result.toString() to tagui_python.txt')
+        if tagui_output() == 'true':
+            return True
+        else:
+            return False
 
 def url(webpage_url = None):
     if webpage_url is not None and webpage_url != '':
@@ -212,7 +213,7 @@ def click(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for click()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -227,7 +228,7 @@ def rclick(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for rclick()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -242,7 +243,7 @@ def dclick(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for dclick()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -257,7 +258,7 @@ def hover(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for hover()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -276,7 +277,7 @@ def type(element_identifier = None, text_to_type = None):
         print('[TAGUI][ERROR] - text missing for type()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -295,7 +296,7 @@ def select(element_identifier = None, option_value = None):
         print('[TAGUI][ERROR] - option missing for select()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -310,7 +311,7 @@ def read(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for read()')
         return ''
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return ''
 
@@ -325,7 +326,7 @@ def show(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for show()')
         return ''
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return ''
 
@@ -345,7 +346,7 @@ def save(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - filename missing for save()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -364,7 +365,7 @@ def snap(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - filename missing for snap()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -462,7 +463,7 @@ def table(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - filename missing for table()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -497,7 +498,7 @@ def upload(element_identifier = None, filename_to_upload = None):
         print('[TAGUI][ERROR] - filename missing for upload()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -516,7 +517,7 @@ def download(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - filename missing for download()')
         return False
 
-    elif not present(element_identifier):
+    elif not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -547,15 +548,49 @@ def vision(command_to_run = None):
         return True  
 
 def timeout(timeout_in_seconds = None):
-    if timeout_in_seconds is None:
-        print('[TAGUI][ERROR] - time in seconds missing for timeout()')
-        return False
+    global tagui_timeout
 
-    elif not send('timeout ' + str(timeout_in_seconds)):
+    if timeout_in_seconds is None:
+        return float(tagui_timeout)
+
+    else:
+        tagui_timeout = float(timeout_in_seconds)
+
+    if not send('timeout ' + str(timeout_in_seconds)):
         return False
 
     else:
         return True
+
+def present(element_identifier = None):
+    if element_identifier is None or element_identifier == '':
+        return False
+
+    send('present_result = present(\'' + element_identifier + '\')')
+    send('dump present_result.toString() to tagui_python.txt')
+    if tagui_output() == 'true':
+        return True
+    else:
+        return False
+
+def visible(element_identifier = None):
+    if element_identifier is None or element_identifier == '':
+        return False
+
+    send('visible_result = visible(\'' + element_identifier + '\')')
+    send('dump visible_result.toString() to tagui_python.txt')
+    if tagui_output() == 'true':
+        return True
+    else:
+        return False
+
+def count(element_identifier = None):
+    if element_identifier is None or element_identifier == '':
+        return int(0)
+
+    send('count_result = count(\'' + element_identifier + '\')')
+    send('dump count_result.toString() to tagui_python.txt')
+    return int(tagui_output())
 
 def title():
     send('dump title() to tagui_python.txt')
