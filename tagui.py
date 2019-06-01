@@ -203,7 +203,9 @@ def url(webpage_url = None):
             return False
 
     else:
-        return False
+        send('dump url() to tagui_python.txt')
+        url_result = tagui_output()
+        return url_result
 
 def click(element_identifier = None):
     if element_identifier is None or element_identifier == '':
@@ -554,3 +556,33 @@ def timeout(timeout_in_seconds = None):
 
     else:
         return True
+
+def title():
+    send('dump title() to tagui_python.txt')
+    title_result = tagui_output()
+    return title_result
+
+def text():
+    send('dump text() to tagui_python.txt')
+    text_result = tagui_output()
+    return text_result
+
+def timer():
+    send('dump timer() to tagui_python.txt')
+    timer_result = tagui_output()
+    return float(timer_result)
+
+def mouse_xy():
+    send('dump mouse_xy() to tagui_python.txt')
+    mouse_xy_result = tagui_output()
+    return mouse_xy_result
+
+def mouse_x():
+    send('dump mouse_x() to tagui_python.txt')
+    mouse_x_result = tagui_output()
+    return int(mouse_x_result)
+
+def mouse_y():
+    send('dump mouse_y() to tagui_python.txt')
+    mouse_y_result = tagui_output()
+    return int(mouse_y_result)
