@@ -6,64 +6,64 @@ import sys
 import time
 
 # default timeout in seconds for UI element
-tagui_timeout = 10.0
+_tagui_timeout = 10.0
 
 # default delay in seconds in while loops
-tagui_delay = 0.1
+_tagui_delay = 0.1
 
 # entry command to invoke tagui process
-tagui_cmd = 'tagui tagui_python chrome'
+_tagui_cmd = 'tagui tagui_python chrome'
 
 # launch tagui using subprocess
-process = subprocess.Popen(
-    tagui_cmd, shell=True,
+_process = subprocess.Popen(
+    _tagui_cmd, shell=True,
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE
 )
 
 # id to track instruction count between tagui-python and tagui
-tagui_id = 0
+_tagui_id = 0
 
 # delete tagui temp output text file to avoid reading old data 
 if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
 
-def python2_env():
+def _python2_env():
 # function to check python version for compatibility handling
     if sys.version_info[0] < 3: return True
     else: return False
 
-def python3_env():
+def _python3_env():
 # function to check python version for compatibility handling
-    return not python2_env()
+    return not _python2_env()
 
-def py23_decode(input_variable = None):
+def _py23_decode(input_variable = None):
 # function for python 2 and 3 str-byte compatibility handling
     if input_variable is None: return None
-    elif python2_env(): return input_variable
+    elif _python2_env(): return input_variable
     else: return input_variable.decode('utf-8')
 
-def py23_encode(input_variable = None):
+def _py23_encode(input_variable = None):
 # function for python 2 and 3 str-byte compatibility handling
     if input_variable is None: return None
-    elif python2_env(): return input_variable
+    elif _python2_env(): return input_variable
     else: return input_variable.encode('utf-8')
 
-def tagui_read():
+def _tagui_read():
 # function to read from tagui process live mode interface
     # readline instead of read, not expecting user input to tagui
-    global process; return py23_decode(process.stdout.readline())
+    global _process; return _py23_decode(_process.stdout.readline())
 
-def tagui_write(input_text = ''):
+def _tagui_write(input_text = ''):
 # function to write to tagui process live mode interface
-    global process; process.stdin.write(py23_encode(input_text))
-    process.stdin.flush(); # flush to ensure immediate delivery
+    global _process; _process.stdin.write(_py23_encode(input_text))
+    _process.stdin.flush(); # flush to ensure immediate delivery
 
-def tagui_output():
+def _tagui_output():
 # function to wait for tagui output file to read and delete it
     while not os.path.isfile('tagui_python.txt'):
         # don't splurge cpu cycles in while loop
-        global tagui_delay; time.sleep(tagui_delay) 
+        global _tagui_delay; time.sleep(_tagui_delay) 
 
     tagui_output_file = open('tagui_python.txt', 'r')
     tagui_output_text = tagui_output_file.read()
@@ -74,41 +74,41 @@ def tagui_output():
 def init():
 # connect to tagui process by checking tagui live mode readiness
 
-    global process, tagui_id
+    global _process, _tagui_id
 
     try:
         # loop until tagui live mode is ready or tagui process has ended
         while True:
 
             # failsafe exit if tagui process gets killed for whatever reason
-            if process.poll() is not None: return False
+            if _process.poll() is not None: return False
 
             # read next line of output from tagui process live mode interface
-            tagui_out = tagui_read()
+            tagui_out = _tagui_read()
 
             # check that tagui live mode is ready then start listening for inputs
             if 'LIVE MODE - type done to quit' in tagui_out:
                 # print new line to clear live mode backspace character before listening
-                tagui_write('echo ""\n')
-                tagui_write('echo "[TAGUI][STARTED]"\n')
-                tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n')
+                _tagui_write('echo ""\n')
+                _tagui_write('echo "[TAGUI][STARTED]"\n')
+                _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
                 return True
 
     except Exception as e:
         print('[TAGUI][ERROR] - ' + str(e))
         return False
 
-def ready():
+def _ready():
 # check whether tagui is ready to receive instructions
 
-    global process, tagui_id
+    global _process, _tagui_id
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if process.poll() is not None: return False
+        if _process.poll() is not None: return False
 
         # read next line of output from tagui process live mode interface
-        tagui_out = tagui_read()
+        tagui_out = _tagui_read()
 
         # output for use in development
         sys.stdout.write(tagui_out)
@@ -127,27 +127,27 @@ def ready():
 def send(tagui_instruction = None):
 # send next live mode instruction to tagui for processing if tagui is ready
 
-    global process, tagui_id
+    global _process, _tagui_id
 
     if tagui_instruction is None or tagui_instruction == '': return True
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if process.poll() is not None: return False
+        if _process.poll() is not None: return False
 
         # loop until tagui live mode is ready and listening for inputs
-        while not ready(): pass
+        while not _ready(): pass
 
         # echo live mode instruction, first remove quotes to be echo-safe
         safe_tagui_instruction = tagui_instruction.replace("'", "").replace('"','')
-        tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - ' + safe_tagui_instruction + '"\n')
+        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - ' + safe_tagui_instruction + '"\n')
 
         # send live mode instruction to be executed
-        tagui_write(tagui_instruction + '\n')
+        _tagui_write(tagui_instruction + '\n')
 
         # increment id and prepare for next instruction
-        tagui_id = tagui_id + 1
-        tagui_write('echo "[TAGUI][' + str(tagui_id) + '] - listening for inputs"\n')
+        _tagui_id = _tagui_id + 1
+        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
 
         return True
 
@@ -158,21 +158,21 @@ def send(tagui_instruction = None):
 def close():
 # disconnect from tagui process by sending done instruction
 
-    global process, tagui_id
+    global _process, _tagui_id
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if process.poll() is not None: return False
+        if _process.poll() is not None: return False
 
         # loop until tagui live mode is ready and listening for inputs
-        while not ready(): pass
+        while not _ready(): pass
 
         # send done instruction to terminate live mode and exit tagui
-        tagui_write('echo "[TAGUI][FINISHED]"\n')
-        tagui_write('done\n')
+        _tagui_write('echo "[TAGUI][FINISHED]"\n')
+        _tagui_write('done\n')
 
         # loop until tagui process has closed before returning control
-        while process.poll() is None: pass
+        while _process.poll() is None: pass
 
         return True
 
@@ -187,7 +187,7 @@ def exist(element_identifier = None):
     else:
         send('exist_result = exist(\'' + element_identifier + '\')')
         send('dump exist_result.toString() to tagui_python.txt')
-        if tagui_output() == 'true':
+        if _tagui_output() == 'true':
             return True
         else:
             return False
@@ -205,7 +205,7 @@ def url(webpage_url = None):
 
     else:
         send('dump url() to tagui_python.txt')
-        url_result = tagui_output()
+        url_result = _tagui_output()
         return url_result
 
 def click(element_identifier = None):
@@ -318,7 +318,7 @@ def read(element_identifier = None):
     else:
         send('read ' + element_identifier + ' to read_result')
         send('dump read_result to tagui_python.txt')
-        read_result = tagui_output()
+        read_result = _tagui_output()
         return read_result
 
 def show(element_identifier = None):
@@ -333,7 +333,7 @@ def show(element_identifier = None):
     else:
         send('read ' + element_identifier + ' to show_result')
         send('dump show_result to tagui_python.txt')
-        show_result = tagui_output()
+        show_result = _tagui_output()
         print(show_result)
         return show_result
 
@@ -425,7 +425,7 @@ def write(text_to_write = None, filename_to_save = None):
         return True
 
 def ask(text_to_prompt = ''):
-    if python2_env(): return raw_input(text_to_prompt + ' ')
+    if _python2_env(): return raw_input(text_to_prompt + ' ')
     else: return input(text_to_prompt + ' ')
 
 def keyboard(keys_and_modifiers = None):
@@ -527,19 +527,43 @@ def download(element_identifier = None, filename_to_save = None):
     else:
         return True
 
-def run(command_to_run = None):
-    if command_to_run is None or command_to_run == '':
-        print('[TAGUI][ERROR] - command to run missing for run()')
+def api(url_to_query = None):
+    if url_to_query is None or url_to_query == '':
+        print('[TAGUI][ERROR] - API URL missing for api()')
         return ''
 
     else:
-        run_result = ''
-        return run_result
+        send('api ' + url_to_query)
+        send('dump api_result to tagui_python.txt')
+        api_result = _tagui_output()
+        return api_result
+
+def run(command_to_run = None):
+    if command_to_run is None or command_to_run == '':
+        print('[TAGUI][ERROR] - command(s) missing for run()')
+        return ''
+
+    else:
+        return _py23_decode(subprocess.check_output(
+            command_to_run + '; exit 0',
+            stderr=subprocess.STDOUT,
+            shell=True))
+
+def dom(statement_to_run = None):
+    if statement_to_run is None or statement_to_run == '':
+        print('[TAGUI][ERROR] - statement(s) missing for dom()')
+        return ''
+
+    else:
+        send('dom ' + statement_to_run)
+        send('dump dom_result to tagui_python.txt')
+        dom_result = _tagui_output()
+        return dom_result
 
 def vision(command_to_run = None):
     if command_to_run is None or command_to_run == '':
-        print('[TAGUI][ERROR] - command to run missing for vision()')
-        return ''
+        print('[TAGUI][ERROR] - command(s) missing for vision()')
+        return False
 
     elif not send('vision ' + command_to_run):
         return False
@@ -548,13 +572,13 @@ def vision(command_to_run = None):
         return True  
 
 def timeout(timeout_in_seconds = None):
-    global tagui_timeout
+    global _tagui_timeout
 
     if timeout_in_seconds is None:
-        return float(tagui_timeout)
+        return float(_tagui_timeout)
 
     else:
-        tagui_timeout = float(timeout_in_seconds)
+        _tagui_timeout = float(timeout_in_seconds)
 
     if not send('timeout ' + str(timeout_in_seconds)):
         return False
@@ -568,7 +592,7 @@ def present(element_identifier = None):
 
     send('present_result = present(\'' + element_identifier + '\')')
     send('dump present_result.toString() to tagui_python.txt')
-    if tagui_output() == 'true':
+    if _tagui_output() == 'true':
         return True
     else:
         return False
@@ -579,7 +603,7 @@ def visible(element_identifier = None):
 
     send('visible_result = visible(\'' + element_identifier + '\')')
     send('dump visible_result.toString() to tagui_python.txt')
-    if tagui_output() == 'true':
+    if _tagui_output() == 'true':
         return True
     else:
         return False
@@ -590,34 +614,34 @@ def count(element_identifier = None):
 
     send('count_result = count(\'' + element_identifier + '\')')
     send('dump count_result.toString() to tagui_python.txt')
-    return int(tagui_output())
+    return int(_tagui_output())
 
 def title():
     send('dump title() to tagui_python.txt')
-    title_result = tagui_output()
+    title_result = _tagui_output()
     return title_result
 
 def text():
     send('dump text() to tagui_python.txt')
-    text_result = tagui_output()
+    text_result = _tagui_output()
     return text_result
 
 def timer():
     send('dump timer() to tagui_python.txt')
-    timer_result = tagui_output()
+    timer_result = _tagui_output()
     return float(timer_result)
 
 def mouse_xy():
     send('dump mouse_xy() to tagui_python.txt')
-    mouse_xy_result = tagui_output()
+    mouse_xy_result = _tagui_output()
     return mouse_xy_result
 
 def mouse_x():
     send('dump mouse_x() to tagui_python.txt')
-    mouse_x_result = tagui_output()
+    mouse_x_result = _tagui_output()
     return int(mouse_x_result)
 
 def mouse_y():
     send('dump mouse_y() to tagui_python.txt')
-    mouse_y_result = tagui_output()
+    mouse_y_result = _tagui_output()
     return int(mouse_y_result)
