@@ -11,16 +11,8 @@ _tagui_timeout = 10.0
 # default delay in seconds in while loops
 _tagui_delay = 0.1
 
-# entry command to invoke tagui process
-_tagui_cmd = 'tagui tagui_python chrome'
-
-# launch tagui using subprocess
-_process = subprocess.Popen(
-    _tagui_cmd, shell=True,
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE
-)
+# flag to track if tagui session started
+_tagui_started = False
 
 # id to track instruction count between tagui-python and tagui
 _tagui_id = 0
@@ -71,17 +63,37 @@ def _tagui_output():
     os.remove('tagui_python.txt')
     return tagui_output_text
 
+def _started():
+    global _tagui_started; return _tagui_started
+
 def init():
 # connect to tagui process by checking tagui live mode readiness
 
-    global _process, _tagui_id
+    global _process, _tagui_started, _tagui_id
 
+    if _tagui_started:
+        print('[TAGUI][ERROR] - use close() before using init() again')
+        return False
+
+    # entry command to invoke tagui process
+    tagui_cmd = 'tagui tagui_python chrome'
+    
     try:
+        # launch tagui using subprocess
+        _process = subprocess.Popen(
+            tagui_cmd, shell=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
         # loop until tagui live mode is ready or tagui process has ended
         while True:
 
             # failsafe exit if tagui process gets killed for whatever reason
-            if _process.poll() is not None: return False
+            if _process.poll() is not None:
+                _tagui_started = False
+                return False
 
             # read next line of output from tagui process live mode interface
             tagui_out = _tagui_read()
@@ -92,20 +104,24 @@ def init():
                 _tagui_write('echo ""\n')
                 _tagui_write('echo "[TAGUI][STARTED]"\n')
                 _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
+                _tagui_started = True
                 return True
 
     except Exception as e:
         print('[TAGUI][ERROR] - ' + str(e))
+        _tagui_started = False
         return False
 
 def _ready():
 # check whether tagui is ready to receive instructions
 
-    global _process, _tagui_id
+    global _process, _tagui_started, _tagui_id
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if _process.poll() is not None: return False
+        if _process.poll() is not None:
+            _tagui_started = False
+            return False
 
         # read next line of output from tagui process live mode interface
         tagui_out = _tagui_read()
@@ -127,13 +143,19 @@ def _ready():
 def send(tagui_instruction = None):
 # send next live mode instruction to tagui for processing if tagui is ready
 
-    global _process, _tagui_id
+    global _process, _tagui_started, _tagui_id
+
+    if not _tagui_started:
+        print('[TAGUI][ERROR] - use init() before using send()')
+        return False
 
     if tagui_instruction is None or tagui_instruction == '': return True
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if _process.poll() is not None: return False
+        if _process.poll() is not None:
+            _tagui_started = False
+            return False
 
         # loop until tagui live mode is ready and listening for inputs
         while not _ready(): pass
@@ -158,11 +180,18 @@ def send(tagui_instruction = None):
 def close():
 # disconnect from tagui process by sending done instruction
 
-    global _process, _tagui_id
+    global _process, _tagui_started, _tagui_id
+
+    if not _tagui_started:
+        print('[TAGUI][ERROR] - use init() before using close()')
+        _tagui_started = False
+        return False
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
-        if _process.poll() is not None: return False
+        if _process.poll() is not None:
+            _tagui_started = False
+            return False
 
         # loop until tagui live mode is ready and listening for inputs
         while not _ready(): pass
@@ -174,13 +203,19 @@ def close():
         # loop until tagui process has closed before returning control
         while _process.poll() is None: pass
 
+        _tagui_started = False
         return True
 
     except Exception as e:
         print('[TAGUI][ERROR] - ' + str(e))
+        _tagui_started = False
         return False
 
 def exist(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using exist()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         return False
 
@@ -193,6 +228,10 @@ def exist(element_identifier = None):
             return False
 
 def url(webpage_url = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using url()')
+        return False
+
     if webpage_url is not None and webpage_url != '':
         if webpage_url.startswith('http://') or webpage_url.startswith('https://'):
             if not send(webpage_url):
@@ -209,6 +248,10 @@ def url(webpage_url = None):
         return url_result
 
 def click(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using click()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for click()')
         return False
@@ -224,6 +267,10 @@ def click(element_identifier = None):
         return True
 
 def rclick(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using rclick()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for rclick()')
         return False
@@ -239,6 +286,10 @@ def rclick(element_identifier = None):
         return True
 
 def dclick(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using dclick()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for dclick()')
         return False
@@ -254,6 +305,10 @@ def dclick(element_identifier = None):
         return True
 
 def hover(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using hover()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for hover()')
         return False
@@ -269,6 +324,10 @@ def hover(element_identifier = None):
         return True
 
 def type(element_identifier = None, text_to_type = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using type()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for type()')
         return False
@@ -288,6 +347,10 @@ def type(element_identifier = None, text_to_type = None):
         return True
 
 def select(element_identifier = None, option_value = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using select()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for select()')
         return False
@@ -307,6 +370,10 @@ def select(element_identifier = None, option_value = None):
         return True
 
 def read(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using read()')
+        return ''
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for read()')
         return ''
@@ -322,6 +389,10 @@ def read(element_identifier = None):
         return read_result
 
 def show(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using show()')
+        return ''
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for show()')
         return ''
@@ -338,6 +409,10 @@ def show(element_identifier = None):
         return show_result
 
 def save(element_identifier = None, filename_to_save = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using save()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for save()')
         return False
@@ -357,6 +432,10 @@ def save(element_identifier = None, filename_to_save = None):
         return True
 
 def snap(element_identifier = None, filename_to_save = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using snap()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for snap()')
         return False
@@ -429,6 +508,10 @@ def ask(text_to_prompt = ''):
     else: return input(text_to_prompt + ' ')
 
 def keyboard(keys_and_modifiers = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using keyboard()')
+        return False
+
     if keys_and_modifiers is None or keys_and_modifiers == '':
         print('[TAGUI][ERROR] - keys to type missing for keyboard()')
         return False
@@ -440,6 +523,10 @@ def keyboard(keys_and_modifiers = None):
         return True
 
 def mouse(mouse_action = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using mouse()')
+        return False
+
     if mouse_action is None or mouse_action == '':
         print('[TAGUI][ERROR] - down / up missing for mouse()')
         return False
@@ -455,6 +542,10 @@ def mouse(mouse_action = None):
         return True
 
 def table(element_identifier = None, filename_to_save = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using table()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for table()')
         return False
@@ -490,6 +581,10 @@ def check(condition_to_check = None, text_if_true = '', text_if_false = ''):
     return True
 
 def upload(element_identifier = None, filename_to_upload = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using upload()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for upload()')
         return False
@@ -509,6 +604,10 @@ def upload(element_identifier = None, filename_to_upload = None):
         return True
 
 def download(element_identifier = None, filename_to_save = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using download()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         print('[TAGUI][ERROR] - target missing for download()')
         return False
@@ -528,6 +627,10 @@ def download(element_identifier = None, filename_to_save = None):
         return True
 
 def api(url_to_query = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using api()')
+        return ''
+
     if url_to_query is None or url_to_query == '':
         print('[TAGUI][ERROR] - API URL missing for api()')
         return ''
@@ -550,6 +653,10 @@ def run(command_to_run = None):
             shell=True))
 
 def dom(statement_to_run = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using dom()')
+        return ''
+
     if statement_to_run is None or statement_to_run == '':
         print('[TAGUI][ERROR] - statement(s) missing for dom()')
         return ''
@@ -561,6 +668,10 @@ def dom(statement_to_run = None):
         return dom_result
 
 def vision(command_to_run = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using vision()')
+        return False
+
     if command_to_run is None or command_to_run == '':
         print('[TAGUI][ERROR] - command(s) missing for vision()')
         return False
@@ -572,6 +683,10 @@ def vision(command_to_run = None):
         return True  
 
 def timeout(timeout_in_seconds = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using timeout()')
+        return False
+
     global _tagui_timeout
 
     if timeout_in_seconds is None:
@@ -580,6 +695,10 @@ def timeout(timeout_in_seconds = None):
     else:
         _tagui_timeout = float(timeout_in_seconds)
 
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using timeout()')
+        return False
+
     if not send('timeout ' + str(timeout_in_seconds)):
         return False
 
@@ -587,6 +706,10 @@ def timeout(timeout_in_seconds = None):
         return True
 
 def present(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using present()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         return False
 
@@ -598,6 +721,10 @@ def present(element_identifier = None):
         return False
 
 def visible(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using visible()')
+        return False
+
     if element_identifier is None or element_identifier == '':
         return False
 
@@ -609,6 +736,10 @@ def visible(element_identifier = None):
         return False
 
 def count(element_identifier = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using count()')
+        return int(0)
+
     if element_identifier is None or element_identifier == '':
         return int(0)
 
@@ -617,31 +748,55 @@ def count(element_identifier = None):
     return int(_tagui_output())
 
 def title():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using title()')
+        return ''
+
     send('dump title() to tagui_python.txt')
     title_result = _tagui_output()
     return title_result
 
 def text():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using text()')
+        return ''
+
     send('dump text() to tagui_python.txt')
     text_result = _tagui_output()
     return text_result
 
 def timer():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using timer()')
+        return float(0)
+
     send('dump timer() to tagui_python.txt')
     timer_result = _tagui_output()
     return float(timer_result)
 
 def mouse_xy():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using mouse_xy()')
+        return ''
+
     send('dump mouse_xy() to tagui_python.txt')
     mouse_xy_result = _tagui_output()
     return mouse_xy_result
 
 def mouse_x():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using mouse_x()')
+        return int(0)
+
     send('dump mouse_x() to tagui_python.txt')
     mouse_x_result = _tagui_output()
     return int(mouse_x_result)
 
 def mouse_y():
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using mouse_y()')
+        return int(0)
+
     send('dump mouse_y() to tagui_python.txt')
     mouse_y_result = _tagui_output()
     return int(mouse_y_result)
