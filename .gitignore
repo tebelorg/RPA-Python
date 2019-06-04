@@ -12,6 +12,9 @@
 /tagui_python.log
 /tagui_python.raw
 /tagui_python.js
+/tagui_visual.log
+/tagui_visual.raw
+/tagui_visual.js
 
 # exclude entry flow output file
 /tagui_python.txt

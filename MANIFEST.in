@@ -1,3 +1,5 @@
 include LICENSE.txt
 include README.md
 include tagui_python
+include tagui_visual
+include tagui_local.js

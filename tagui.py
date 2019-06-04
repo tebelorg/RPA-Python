@@ -14,6 +14,9 @@ _tagui_delay = 0.1
 # flag to track if tagui session started
 _tagui_started = False
 
+# flag to track and print debug info
+_tagui_debug = False
+
 # id to track instruction count between tagui-python and tagui
 _tagui_id = 0
 
@@ -53,9 +56,10 @@ def _tagui_write(input_text = ''):
 
 def _tagui_output():
 # function to wait for tagui output file to read and delete it
+    global _tagui_delay
+    # sleep to not splurge cpu cycles in while loop
     while not os.path.isfile('tagui_python.txt'):
-        # don't splurge cpu cycles in while loop
-        global _tagui_delay; time.sleep(_tagui_delay) 
+        time.sleep(_tagui_delay) 
 
     tagui_output_file = open('tagui_python.txt', 'r')
     tagui_output_text = tagui_output_file.read()
@@ -63,10 +67,30 @@ def _tagui_output():
     os.remove('tagui_python.txt')
     return tagui_output_text
 
+def _esq(input_text = ''):
+# function to escape single quote ' for tagui live mode
+# change ' to be `"\'"` which becomes '+"\'"+' in tagui
+    return input_text.replace("'",'`"\\\'"`')
+
+def _sdq(input_text = ''):
+# function to escape ' in xpath for tagui live mode
+# change identifier single quote ' to double quote "
+    return input_text.replace("'",'"')
+
+def coord(x_coordinate = None, y_coordinate = None):
+# function to form a coordinate string from x and y integers
+    return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
+
 def _started():
     global _tagui_started; return _tagui_started
 
-def init():
+def debug(on_off = None):
+# function to set debug mode, eg print debug info
+    global _tagui_debug
+    if on_off is not None: _tagui_debug = on_off
+    return _tagui_debug
+
+def init(debug_mode = False, visual_automation = False):
 # connect to tagui process by checking tagui live mode readiness
 
     global _process, _tagui_started, _tagui_id
@@ -75,8 +99,17 @@ def init():
         print('[TAGUI][ERROR] - use close() before using init() again')
         return False
 
+    # set debug mode, eg print debug info to output
+    debug(debug_mode)
+
+    # set entry flow to launch SikuliX accordingly
+    if visual_automation:
+        tagui_flow = 'tagui_visual'
+    else:
+        tagui_flow = 'tagui_python'
+
     # entry command to invoke tagui process
-    tagui_cmd = 'tagui tagui_python chrome'
+    tagui_cmd = 'tagui ' + tagui_flow + ' chrome'
     
     try:
         # launch tagui using subprocess
@@ -126,9 +159,9 @@ def _ready():
         # read next line of output from tagui process live mode interface
         tagui_out = _tagui_read()
 
-        # output for use in development
-        sys.stdout.write(tagui_out)
-        sys.stdout.flush()
+        # print to screen debug output that is saved to tagui_python.log
+        if debug():
+            sys.stdout.write(tagui_out); sys.stdout.flush()
 
         # check if tagui live mode is listening for inputs and return result
         if tagui_out.strip().startswith('[TAGUI][') and tagui_out.strip().endswith('] - listening for inputs'):
@@ -160,8 +193,8 @@ def send(tagui_instruction = None):
         # loop until tagui live mode is ready and listening for inputs
         while not _ready(): pass
 
-        # echo live mode instruction, first remove quotes to be echo-safe
-        safe_tagui_instruction = tagui_instruction.replace("'", "").replace('"','')
+        # echo live mode instruction, first escape double quotes to be echo-safe
+        safe_tagui_instruction = tagui_instruction.replace('"','\\"')
         _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - ' + safe_tagui_instruction + '"\n')
 
         # send live mode instruction to be executed
@@ -219,13 +252,24 @@ def exist(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
-    else:
-        send('exist_result = exist(\'' + element_identifier + '\')')
-        send('dump exist_result.toString() to tagui_python.txt')
-        if _tagui_output() == 'true':
-            return True
-        else:
+    # check for existence of specified image file for visual automation
+    if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
+        if not os.path.isfile(element_identifier):
+            print('[TAGUI][ERROR] - missing image file ' + element_identifier)
             return False
+
+    # assume that (x,y) coordinates for visual automation always exist
+    if element_identifier.startswith('(') and element_identifier.endswith(')'):
+        if len(element_identifier.split(',')) == 2:
+            if not any(c.isalpha() for c in element_identifier):
+                return True
+
+    send('exist_result = exist(\'' + _sdq(element_identifier) + '\').toString()')
+    send('dump exist_result to tagui_python.txt')
+    if _tagui_output() == 'true':
+        return True
+    else:
+        return False
 
 def url(webpage_url = None):
     if not _started():
@@ -234,7 +278,7 @@ def url(webpage_url = None):
 
     if webpage_url is not None and webpage_url != '':
         if webpage_url.startswith('http://') or webpage_url.startswith('https://'):
-            if not send(webpage_url):
+            if not send(_esq(webpage_url)):
                 return False
             else:
                 return True
@@ -247,7 +291,7 @@ def url(webpage_url = None):
         url_result = _tagui_output()
         return url_result
 
-def click(element_identifier = None):
+def click(element_identifier = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using click()')
         return False
@@ -256,17 +300,20 @@ def click(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for click()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(test_coordinate, int):
+        element_identifier = coord(element_identifier, test_coordinate)
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('click ' + element_identifier):
+    elif not send('click ' + _sdq(element_identifier)):
         return False
 
     else:
         return True
 
-def rclick(element_identifier = None):
+def rclick(element_identifier = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using rclick()')
         return False
@@ -275,17 +322,20 @@ def rclick(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for rclick()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(test_coordinate, int):
+        element_identifier = coord(element_identifier, test_coordinate)
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('rclick ' + element_identifier):
+    elif not send('rclick ' + _sdq(element_identifier)):
         return False
 
     else:
         return True
 
-def dclick(element_identifier = None):
+def dclick(element_identifier = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using dclick()')
         return False
@@ -294,17 +344,20 @@ def dclick(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for dclick()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(test_coordinate, int):
+        element_identifier = coord(element_identifier, test_coordinate)
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('dclick ' + element_identifier):
+    elif not send('dclick ' + _sdq(element_identifier)):
         return False
 
     else:
         return True
 
-def hover(element_identifier = None):
+def hover(element_identifier = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using hover()')
         return False
@@ -313,17 +366,20 @@ def hover(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for hover()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(test_coordinate, int):
+        element_identifier = coord(element_identifier, test_coordinate)
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('hover ' + element_identifier):
+    elif not send('hover ' + _sdq(element_identifier)):
         return False
 
     else:
         return True
 
-def type(element_identifier = None, text_to_type = None):
+def type(element_identifier = None, text_to_type = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using type()')
         return False
@@ -332,21 +388,25 @@ def type(element_identifier = None, text_to_type = None):
         print('[TAGUI][ERROR] - target missing for type()')
         return False
 
-    elif text_to_type is None or text_to_type == '':
+    if text_to_type is None or text_to_type == '':
         print('[TAGUI][ERROR] - text missing for type()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(text_to_type, int):
+        element_identifier = coord(element_identifier, text_to_type)
+        text_to_type = test_coordinate
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('type ' + element_identifier + ' as ' + text_to_type):
+    elif not send('type ' + _sdq(element_identifier) + ' as ' + _esq(text_to_type)):
         return False
 
     else:
         return True
 
-def select(element_identifier = None, option_value = None):
+def select(element_identifier = None, option_value = None, test_coordinate = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using select()')
         return False
@@ -355,15 +415,19 @@ def select(element_identifier = None, option_value = None):
         print('[TAGUI][ERROR] - target missing for select()')
         return False
 
-    elif option_value is None or option_value == '':
+    if option_value is None or option_value == '':
         print('[TAGUI][ERROR] - option missing for select()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coordinate is not None and isinstance(option_value, int):
+        element_identifier = coord(element_identifier, option_value)
+        option_value = test_coordinate
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('select ' + element_identifier + ' as ' + option_value):
+    elif not send('select ' + _sdq(element_identifier) + ' as ' + _esq(option_value)):
         return False
 
     else:
@@ -383,7 +447,7 @@ def read(element_identifier = None):
         return ''
 
     else:
-        send('read ' + element_identifier + ' to read_result')
+        send('read ' + _sdq(element_identifier) + ' to read_result')
         send('dump read_result to tagui_python.txt')
         read_result = _tagui_output()
         return read_result
@@ -402,7 +466,7 @@ def show(element_identifier = None):
         return ''
 
     else:
-        send('read ' + element_identifier + ' to show_result')
+        send('read ' + _sdq(element_identifier) + ' to show_result')
         send('dump show_result to tagui_python.txt')
         show_result = _tagui_output()
         print(show_result)
@@ -425,7 +489,7 @@ def save(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('save ' + element_identifier + ' to ' + filename_to_save):
+    elif not send('save ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
         return False
 
     else:
@@ -448,7 +512,7 @@ def snap(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('snap ' + element_identifier + ' to ' + filename_to_save):
+    elif not send('snap ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
         return False
 
     else:
@@ -516,7 +580,7 @@ def keyboard(keys_and_modifiers = None):
         print('[TAGUI][ERROR] - keys to type missing for keyboard()')
         return False
 
-    elif not send('keyboard ' + keys_and_modifiers):
+    elif not send('keyboard ' + _esq(keys_and_modifiers)):
         return False
 
     else:
@@ -558,7 +622,7 @@ def table(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('table ' + element_identifier + ' to ' + filename_to_save):
+    elif not send('table ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
         return False
 
     else:
@@ -597,7 +661,7 @@ def upload(element_identifier = None, filename_to_upload = None):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('upload ' + element_identifier + ' as ' + filename_to_upload):
+    elif not send('upload ' + _sdq(element_identifier) + ' as ' + _esq(filename_to_upload)):
         return False
 
     else:
@@ -620,7 +684,7 @@ def download(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
-    elif not send('download ' + element_identifier + ' to ' + filename_to_save):
+    elif not send('download ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
         return False
 
     else:
@@ -636,7 +700,7 @@ def api(url_to_query = None):
         return ''
 
     else:
-        send('api ' + url_to_query)
+        send('api ' + _esq(url_to_query))
         send('dump api_result to tagui_python.txt')
         api_result = _tagui_output()
         return api_result
@@ -662,7 +726,7 @@ def dom(statement_to_run = None):
         return ''
 
     else:
-        send('dom ' + statement_to_run)
+        send('dom ' + _esq(statement_to_run))
         send('dump dom_result to tagui_python.txt')
         dom_result = _tagui_output()
         return dom_result
@@ -676,7 +740,7 @@ def vision(command_to_run = None):
         print('[TAGUI][ERROR] - command(s) missing for vision()')
         return False
 
-    elif not send('vision ' + command_to_run):
+    elif not send('vision ' + _esq(command_to_run)):
         return False
 
     else:
@@ -713,8 +777,8 @@ def present(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
-    send('present_result = present(\'' + element_identifier + '\')')
-    send('dump present_result.toString() to tagui_python.txt')
+    send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
+    send('dump present_result to tagui_python.txt')
     if _tagui_output() == 'true':
         return True
     else:
@@ -728,8 +792,8 @@ def visible(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
-    send('visible_result = visible(\'' + element_identifier + '\')')
-    send('dump visible_result.toString() to tagui_python.txt')
+    send('visible_result = visible(\'' + _sdq(element_identifier) + '\').toString()')
+    send('dump visible_result to tagui_python.txt')
     if _tagui_output() == 'true':
         return True
     else:
@@ -743,8 +807,8 @@ def count(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return int(0)
 
-    send('count_result = count(\'' + element_identifier + '\')')
-    send('dump count_result.toString() to tagui_python.txt')
+    send('count_result = count(\'' + _sdq(element_identifier) + '\').toString()')
+    send('dump count_result to tagui_python.txt')
     return int(_tagui_output())
 
 def title():
