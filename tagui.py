@@ -77,12 +77,12 @@ def _sdq(input_text = ''):
 # change identifier single quote ' to double quote "
     return input_text.replace("'",'"')
 
+def _started():
+    global _tagui_started; return _tagui_started
+
 def coord(x_coordinate = None, y_coordinate = None):
 # function to form a coordinate string from x and y integers
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
-
-def _started():
-    global _tagui_started; return _tagui_started
 
 def debug(on_off = None):
 # function to set debug mode, eg print debug info
@@ -90,7 +90,22 @@ def debug(on_off = None):
     if on_off is not None: _tagui_debug = on_off
     return _tagui_debug
 
-def init(debug_mode = False, visual_automation = False):
+def _python_flow():
+# function to create entry tagui flow without visual automation
+    flow_text = '// NORMAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n\r\nlive'
+    flow_file = open('tagui_python', 'w')
+    flow_file.write(flow_text)
+    flow_file.close()
+
+def _visual_flow():
+# function to create entry tagui flow with visual automation
+    flow_text = '// VISUAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n' + \
+                '// mouse_xy() - dummy trigger for SikuliX integration\r\n\r\nlive'
+    flow_file = open('tagui_python', 'w')
+    flow_file.write(flow_text)
+    flow_file.close()
+
+def init(visual_automation = False):
 # connect to tagui process by checking tagui live mode readiness
 
     global _process, _tagui_started, _tagui_id
@@ -99,17 +114,14 @@ def init(debug_mode = False, visual_automation = False):
         print('[TAGUI][ERROR] - use close() before using init() again')
         return False
 
-    # set debug mode, eg print debug info to output
-    debug(debug_mode)
-
-    # set entry flow to launch SikuliX accordingly
+    # create entry flow to launch SikuliX accordingly
     if visual_automation:
-        tagui_flow = 'tagui_visual'
+        _visual_flow()
     else:
-        tagui_flow = 'tagui_python'
+        _python_flow()
 
     # entry command to invoke tagui process
-    tagui_cmd = 'tagui ' + tagui_flow + ' chrome'
+    tagui_cmd = 'tagui tagui_python chrome'
     
     try:
         # launch tagui using subprocess
@@ -235,6 +247,13 @@ def close():
 
         # loop until tagui process has closed before returning control
         while _process.poll() is None: pass
+
+        # remove generated tagui flow and log files if not in debug mode
+        if not debug():
+            if os.path.isfile('tagui_python'): os.remove('tagui_python')
+            if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')        
+            if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
+            if os.path.isfile('tagui_python.log'): os.remove('tagui_python.log')
 
         _tagui_started = False
         return True
