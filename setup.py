@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='tagui',
-    version='0.0.4',
+    version='0.0.5',
     py_modules=['tagui'],
     author='Tebel.Automation',
     author_email='ken@tebel.org',

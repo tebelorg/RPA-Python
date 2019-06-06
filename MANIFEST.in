@@ -1,4 +1,3 @@
 include LICENSE.txt
 include README.md
 include sample.py
-include tagui_local.js

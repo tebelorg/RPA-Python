@@ -16,3 +16,6 @@
 
 # exclude entry flow output file
 /tagui_python.txt
+
+# exclude custom js functions 
+/tagui_local.js
