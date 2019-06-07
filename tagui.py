@@ -14,7 +14,7 @@ _tagui_delay = 0.1
 # flag to track if tagui session started
 _tagui_started = False
 
-# flag to track and print debug info
+# flag to track and print debug output
 _tagui_debug = False
 
 # id to track instruction count between tagui-python and tagui
@@ -46,7 +46,7 @@ function exist(element_identifier) {
 
 // function to replace add_concat() in tagui_header.js
 // gain - echoing string with single and double quotes
-// loss - text-like variables usage since Python env
+// loss - no text-like variables usage since Python env
 
 function add_concat(source_string) {
 
@@ -134,7 +134,7 @@ def _tagui_local():
     javascript_file.write(_tagui_local_js)
     javascript_file.close()
 
-def coord(x_coordinate = None, y_coordinate = None):
+def coord(x_coordinate = 0, y_coordinate = 0):
 # function to form a coordinate string from x and y integers
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
 
@@ -166,12 +166,12 @@ def unzip(file_to_unzip = None, unzip_location = None):
     return True
 
 def setup():
-# function to setup TagUI to temp folder on Linux / macOS /  Windows
+# function to setup TagUI to temp folder on Linux / macOS / Windows
 
     import platform
     import tempfile
 
-    # get temporary folder location to setup tagui
+    # get system temporary folder location to setup tagui
     temp_directory = tempfile.gettempdir()
 
     print('[TAGUI][INFO] - setting up TagUI for use in your Python environment')
@@ -201,15 +201,30 @@ def setup():
     # perform Linux specific setup actions
     if platform.system() == 'Linux':
         # zipfile extractall does not preserve execute permissions
-        os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui')
-        print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+        # invoking chmod to set all files with execute permissions
+        if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
+            print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
+            return False 
+
+        # check that php, a dependency for tagui, is installed and working
+        if os.system('php --version > /dev/null 2>&1') != 0:
+            print('[TAGUI][INFO] - PHP is not installed by default on your Linux distribution')
+            print('[TAGUI][INFO] - google how to install PHP (eg for Ubuntu, apt-get install php)')
+            print('[TAGUI][INFO] - after that, TagUI will be ready for use in your Python environment')
+            return False
+
+        else:
+            print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
 
     # perform macOS specific setup actions
     if platform.system() == 'Darwin':
         # zipfile extractall does not preserve execute permissions
-        os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui')
+        # invoking chmod to set all files with execute permissions
+        if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
+            print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
+            return False
 
-        # check for openssl, dependency of phantomjs removed in newer macOS
+        # check for openssl, a dependency of phantomjs removed in newer macOS
         if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
 
             # if openssl is missing, first attempt to install using homebrew
@@ -218,6 +233,7 @@ def setup():
             # if it is still missing, attempt again by first installing homebrew
             if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
                 print('[TAGUI][INFO] - now installing OpenSSL dependency using Homebrew')
+                print('[TAGUI][INFO] - you may be prompted for login password to continue')
                 print('')
                 os.system('echo | /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
                 os.system('brew install openssl')
@@ -243,12 +259,30 @@ def setup():
 
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
-        print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+        # check that tagui packaged php is working, it has dependency on MSVCR110.dll
+        if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+            print('[TAGUI][INFO] - now installing missing Visual C++ Redistributable dependency')
+            vcredist_x86_url = 'https://github.com/tebelorg/Tump/raw/master/vcredist_x86.exe'
+            if download(vcredist_x86_url, temp_directory + '/vcredist_x86.exe'):
+                os.system(temp_directory + '/vcredist_x86.exe')
+
+            # check again if tagui packaged php is working, after installing vcredist_x86.exe
+            if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+                print('[TAGUI][INFO] - MSVCR110.dll is still missing, install vcredist_x86.exe from')
+                print('[TAGUI][INFO] - https://www.microsoft.com/en-us/download/details.aspx?id=30679')
+                print('[TAGUI][INFO] - after that, TagUI will be ready for use in your Python environment')
+                return False
+
+            else:
+                print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+
+        else:
+            print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
 
     return True
 
 def init(visual_automation = False):
-# connect to tagui process by checking tagui live mode readiness
+# start and connect to tagui process by checking tagui live mode readiness
 
     global _process, _tagui_started, _tagui_id
 
@@ -265,7 +299,7 @@ def init(visual_automation = False):
     # create tagui_local.js for custom functions
     _tagui_local()
     
-    # entry command to invoke tagui process
+    # entry shell command to invoke tagui process
     tagui_cmd = 'tagui tagui_python chrome'
     
     try:
@@ -303,7 +337,7 @@ def init(visual_automation = False):
         return False
 
 def _ready():
-# check whether tagui is ready to receive instructions
+# internal function to check if tagui is ready to receive instructions after init() is called
 
     global _process, _tagui_started, _tagui_id
 
@@ -368,7 +402,7 @@ def send(tagui_instruction = None):
         return False
 
 def close():
-# disconnect from tagui process by sending done instruction
+# disconnect from tagui process by sending 'done' trigger instruction
 
     global _process, _tagui_started, _tagui_id
 
@@ -386,7 +420,7 @@ def close():
         # loop until tagui live mode is ready and listening for inputs
         while not _ready(): pass
 
-        # send done instruction to terminate live mode and exit tagui
+        # send 'done' instruction to terminate live mode and exit tagui
         _tagui_write('echo "[TAGUI][FINISHED]"\n')
         _tagui_write('done\n')
 
@@ -582,7 +616,7 @@ def select(element_identifier = None, option_value = None, test_coordinate = Non
         return False
 
     if option_value is None or option_value == '':
-        print('[TAGUI][ERROR] - option missing for select()')
+        print('[TAGUI][ERROR] - option value missing for select()')
         return False
 
     if test_coordinate is not None and isinstance(option_value, int):
@@ -690,7 +724,7 @@ def load(filename_to_load = None):
         return ''
 
     elif not os.path.isfile(filename_to_load):
-        print('[TAGUI][ERROR] - cannot find ' + filename_to_load)
+        print('[TAGUI][ERROR] - cannot find file ' + filename_to_load)
         return ''
 
     else:
@@ -928,10 +962,6 @@ def timeout(timeout_in_seconds = None):
 
     else:
         _tagui_timeout = float(timeout_in_seconds)
-
-    if not _started():
-        print('[TAGUI][ERROR] - use init() before using timeout()')
-        return False
 
     if not send('timeout ' + str(timeout_in_seconds)):
         return False
