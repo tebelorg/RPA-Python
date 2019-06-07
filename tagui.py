@@ -4,6 +4,8 @@ import subprocess
 import os
 import sys
 import time
+import tempfile
+import platform
 
 # default timeout in seconds for UI element
 _tagui_timeout = 10.0
@@ -101,8 +103,9 @@ def _tagui_output():
 
 def _esq(input_text = ''):
 # function to escape single quote ' for tagui live mode
-# change ' to be `"\'"` which becomes '+"\'"+' in tagui
-    return input_text.replace("'",'`"\\\'"`')
+# ie change ' to be `"\'"` which becomes '+"\'"+' in tagui
+# "[BACKSLASH_QUOTE]" used in interim to work with send()
+    return input_text.replace("'",'`"[BACKSLASH_QUOTE]"`')
 
 def _sdq(input_text = ''):
 # function to escape ' in xpath for tagui live mode
@@ -168,9 +171,6 @@ def unzip(file_to_unzip = None, unzip_location = None):
 def setup():
 # function to setup TagUI to temp folder on Linux / macOS / Windows
 
-    import platform
-    import tempfile
-
     # get system temporary folder location to setup tagui
     temp_directory = tempfile.gettempdir()
 
@@ -184,7 +184,8 @@ def setup():
         print('[TAGUI][ERROR] - unknown ' + platform.system() + ' operating system to setup TagUI')
         return False
 
-    print('[TAGUI][INFO] - downloading TagUI and unzipping to ' + temp_directory)
+    print('[TAGUI][INFO] - downloading TagUI and unzipping to below folder...')
+    print('[TAGUI][INFO] - ' + temp_directory)
 
     # set tagui zip download url and download zip for respective operating systems
     tagui_zip_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/' + tagui_zip_file 
@@ -232,6 +233,7 @@ def setup():
 
             # if it is still missing, attempt again by first installing homebrew
             if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
+                print('')
                 print('[TAGUI][INFO] - now installing OpenSSL dependency using Homebrew')
                 print('[TAGUI][INFO] - you may be prompted for login password to continue')
                 print('')
@@ -247,6 +249,7 @@ def setup():
                     print('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
                     print('brew install openssl')
                     print('')
+                    return False
 
                 else:
                     print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
@@ -279,9 +282,11 @@ def setup():
         else:
             print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
 
+    # perform SikuliX specific setup actions
+
     return True
 
-def init(visual_automation = False):
+def init(visual_automation = False, chrome_browser = True):
 # start and connect to tagui process by checking tagui live mode readiness
 
     global _process, _tagui_started, _tagui_id
@@ -290,17 +295,46 @@ def init(visual_automation = False):
         print('[TAGUI][ERROR] - use close() before using init() again')
         return False
 
+    # get system temporary folder location to form tagui executable path
+    tagui_executable = tempfile.gettempdir() + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'
+
+    # if tagui executable is not found, initiate setup() to install tagui
+    if not os.path.isfile(tagui_executable):
+        if not setup():
+            # error message is shown by setup(), no need for message here
+            return False
+
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
-        _visual_flow()
+        # check for working java jdk for visual automation mode
+        if platform.system() == 'Windows':
+            shell_silencer = '> nul 2>&1'
+        else:
+            shell_silencer = '> /dev/null 2>&1'
+        if os.system('java -version ' + shell_silencer) != 0:
+            print('[TAGUI][INFO] - for visual automation mode, Java JDK v8 (64-bit) or later is required')
+            print('[TAGUI][INFO] - to use visual automation feature, download Java JDK v8 (64-bit) from below')
+            print('[TAGUI][INFO] - https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html')
+            return False
+        else:
+            # start a dummy first run if never run before, to let sikulix integrate jython 
+            sikulix_folder = tempfile.gettempdir() + '/' + 'tagui' + '/' + 'src' + '/' + 'sikulix'
+            if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
+                os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
+            _visual_flow()
     else:
         _python_flow()
 
     # create tagui_local.js for custom functions
     _tagui_local()
+
+    # invoke web browser accordingly with tagui option
+    browser_option = ''
+    if chrome_browser:
+        browser_option = 'chrome'
     
     # entry shell command to invoke tagui process
-    tagui_cmd = 'tagui tagui_python chrome'
+    tagui_cmd = tagui_executable + ' tagui_python ' + browser_option
     
     try:
         # launch tagui using subprocess
@@ -384,9 +418,26 @@ def send(tagui_instruction = None):
         # loop until tagui live mode is ready and listening for inputs
         while not _ready(): pass
 
-        # echo live mode instruction, first escape double quotes to be echo-safe
-        safe_tagui_instruction = tagui_instruction.replace('"','\\"')
-        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - ' + safe_tagui_instruction + '"\n')
+        # escape special characters for them to reach tagui correctly
+        tagui_instruction = tagui_instruction.replace('\\','\\\\')
+        tagui_instruction = tagui_instruction.replace('\n','\\n')
+        tagui_instruction = tagui_instruction.replace('\r','\\r')
+        tagui_instruction = tagui_instruction.replace('\t','\\t')
+        tagui_instruction = tagui_instruction.replace('\a','\\a')
+        tagui_instruction = tagui_instruction.replace('\b','\\b')
+        tagui_instruction = tagui_instruction.replace('\f','\\f')
+
+        # special handling for single quote to work with _esq() for tagui
+        tagui_instruction = tagui_instruction.replace('"[BACKSLASH_QUOTE]"','"\\\'"')
+
+        # escape backslash to display source string correctly after echoing
+        echo_safe_instruction = tagui_instruction.replace('\\','\\\\')
+
+        # escape double quote because echo step below uses double quotes 
+        echo_safe_instruction = echo_safe_instruction.replace('"','\\"')
+
+        # echo live mode instruction, after preparing string to be echo-safe
+        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - ' + echo_safe_instruction + '"\n')
 
         # send live mode instruction to be executed
         _tagui_write(tagui_instruction + '\n')
