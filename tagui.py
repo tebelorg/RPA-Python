@@ -174,6 +174,13 @@ def setup():
     # get system temporary folder location to setup tagui
     temp_directory = tempfile.gettempdir()
 
+    # special handling for Linux as /tmp is non-executable by default
+    if platform.system() == 'Linux':
+        temp_directory = os.path.expanduser('~') + '/tmp'
+        # create directory if user home tmp dir is missing
+        if not os.path.isdir(temp_directory):
+            os.mkdir(temp_directory)
+
     print('[TAGUI][INFO] - setting up TagUI for use in your Python environment')
 
     # set tagui zip filename for respective operating systems
@@ -184,7 +191,7 @@ def setup():
         print('[TAGUI][ERROR] - unknown ' + platform.system() + ' operating system to setup TagUI')
         return False
 
-    print('[TAGUI][INFO] - downloading TagUI and unzipping to below folder...')
+    print('[TAGUI][INFO] - downloading TagUI (~200MB) and unzipping to below folder...')
     print('[TAGUI][INFO] - ' + temp_directory)
 
     # set tagui zip download url and download zip for respective operating systems
@@ -196,8 +203,12 @@ def setup():
     # unzip downloaded zip file to system temporary folder
     unzip(temp_directory + '/' + tagui_zip_file, temp_directory)
     if not os.path.isfile(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
-        print('[TAGUI][ERROR] - unable to unzip TagUI to folder ' + temp_directory)
+        print('[TAGUI][ERROR] - unable to unzip TagUI to ' + temp_directory)
         return False
+
+    # after unzip, remove downloaded zip file to save disk space 
+    if os.path.isfile(temp_directory + '/' + tagui_zip_file):
+        os.remove(temp_directory + '/' + tagui_zip_file)
 
     # perform Linux specific setup actions
     if platform.system() == 'Linux':
@@ -211,11 +222,11 @@ def setup():
         if os.system('php --version > /dev/null 2>&1') != 0:
             print('[TAGUI][INFO] - PHP is not installed by default on your Linux distribution')
             print('[TAGUI][INFO] - google how to install PHP (eg for Ubuntu, apt-get install php)')
-            print('[TAGUI][INFO] - after that, TagUI will be ready for use in your Python environment')
+            print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
             return False
 
         else:
-            print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+            print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
     # perform macOS specific setup actions
     if platform.system() == 'Darwin':
@@ -244,7 +255,7 @@ def setup():
                 if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
                     print('[TAGUI][INFO] - OpenSSL was not able to be installed automatically')
                     print('[TAGUI][INFO] - run below 2 commands in your terminal to install manually')
-                    print('[TAGUI][INFO] - after that, TagUI will be ready for use in your Python environment')
+                    print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
                     print('')
                     print('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
                     print('brew install openssl')
@@ -252,13 +263,13 @@ def setup():
                     return False
 
                 else:
-                    print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+                    print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
             else:
-                print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+                print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
         else:
-            print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+            print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
@@ -273,16 +284,14 @@ def setup():
             if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
                 print('[TAGUI][INFO] - MSVCR110.dll is still missing, install vcredist_x86.exe from')
                 print('[TAGUI][INFO] - https://www.microsoft.com/en-us/download/details.aspx?id=30679')
-                print('[TAGUI][INFO] - after that, TagUI will be ready for use in your Python environment')
+                print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
                 return False
 
             else:
-                print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
+                print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
         else:
-            print('[TAGUI][INFO] - TagUI is now ready for use in your Python environment')
-
-    # perform SikuliX specific setup actions
+            print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
 
     return True
 
@@ -350,6 +359,10 @@ def init(visual_automation = False, chrome_browser = True):
 
             # failsafe exit if tagui process gets killed for whatever reason
             if _process.poll() is not None:
+                print('[TAGUI][ERROR] - following happens when starting TagUI...')
+                print('')
+                os.system(tagui_cmd)
+                print('')
                 _tagui_started = False
                 return False
 
@@ -375,9 +388,14 @@ def _ready():
 
     global _process, _tagui_started, _tagui_id
 
+    if not _tagui_started:
+        # print output error in calling parent function instead
+        return False
+
     try:
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
+            # print output error in calling parent function instead
             _tagui_started = False
             return False
 
@@ -412,11 +430,16 @@ def send(tagui_instruction = None):
     try:
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
+            print('[TAGUI][ERROR] - no active TagUI process to send()')
             _tagui_started = False
             return False
 
         # loop until tagui live mode is ready and listening for inputs
-        while not _ready(): pass
+        # also check _tagui_started to handle unexpected termination
+        while _tagui_started and not _ready(): pass
+        if not _tagui_started:
+            print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
+            return False
 
         # escape special characters for them to reach tagui correctly
         tagui_instruction = tagui_instruction.replace('\\','\\\\')
@@ -465,11 +488,16 @@ def close():
     try:
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
+            print('[TAGUI][ERROR] - no active TagUI process to close()')
             _tagui_started = False
             return False
 
         # loop until tagui live mode is ready and listening for inputs
-        while not _ready(): pass
+        # also check _tagui_started to handle unexpected termination
+        while _tagui_started and not _ready(): pass
+        if not _tagui_started:
+            print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
+            return False
 
         # send 'done' instruction to terminate live mode and exit tagui
         _tagui_write('echo "[TAGUI][FINISHED]"\n')
