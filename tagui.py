@@ -19,7 +19,7 @@ _tagui_started = False
 # flag to track and print debug output
 _tagui_debug = False
 
-# id to track instruction count between tagui-python and tagui
+# id to track instruction count from tagui python to tagui
 _tagui_id = 0
 
 # delete tagui temp output text file to avoid reading old data 
@@ -210,10 +210,19 @@ def setup():
     if os.path.isfile(temp_directory + '/' + tagui_zip_file):
         os.remove(temp_directory + '/' + tagui_zip_file)
 
+    # download stable delta files from tagui cutting edge version
+    print('[TAGUI][INFO] - done. syncing TagUI files from stable cutting edge version')
+    delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php']
+    for delta_file in delta_list:
+        tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
+        tagui_delta_file = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + delta_file
+        if not download(tagui_delta_url, tagui_delta_file): return False
+
     # perform Linux specific setup actions
     if platform.system() == 'Linux':
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
+        # and update delta tagui/src/tagui with execute permission
         if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
             print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
             return False 
@@ -232,6 +241,7 @@ def setup():
     if platform.system() == 'Darwin':
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
+        # and update delta tagui/src/tagui with execute permission
         if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
             print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
             return False
@@ -276,7 +286,7 @@ def setup():
         # check that tagui packaged php is working, it has dependency on MSVCR110.dll
         if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
             print('[TAGUI][INFO] - now installing missing Visual C++ Redistributable dependency')
-            vcredist_x86_url = 'https://github.com/tebelorg/Tump/raw/master/vcredist_x86.exe'
+            vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
             if download(vcredist_x86_url, temp_directory + '/vcredist_x86.exe'):
                 os.system(temp_directory + '/vcredist_x86.exe')
 
@@ -304,8 +314,18 @@ def init(visual_automation = False, chrome_browser = True):
         print('[TAGUI][ERROR] - use close() before using init() again')
         return False
 
+    # reset id to track instruction count from tagui python to tagui
+    _tagui_id = 0
+
+    # get system temporary folder location to locate tagui executable
+    temp_directory = tempfile.gettempdir()
+
+    # special handling for Linux as /tmp is non-executable by default
+    if platform.system() == 'Linux':
+        temp_directory = os.path.expanduser('~') + '/tmp'
+
     # get system temporary folder location to form tagui executable path
-    tagui_executable = tempfile.gettempdir() + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'
+    tagui_executable = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'
 
     # if tagui executable is not found, initiate setup() to install tagui
     if not os.path.isfile(tagui_executable):
@@ -320,6 +340,7 @@ def init(visual_automation = False, chrome_browser = True):
             shell_silencer = '> nul 2>&1'
         else:
             shell_silencer = '> /dev/null 2>&1'
+
         if os.system('java -version ' + shell_silencer) != 0:
             print('[TAGUI][INFO] - for visual automation mode, Java JDK v8 (64-bit) or later is required')
             print('[TAGUI][INFO] - to use visual automation feature, download Java JDK v8 (64-bit) from below')
@@ -327,7 +348,7 @@ def init(visual_automation = False, chrome_browser = True):
             return False
         else:
             # start a dummy first run if never run before, to let sikulix integrate jython 
-            sikulix_folder = tempfile.gettempdir() + '/' + 'tagui' + '/' + 'src' + '/' + 'sikulix'
+            sikulix_folder = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'sikulix'
             if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
                 os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
             _visual_flow()
@@ -371,11 +392,21 @@ def init(visual_automation = False, chrome_browser = True):
 
             # check that tagui live mode is ready then start listening for inputs
             if 'LIVE MODE - type done to quit' in tagui_out:
-                # print new line to clear live mode backspace character before listening
-                _tagui_write('echo ""\n')
+                # dummy + start line to clear live mode backspace char before listening
                 _tagui_write('echo "[TAGUI][STARTED]"\n')
                 _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
                 _tagui_started = True
+
+                # loop until tagui live mode is ready and listening for inputs
+                # also check _tagui_started to handle unexpected termination
+                while _tagui_started and not _ready(): pass
+                if not _tagui_started:
+                    print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
+                    return False
+
+                # increment id and prepare for next instruction
+                _tagui_id = _tagui_id + 1
+
                 return True
 
     except Exception as e:
@@ -434,13 +465,6 @@ def send(tagui_instruction = None):
             _tagui_started = False
             return False
 
-        # loop until tagui live mode is ready and listening for inputs
-        # also check _tagui_started to handle unexpected termination
-        while _tagui_started and not _ready(): pass
-        if not _tagui_started:
-            print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
-            return False
-
         # escape special characters for them to reach tagui correctly
         tagui_instruction = tagui_instruction.replace('\\','\\\\')
         tagui_instruction = tagui_instruction.replace('\n','\\n')
@@ -465,9 +489,18 @@ def send(tagui_instruction = None):
         # send live mode instruction to be executed
         _tagui_write(tagui_instruction + '\n')
 
+        # echo marker text to prepare for next instruction
+        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
+
+        # loop until tagui live mode is ready and listening for inputs
+        # also check _tagui_started to handle unexpected termination
+        while _tagui_started and not _ready(): pass
+        if not _tagui_started:
+            print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
+            return False
+
         # increment id and prepare for next instruction
         _tagui_id = _tagui_id + 1
-        _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
 
         return True
 
@@ -482,7 +515,6 @@ def close():
 
     if not _tagui_started:
         print('[TAGUI][ERROR] - use init() before using close()')
-        _tagui_started = False
         return False
 
     try:
@@ -492,13 +524,6 @@ def close():
             _tagui_started = False
             return False
 
-        # loop until tagui live mode is ready and listening for inputs
-        # also check _tagui_started to handle unexpected termination
-        while _tagui_started and not _ready(): pass
-        if not _tagui_started:
-            print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
-            return False
-
         # send 'done' instruction to terminate live mode and exit tagui
         _tagui_write('echo "[TAGUI][FINISHED]"\n')
         _tagui_write('done\n')
@@ -506,14 +531,16 @@ def close():
         # loop until tagui process has closed before returning control
         while _process.poll() is None: pass
 
-        # remove generated tagui flow and log files if not in debug mode
+        # remove generated tagui flow, js code and custom functions files
+        if os.path.isfile('tagui_python'): os.remove('tagui_python')
+        if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')
+        if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
+        if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
+
+        # remove generated tagui log and data files if not in debug mode
         if not debug():
-            if os.path.isfile('tagui_python'): os.remove('tagui_python')
-            if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')        
-            if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
             if os.path.isfile('tagui_python.log'): os.remove('tagui_python.log')
             if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
-            if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
 
         _tagui_started = False
         return True
@@ -531,7 +558,7 @@ def exist(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
-    # check for existence of specified image file for visual automation
+    # pre-emptive check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not os.path.isfile(element_identifier):
             print('[TAGUI][ERROR] - missing image file ' + element_identifier)
@@ -685,7 +712,7 @@ def type(element_identifier = None, text_to_type = None, test_coordinate = None)
     else:
         return True
 
-def select(element_identifier = None, option_value = None, test_coordinate = None):
+def select(element_identifier = None, option_value = None, test_coordinate1 = None, test_coordinate2 = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using select()')
         return False
@@ -698,9 +725,21 @@ def select(element_identifier = None, option_value = None, test_coordinate = Non
         print('[TAGUI][ERROR] - option value missing for select()')
         return False
 
-    if test_coordinate is not None and isinstance(option_value, int):
+    if test_coordinate1 is not None and test_coordinate2 is not None and \
+    isinstance(option_value, int) and isinstance(test_coordinate2, int):
         element_identifier = coord(element_identifier, option_value)
-        option_value = test_coordinate
+        option_value = coord(test_coordinate1, test_coordinate2) 
+
+    # pre-emptive checks if image files are specified for visual automation
+    if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
+        if not os.path.isfile(element_identifier):
+            print('[TAGUI][ERROR] - missing image file ' + element_identifier)
+            return False
+
+    if option_value.lower().endswith('.png') or option_value.lower().endswith('.bmp'):
+        if not os.path.isfile(option_value):
+            print('[TAGUI][ERROR] - missing image file ' + option_value)
+            return False
 
     if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
@@ -847,8 +886,15 @@ def write(text_to_write = None, filename_to_save = None):
         return True
 
 def ask(text_to_prompt = ''):
-    if _python2_env(): return raw_input(text_to_prompt + ' ')
-    else: return input(text_to_prompt + ' ')
+    if text_to_prompt == '':
+        space_padding = ''
+    else:
+        space_padding = ' '
+
+    if _python2_env():
+        return raw_input(text_to_prompt + space_padding)
+    else:
+        return input(text_to_prompt + space_padding)
 
 def keyboard(keys_and_modifiers = None):
     if not _started():
@@ -962,31 +1008,29 @@ def download(download_url = None, filename_to_save = None):
     if os.path.isfile(filename_to_save):
         os.remove(filename_to_save)
 
-    if _python2_env():
-        import urllib; urllib.urlretrieve(download_url, filename_to_save)
-    else:
-        import urllib.request; urllib.request.urlretrieve(download_url, filename_to_save)
+    # handle case where url is invalid or has no content
+    try:
+        if _python2_env():
+            import urllib; urllib.urlretrieve(download_url, filename_to_save)
+        else:
+            import urllib.request; urllib.request.urlretrieve(download_url, filename_to_save)
 
+    except Exception as e:
+        print('[TAGUI][ERROR] - failed downloading from ' + download_url)
+        return False
+
+    # take the existence of downloaded file as success
     if os.path.isfile(filename_to_save):
         return True
+
     else:
-        print('[TAGUI][ERROR] - downloading to ' + filename_to_save + ' failed)')
+        print('[TAGUI][ERROR] - failed downloading to ' + filename_to_save)
         return False
 
 def api(url_to_query = None):
-    if not _started():
-        print('[TAGUI][ERROR] - use init() before using api()')
-        return ''
-
-    if url_to_query is None or url_to_query == '':
-        print('[TAGUI][ERROR] - API URL missing for api()')
-        return ''
-
-    else:
-        send('api ' + _esq(url_to_query))
-        send('dump api_result to tagui_python.txt')
-        api_result = _tagui_output()
-        return api_result
+    print('[TAGUI][INFO] - although TagUI supports calling APIs with headers and body,')
+    print('[TAGUI][INFO] - users better off with requests package - lots of online docs')
+    return True
 
 def run(command_to_run = None):
     if command_to_run is None or command_to_run == '':
@@ -1009,7 +1053,7 @@ def dom(statement_to_run = None):
         return ''
 
     else:
-        send('dom ' + _esq(statement_to_run))
+        send('dom ' + statement_to_run)
         send('dump dom_result to tagui_python.txt')
         dom_result = _tagui_output()
         return dom_result
@@ -1023,7 +1067,7 @@ def vision(command_to_run = None):
         print('[TAGUI][ERROR] - command(s) missing for vision()')
         return False
 
-    elif not send('vision ' + _esq(command_to_run)):
+    elif not send('vision ' + command_to_run):
         return False
 
     else:
@@ -1056,6 +1100,18 @@ def present(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
+    # check for existence of specified image file for visual automation
+    if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
+        if not os.path.isfile(element_identifier):
+            print('[TAGUI][ERROR] - missing image file ' + element_identifier)
+            return False
+
+   # assume that (x,y) coordinates for visual automation always exist
+    if element_identifier.startswith('(') and element_identifier.endswith(')'):
+        if len(element_identifier.split(',')) == 2:
+            if not any(c.isalpha() for c in element_identifier):
+                return True
+
     send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump present_result to tagui_python.txt')
     if _tagui_output() == 'true':
@@ -1070,6 +1126,18 @@ def visible(element_identifier = None):
 
     if element_identifier is None or element_identifier == '':
         return False
+
+    # check for existence of specified image file for visual automation
+    if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
+        if not os.path.isfile(element_identifier):
+            print('[TAGUI][ERROR] - missing image file ' + element_identifier)
+            return False
+
+   # assume that (x,y) coordinates for visual automation always exist
+    if element_identifier.startswith('(') and element_identifier.endswith(')'):
+        if len(element_identifier.split(',')) == 2:
+            if not any(c.isalpha() for c in element_identifier):
+                return True
 
     send('visible_result = visible(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump visible_result to tagui_python.txt')
