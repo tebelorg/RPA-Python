@@ -211,7 +211,7 @@ def setup():
         os.remove(temp_directory + '/' + tagui_zip_file)
 
     # download stable delta files from tagui cutting edge version
-    print('[TAGUI][INFO] - done. syncing TagUI files from stable cutting edge version')
+    print('[TAGUI][INFO] - done. syncing TagUI with stable cutting edge version')
     delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php']
     for delta_file in delta_list:
         tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
