@@ -13,11 +13,17 @@ _tagui_timeout = 10.0
 # default delay in seconds in while loops
 _tagui_delay = 0.1
 
-# flag to track if tagui session started
+# default debug flag to print debug output
+_tagui_debug = False
+
+# flag to track if tagui session is started
 _tagui_started = False
 
-# flag to track and print debug output
-_tagui_debug = False
+# flag to track visual automation connected
+_tagui_visual = False
+
+# flag to track chrome browser connected
+_tagui_chrome = False
 
 # id to track instruction count from tagui python to tagui
 _tagui_id = 0
@@ -114,6 +120,12 @@ def _sdq(input_text = ''):
 
 def _started():
     global _tagui_started; return _tagui_started
+
+def _visual():
+    global _tagui_visual; return _tagui_visual
+
+def _chrome():
+    global _tagui_chrome; return _tagui_chrome
 
 def _python_flow():
 # function to create entry tagui flow without visual automation
@@ -308,7 +320,7 @@ def setup():
 def init(visual_automation = False, chrome_browser = True):
 # start and connect to tagui process by checking tagui live mode readiness
 
-    global _process, _tagui_started, _tagui_id
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
     if _tagui_started:
         print('[TAGUI][ERROR] - use close() before using init() again')
@@ -384,6 +396,8 @@ def init(visual_automation = False, chrome_browser = True):
                 print('')
                 os.system(tagui_cmd)
                 print('')
+                _tagui_visual = False
+                _tagui_chrome = False
                 _tagui_started = False
                 return False
 
@@ -395,6 +409,8 @@ def init(visual_automation = False, chrome_browser = True):
                 # dummy + start line to clear live mode backspace char before listening
                 _tagui_write('echo "[TAGUI][STARTED]"\n')
                 _tagui_write('echo "[TAGUI][' + str(_tagui_id) + '] - listening for inputs"\n')
+                _tagui_visual = visual_automation
+                _tagui_chrome = chrome_browser
                 _tagui_started = True
 
                 # loop until tagui live mode is ready and listening for inputs
@@ -411,13 +427,15 @@ def init(visual_automation = False, chrome_browser = True):
 
     except Exception as e:
         print('[TAGUI][ERROR] - ' + str(e))
+        _tagui_visual = False
+        _tagui_chrome = False
         _tagui_started = False
         return False
 
 def _ready():
 # internal function to check if tagui is ready to receive instructions after init() is called
 
-    global _process, _tagui_started, _tagui_id
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
     if not _tagui_started:
         # print output error in calling parent function instead
@@ -427,6 +445,8 @@ def _ready():
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
             # print output error in calling parent function instead
+            _tagui_visual = False
+            _tagui_chrome = False
             _tagui_started = False
             return False
 
@@ -450,7 +470,7 @@ def _ready():
 def send(tagui_instruction = None):
 # send next live mode instruction to tagui for processing if tagui is ready
 
-    global _process, _tagui_started, _tagui_id
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
     if not _tagui_started:
         print('[TAGUI][ERROR] - use init() before using send()')
@@ -462,6 +482,8 @@ def send(tagui_instruction = None):
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
             print('[TAGUI][ERROR] - no active TagUI process to send()')
+            _tagui_visual = False
+            _tagui_chrome = False
             _tagui_started = False
             return False
 
@@ -511,7 +533,7 @@ def send(tagui_instruction = None):
 def close():
 # disconnect from tagui process by sending 'done' trigger instruction
 
-    global _process, _tagui_started, _tagui_id
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
     if not _tagui_started:
         print('[TAGUI][ERROR] - use init() before using close()')
@@ -521,6 +543,8 @@ def close():
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
             print('[TAGUI][ERROR] - no active TagUI process to close()')
+            _tagui_visual = False
+            _tagui_chrome = False
             _tagui_started = False
             return False
 
@@ -542,11 +566,15 @@ def close():
             if os.path.isfile('tagui_python.log'): os.remove('tagui_python.log')
             if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
 
+        _tagui_visual = False
+        _tagui_chrome = False
         _tagui_started = False
         return True
 
     except Exception as e:
         print('[TAGUI][ERROR] - ' + str(e))
+        _tagui_visual = False
+        _tagui_chrome = False
         _tagui_started = False
         return False
 
@@ -558,17 +586,27 @@ def exist(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
+    # return True for keywords as the computer screen always exists
+    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
+
     # pre-emptive check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not os.path.isfile(element_identifier):
             print('[TAGUI][ERROR] - missing image file ' + element_identifier)
+            return False
+        elif not _visual():
+            print('[TAGUI][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     # assume that (x,y) coordinates for visual automation always exist
     if element_identifier.startswith('(') and element_identifier.endswith(')'):
         if len(element_identifier.split(',')) == 2:
             if not any(c.isalpha() for c in element_identifier):
-                return True
+                if _visual():
+                    return True
+                else:
+                    print('[TAGUI][ERROR] - x, y coordinates require init(visual_automation = True)')
+                    return False
 
     send('exist_result = exist(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump exist_result to tagui_python.txt')
@@ -580,6 +618,10 @@ def exist(element_identifier = None):
 def url(webpage_url = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using url()')
+        return False
+
+    if not _chrome():
+        print('[TAGUI][ERROR] - url() requires init(chrome_browser = True)')
         return False
 
     if webpage_url is not None and webpage_url != '':
@@ -725,20 +767,31 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
         print('[TAGUI][ERROR] - option value missing for select()')
         return False
 
+    if element_identifier.lower() in ['page.png', 'page.bmp'] or option_value.lower() in ['page.png', 'page.bmp']:
+        print('[TAGUI][ERROR] - page.png and page.bmp invalid for select()')
+        return False
+
     if test_coordinate1 is not None and test_coordinate2 is not None and \
     isinstance(option_value, int) and isinstance(test_coordinate2, int):
         element_identifier = coord(element_identifier, option_value)
         option_value = coord(test_coordinate1, test_coordinate2) 
 
     # pre-emptive checks if image files are specified for visual automation
+    # eg without below checks, a missing image file for option will crash
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not os.path.isfile(element_identifier):
             print('[TAGUI][ERROR] - missing image file ' + element_identifier)
+            return False
+        elif not _visual():
+            print('[TAGUI][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     if option_value.lower().endswith('.png') or option_value.lower().endswith('.bmp'):
         if not os.path.isfile(option_value):
             print('[TAGUI][ERROR] - missing image file ' + option_value)
+            return False
+        elif not _visual():
+            print('[TAGUI][ERROR] - ' + option_value + ' identifier requires init(visual_automation = True)')
             return False
 
     if not exist(element_identifier):
@@ -842,7 +895,7 @@ def load(filename_to_load = None):
         return ''
 
     elif not os.path.isfile(filename_to_load):
-        print('[TAGUI][ERROR] - cannot find file ' + filename_to_load)
+        print('[TAGUI][ERROR] - cannot load file ' + filename_to_load)
         return ''
 
     else:
@@ -905,6 +958,10 @@ def keyboard(keys_and_modifiers = None):
         print('[TAGUI][ERROR] - keys to type missing for keyboard()')
         return False
 
+    if not _visual():
+        print('[TAGUI][ERROR] - keyboard() requires init(visual_automation = True)')
+        return False
+
     elif not send('keyboard ' + _esq(keys_and_modifiers)):
         return False
 
@@ -917,11 +974,15 @@ def mouse(mouse_action = None):
         return False
 
     if mouse_action is None or mouse_action == '':
-        print('[TAGUI][ERROR] - down / up missing for mouse()')
+        print('[TAGUI][ERROR] - \'down\' / \'up\' missing for mouse()')
+        return False
+
+    if not _visual():
+        print('[TAGUI][ERROR] - mouse() requires init(visual_automation = True)')
         return False
 
     elif mouse_action.lower() != 'down' and mouse_action.lower() != 'up':
-        print('[TAGUI][ERROR] - down / up missing for mouse()')
+        print('[TAGUI][ERROR] - \'down\' / \'up\' missing for mouse()')
         return False
 
     elif not send('mouse ' + mouse_action):
@@ -1029,7 +1090,7 @@ def download(download_url = None, filename_to_save = None):
 
 def api(url_to_query = None):
     print('[TAGUI][INFO] - although TagUI supports calling APIs with headers and body,')
-    print('[TAGUI][INFO] - users better off with requests package - lots of online docs')
+    print('[TAGUI][INFO] - recommend using requests package with lots of online docs')
     return True
 
 def run(command_to_run = None):
@@ -1052,6 +1113,10 @@ def dom(statement_to_run = None):
         print('[TAGUI][ERROR] - statement(s) missing for dom()')
         return ''
 
+    if not _chrome():
+        print('[TAGUI][ERROR] - dom() requires init(chrome_browser = True)')
+        return ''
+
     else:
         send('dom ' + statement_to_run)
         send('dump dom_result to tagui_python.txt')
@@ -1065,6 +1130,10 @@ def vision(command_to_run = None):
 
     if command_to_run is None or command_to_run == '':
         print('[TAGUI][ERROR] - command(s) missing for vision()')
+        return False
+
+    if not _visual():
+        print('[TAGUI][ERROR] - vision() requires init(visual_automation = True)')
         return False
 
     elif not send('vision ' + command_to_run):
@@ -1100,17 +1169,27 @@ def present(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
+    # return True for keywords as the computer screen is always present
+    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
+
     # check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not os.path.isfile(element_identifier):
             print('[TAGUI][ERROR] - missing image file ' + element_identifier)
             return False
+        elif not _visual():
+            print('[TAGUI][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
+            return False
 
-   # assume that (x,y) coordinates for visual automation always exist
+    # assume that (x,y) coordinates for visual automation always exist
     if element_identifier.startswith('(') and element_identifier.endswith(')'):
         if len(element_identifier.split(',')) == 2:
             if not any(c.isalpha() for c in element_identifier):
-                return True
+                if _visual():
+                    return True
+                else:
+                    print('[TAGUI][ERROR] - x, y coordinates require init(visual_automation = True)')
+                    return False
 
     send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump present_result to tagui_python.txt')
@@ -1127,17 +1206,27 @@ def visible(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return False
 
+    # return True for keywords as the computer screen is always visible
+    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
+
     # check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not os.path.isfile(element_identifier):
             print('[TAGUI][ERROR] - missing image file ' + element_identifier)
             return False
+        elif not _visual():
+            print('[TAGUI][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
+            return False
 
-   # assume that (x,y) coordinates for visual automation always exist
+    # assume that (x,y) coordinates for visual automation always exist
     if element_identifier.startswith('(') and element_identifier.endswith(')'):
         if len(element_identifier.split(',')) == 2:
             if not any(c.isalpha() for c in element_identifier):
-                return True
+                if _visual():
+                    return True
+                else:
+                    print('[TAGUI][ERROR] - x, y coordinates require init(visual_automation = True)')
+                    return False
 
     send('visible_result = visible(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump visible_result to tagui_python.txt')
@@ -1154,6 +1243,10 @@ def count(element_identifier = None):
     if element_identifier is None or element_identifier == '':
         return int(0)
 
+    if not _chrome():
+        print('[TAGUI][ERROR] - count() requires init(chrome_browser = True)')
+        return int(0)
+
     send('count_result = count(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump count_result to tagui_python.txt')
     return int(_tagui_output())
@@ -1163,6 +1256,10 @@ def title():
         print('[TAGUI][ERROR] - use init() before using title()')
         return ''
 
+    if not _chrome():
+        print('[TAGUI][ERROR] - title() requires init(chrome_browser = True)')
+        return ''
+
     send('dump title() to tagui_python.txt')
     title_result = _tagui_output()
     return title_result
@@ -1170,6 +1267,10 @@ def title():
 def text():
     if not _started():
         print('[TAGUI][ERROR] - use init() before using text()')
+        return ''
+
+    if not _chrome():
+        print('[TAGUI][ERROR] - text() requires init(chrome_browser = True)')
         return ''
 
     send('dump text() to tagui_python.txt')
@@ -1190,6 +1291,10 @@ def mouse_xy():
         print('[TAGUI][ERROR] - use init() before using mouse_xy()')
         return ''
 
+    if not _visual():
+        print('[TAGUI][ERROR] - mouse_xy() requires init(visual_automation = True)')
+        return ''
+
     send('dump mouse_xy() to tagui_python.txt')
     mouse_xy_result = _tagui_output()
     return mouse_xy_result
@@ -1199,6 +1304,10 @@ def mouse_x():
         print('[TAGUI][ERROR] - use init() before using mouse_x()')
         return int(0)
 
+    if not _visual():
+        print('[TAGUI][ERROR] - mouse_x() requires init(visual_automation = True)')
+        return int(0)
+
     send('dump mouse_x() to tagui_python.txt')
     mouse_x_result = _tagui_output()
     return int(mouse_x_result)
@@ -1206,6 +1315,10 @@ def mouse_x():
 def mouse_y():
     if not _started():
         print('[TAGUI][ERROR] - use init() before using mouse_y()')
+        return int(0)
+
+    if not _visual():
+        print('[TAGUI][ERROR] - mouse_y() requires init(visual_automation = True)')
         return int(0)
 
     send('dump mouse_y() to tagui_python.txt')
