@@ -1,17 +1,17 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='tagui',
-    version='0.0.8',
+    version='1.0.0',
     py_modules=['tagui'],
     author='Tebel.Automation',
     author_email='ken@tebel.org',
     license='Apache License 2.0',
     url='https://github.com/tebelorg/TagUI-Python',
-    description='Placeholder for TagUI Python package',
-    long_description=open('README.md').read(),
+    description='TagUI for Python is a Python package for digital process automation (also known as RPA)',
+    long_description='https://github.com/tebelorg/TagUI-Python',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License',
@@ -22,6 +22,6 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ],
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ]
 )

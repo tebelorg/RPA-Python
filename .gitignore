@@ -1,6 +1,7 @@
 # exclude python packaging files
-/dist/
+/dist
 /MANIFEST
+/tagui.egg-info
 
 # exclude pycache directory
 /__pycache__
