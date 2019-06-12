@@ -4,8 +4,6 @@
 
 [**Use Cases**](#use-cases) | [**API Reference**](#api-reference) | [**About**](#about)
 
-TagUI for Python's simple, expressive and powerful API makes digital process automation fun and easy!
-
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
 To install this Python package for digital process automation (also known as RPA) -
@@ -19,6 +17,8 @@ import tagui as t
 ```
 
 # Use Cases
+
+TagUI for Python's simple, expressive and powerful API makes digital process automation fun and easy!
 
 #### WEB AUTOMATION
 ```
@@ -67,7 +67,9 @@ t.close()
 
 # API Reference
 
-[See sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py). For web automation, web element identifier can be XPath selector, CSS selector or attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority). It also supports visual element identifier using .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). Visual element identifiers can also be x, y coordinates of elements on the screen.
+[See sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py). For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority).
+
+An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well.
 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
@@ -138,9 +140,9 @@ timer()||return time elapsed in sec between calls as float
 
 # About
 
-TagUI is the number 1 open-source RPA software with thousands of users globally. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving duties, I decided to use my time pockets to create a Python package for TagUI. I want to bring RPA directly into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and that `pip install tagui` would make lives easier for Python users.
+Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and that `pip install tagui` would make lives easier for Python users.
 
 Lastly, at a mere 1000 lines of code, it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and should not be difficult, given the ample comments I sprinkled all over this single-file package in tagui.py, and its intuitive architecture.
 
@@ -154,3 +156,4 @@ You are invited to [connect with me](https://www.linkedin.com/in/kensoh) on Link
 
 # License
 TagUI for Python is open-source software released under Apache 2.0 license
+
