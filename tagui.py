@@ -1,10 +1,11 @@
-# INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG
+"""INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
+__author__ = 'Ken Soh <opensource@tebel.org>'
+__version__ = '1.1.0'
 
 import subprocess
 import os
 import sys
 import time
-import tempfile
 import platform
 
 # default timeout in seconds for UI element
@@ -64,38 +65,38 @@ function add_concat(source_string) {
 """
 
 def _python2_env():
-# function to check python version for compatibility handling
+    """function to check python version for compatibility handling"""
     if sys.version_info[0] < 3: return True
     else: return False
 
 def _python3_env():
-# function to check python version for compatibility handling
+    """function to check python version for compatibility handling"""
     return not _python2_env()
 
 def _py23_decode(input_variable = None):
-# function for python 2 and 3 str-byte compatibility handling
+    """function for python 2 and 3 str-byte compatibility handling"""
     if input_variable is None: return None
     elif _python2_env(): return input_variable
     else: return input_variable.decode('utf-8')
 
 def _py23_encode(input_variable = None):
-# function for python 2 and 3 str-byte compatibility handling
+    """function for python 2 and 3 str-byte compatibility handling"""
     if input_variable is None: return None
     elif _python2_env(): return input_variable
     else: return input_variable.encode('utf-8')
 
 def _tagui_read():
-# function to read from tagui process live mode interface
+    """function to read from tagui process live mode interface"""
     # readline instead of read, not expecting user input to tagui
     global _process; return _py23_decode(_process.stdout.readline())
 
 def _tagui_write(input_text = ''):
-# function to write to tagui process live mode interface
+    """function to write to tagui process live mode interface"""
     global _process; _process.stdin.write(_py23_encode(input_text))
     _process.stdin.flush(); # flush to ensure immediate delivery
 
 def _tagui_output():
-# function to wait for tagui output file to read and delete it
+    """function to wait for tagui output file to read and delete it"""
     global _tagui_delay
     # sleep to not splurge cpu cycles in while loop
     while not os.path.isfile('tagui_python.txt'):
@@ -108,14 +109,14 @@ def _tagui_output():
     return tagui_output_text
 
 def _esq(input_text = ''):
-# function to escape single quote ' for tagui live mode
-# ie change ' to be `"\'"` which becomes '+"\'"+' in tagui
-# "[BACKSLASH_QUOTE]" used in interim to work with send()
+    """function to escape single quote ' for tagui live mode"""
+    # ie change ' to be `"\'"` which becomes '+"\'"+' in tagui
+    # "[BACKSLASH_QUOTE]" used in interim to work with send()
     return input_text.replace("'",'`"[BACKSLASH_QUOTE]"`')
 
 def _sdq(input_text = ''):
-# function to escape ' in xpath for tagui live mode
-# change identifier single quote ' to double quote "
+    """function to escape ' in xpath for tagui live mode"""
+    # change identifier single quote ' to double quote "
     return input_text.replace("'",'"')
 
 def _started():
@@ -128,14 +129,14 @@ def _chrome():
     global _tagui_chrome; return _tagui_chrome
 
 def _python_flow():
-# function to create entry tagui flow without visual automation
+    """function to create entry tagui flow without visual automation"""
     flow_text = '// NORMAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n\r\nlive'
     flow_file = open('tagui_python', 'w')
     flow_file.write(flow_text)
     flow_file.close()
 
 def _visual_flow():
-# function to create entry tagui flow with visual automation
+    """function to create entry tagui flow with visual automation"""
     flow_text = '// VISUAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n' + \
                 '// mouse_xy() - dummy trigger for SikuliX integration\r\n\r\nlive'
     flow_file = open('tagui_python', 'w')
@@ -143,24 +144,24 @@ def _visual_flow():
     flow_file.close()
 
 def _tagui_local():
-# function to create tagui_local.js for custom local functions
+    """function to create tagui_local.js for custom local functions"""
     global _tagui_local_js
     javascript_file = open('tagui_local.js', 'w')
     javascript_file.write(_tagui_local_js)
     javascript_file.close()
 
 def coord(x_coordinate = 0, y_coordinate = 0):
-# function to form a coordinate string from x and y integers
+    """function to form a coordinate string from x and y integers"""
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
 
 def debug(on_off = None):
-# function to set debug mode, eg print debug info
+    """function to set debug mode, eg print debug info"""
     global _tagui_debug
     if on_off is not None: _tagui_debug = on_off
     return _tagui_debug
 
 def unzip(file_to_unzip = None, unzip_location = None):
-# function to unzip zip file to specified location 
+    """function to unzip zip file to specified location"""
     import zipfile
 
     if file_to_unzip is None or file_to_unzip == '':
@@ -181,17 +182,13 @@ def unzip(file_to_unzip = None, unzip_location = None):
     return True
 
 def setup():
-# function to setup TagUI to temp folder on Linux / macOS / Windows
+    """function to setup TagUI to user home folder on Linux / macOS / Windows"""
 
-    # get system temporary folder location to setup tagui
-    temp_directory = tempfile.gettempdir()
-
-    # special handling for Linux as /tmp is non-executable by default
-    if platform.system() == 'Linux':
-        temp_directory = os.path.expanduser('~') + '/tmp'
-        # create directory if user home tmp dir is missing
-        if not os.path.isdir(temp_directory):
-            os.mkdir(temp_directory)
+    # get user home folder location to setup tagui
+    if platform.system() == 'Windows':
+        home_directory = os.environ['APPDATA']
+    else:
+        home_directory = os.path.expanduser('~')
 
     print('[TAGUI][INFO] - setting up TagUI for use in your Python environment')
 
@@ -204,30 +201,50 @@ def setup():
         return False
 
     print('[TAGUI][INFO] - downloading TagUI (~200MB) and unzipping to below folder...')
-    print('[TAGUI][INFO] - ' + temp_directory)
+    print('[TAGUI][INFO] - ' + home_directory)
 
     # set tagui zip download url and download zip for respective operating systems
     tagui_zip_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/' + tagui_zip_file 
-    if not download(tagui_zip_url, temp_directory + '/' + tagui_zip_file):
+    if not download(tagui_zip_url, home_directory + '/' + tagui_zip_file):
         # error message is shown by download(), no need for message here 
         return False
 
-    # unzip downloaded zip file to system temporary folder
-    unzip(temp_directory + '/' + tagui_zip_file, temp_directory)
-    if not os.path.isfile(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
-        print('[TAGUI][ERROR] - unable to unzip TagUI to ' + temp_directory)
+    # unzip downloaded zip file to user home folder
+    unzip(home_directory + '/' + tagui_zip_file, home_directory)
+    if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
+        print('[TAGUI][ERROR] - unable to unzip TagUI to ' + home_directory)
         return False
 
+    # set correct tagui folder for different operating systems
+    if platform.system() == 'Windows':
+        tagui_directory = home_directory + '/' + 'tagui'
+    else:
+        tagui_directory = home_directory + '/' + '.tagui'
+
+        # overwrite tagui to .tagui folder for Linux / macOS
+
+        # first rename existing .tagui folder to .tagui_previous 
+        if os.path.isdir(tagui_directory):
+            os.rename(tagui_directory, tagui_directory + '_previous')
+
+        # next rename extracted tagui folder (verified earlier) to .tagui
+        os.rename(home_directory + '/' + 'tagui', tagui_directory)
+
+        # finally remove .tagui_previous folder if it exists
+        if os.path.isdir(tagui_directory + '_previous'):
+            import shutil
+            shutil.rmtree(tagui_directory + '_previous')
+
     # after unzip, remove downloaded zip file to save disk space 
-    if os.path.isfile(temp_directory + '/' + tagui_zip_file):
-        os.remove(temp_directory + '/' + tagui_zip_file)
+    if os.path.isfile(home_directory + '/' + tagui_zip_file):
+        os.remove(home_directory + '/' + tagui_zip_file)
 
     # download stable delta files from tagui cutting edge version
     print('[TAGUI][INFO] - done. syncing TagUI with stable cutting edge version')
     delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php']
     for delta_file in delta_list:
         tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
-        tagui_delta_file = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + delta_file
+        tagui_delta_file = tagui_directory + '/' + 'src' + '/' + delta_file
         if not download(tagui_delta_url, tagui_delta_file): return False
 
     # perform Linux specific setup actions
@@ -235,8 +252,8 @@ def setup():
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
-        if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
-            print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
+        if os.system('chmod -R 755 ' + tagui_directory + ' > /dev/null 2>&1') != 0:
+            print('[TAGUI][ERROR] - unable to set permissions for .tagui folder')
             return False 
 
         # check that php, a dependency for tagui, is installed and working
@@ -254,8 +271,8 @@ def setup():
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
-        if os.system('chmod -R 755 ' + temp_directory + '/' + 'tagui > /dev/null 2>&1') != 0:
-            print('[TAGUI][ERROR] - unable to set permissions for tagui folder')
+        if os.system('chmod -R 755 ' + tagui_directory + ' > /dev/null 2>&1') != 0:
+            print('[TAGUI][ERROR] - unable to set permissions for .tagui folder')
             return False
 
         # check for openssl, a dependency of phantomjs removed in newer macOS
@@ -296,14 +313,14 @@ def setup():
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
         # check that tagui packaged php is working, it has dependency on MSVCR110.dll
-        if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+        if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
             print('[TAGUI][INFO] - now installing missing Visual C++ Redistributable dependency')
             vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
-            if download(vcredist_x86_url, temp_directory + '/vcredist_x86.exe'):
-                os.system(temp_directory + '/vcredist_x86.exe')
+            if download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
+                os.system(tagui_directory + '/vcredist_x86.exe')
 
             # check again if tagui packaged php is working, after installing vcredist_x86.exe
-            if os.system(temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+            if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
                 print('[TAGUI][INFO] - MSVCR110.dll is still missing, install vcredist_x86.exe from')
                 print('[TAGUI][INFO] - https://www.microsoft.com/en-us/download/details.aspx?id=30679')
                 print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
@@ -318,7 +335,7 @@ def setup():
     return True
 
 def init(visual_automation = False, chrome_browser = True):
-# start and connect to tagui process by checking tagui live mode readiness
+    """start and connect to tagui process by checking tagui live mode readiness"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
@@ -329,15 +346,13 @@ def init(visual_automation = False, chrome_browser = True):
     # reset id to track instruction count from tagui python to tagui
     _tagui_id = 0
 
-    # get system temporary folder location to locate tagui executable
-    temp_directory = tempfile.gettempdir()
+    # get user home folder location to locate tagui executable
+    if platform.system() == 'Windows':
+        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+    else:
+        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
 
-    # special handling for Linux as /tmp is non-executable by default
-    if platform.system() == 'Linux':
-        temp_directory = os.path.expanduser('~') + '/tmp'
-
-    # get system temporary folder location to form tagui executable path
-    tagui_executable = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'
+    tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
 
     # if tagui executable is not found, initiate setup() to install tagui
     if not os.path.isfile(tagui_executable):
@@ -360,7 +375,7 @@ def init(visual_automation = False, chrome_browser = True):
             return False
         else:
             # start a dummy first run if never run before, to let sikulix integrate jython 
-            sikulix_folder = temp_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'sikulix'
+            sikulix_folder = tagui_directory + '/' + 'src' + '/' + 'sikulix'
             if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
                 os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
             _visual_flow()
@@ -433,7 +448,7 @@ def init(visual_automation = False, chrome_browser = True):
         return False
 
 def _ready():
-# internal function to check if tagui is ready to receive instructions after init() is called
+    """internal function to check if tagui is ready to receive instructions after init() is called"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
@@ -468,7 +483,7 @@ def _ready():
         return False
 
 def send(tagui_instruction = None):
-# send next live mode instruction to tagui for processing if tagui is ready
+    """send next live mode instruction to tagui for processing if tagui is ready"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
@@ -531,7 +546,7 @@ def send(tagui_instruction = None):
         return False
 
 def close():
-# disconnect from tagui process by sending 'done' trigger instruction
+    """disconnect from tagui process by sending 'done' trigger instruction"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
@@ -1054,7 +1069,7 @@ def upload(element_identifier = None, filename_to_upload = None):
         return True
 
 def download(download_url = None, filename_to_save = None):
-# function for python 2/3 compatible file download from url
+    """function for python 2/3 compatible file download from url"""
 
     if download_url is None or download_url == '':
         print('[TAGUI][ERROR] - download URL missing for download()')

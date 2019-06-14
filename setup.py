@@ -2,9 +2,9 @@ from setuptools import setup
 
 setup(
     name='tagui',
-    version='1.0.1',
+    version='1.1.0',
     py_modules=['tagui'],
-    author='Tebel.Automation',
+    author='Ken Soh',
     author_email='opensource@tebel.org',
     license='Apache License 2.0',
     url='https://github.com/tebelorg/TagUI-Python',
