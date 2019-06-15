@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About**](#about)&ensp;|&ensp;v1.0
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About**](#about)&ensp;|&ensp;[**v1.1**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
