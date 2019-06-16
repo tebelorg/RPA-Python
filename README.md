@@ -71,6 +71,8 @@ t.close()
 
 An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well.
 
+There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
+
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
@@ -99,9 +101,9 @@ show()|element_identifier (page = web page)|print element text to output
 save()|element_identifier (page = web page), filename_to_save|save element text to file
 snap()|element_identifier (page = web page), filename_to_save|save screenshot to file
 load()|filename_to_load|load & return file content
-echo()|text_to_echo|print text to output
 dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
+echo()|text_to_echo|print text to output
 ask()|text_to_prompt|ask & return user input
 
 #### PRO FUNCTIONS
