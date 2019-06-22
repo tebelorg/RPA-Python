@@ -643,7 +643,7 @@ def exist(element_identifier = None):
 
     # assume that (x,y) coordinates for visual automation always exist
     if element_identifier.startswith('(') and element_identifier.endswith(')'):
-        if len(element_identifier.split(',')) == 2:
+        if len(element_identifier.split(',')) in [2, 3]:
             if not any(c.isalpha() for c in element_identifier):
                 if _visual():
                     return True
@@ -847,7 +847,7 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
     else:
         return True
 
-def read(element_identifier = None):
+def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = None, test_coordinate3 = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using read()')
         return ''
@@ -856,7 +856,13 @@ def read(element_identifier = None):
         print('[TAGUI][ERROR] - target missing for read()')
         return ''
 
-    elif not exist(element_identifier):
+    if test_coordinate1 is not None and isinstance(test_coordinate1, int):
+        if test_coordinate2 is not None and isinstance(test_coordinate2, int):
+            if test_coordinate3 is not None and isinstance(test_coordinate3, int):
+                element_identifier = coord(element_identifier, test_coordinate1) + '-'
+                element_identifier = element_identifier + coord(test_coordinate2, test_coordinate3)
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return ''
 
@@ -866,50 +872,7 @@ def read(element_identifier = None):
         read_result = _tagui_output()
         return read_result
 
-def show(element_identifier = None):
-    if not _started():
-        print('[TAGUI][ERROR] - use init() before using show()')
-        return ''
-
-    if element_identifier is None or element_identifier == '':
-        print('[TAGUI][ERROR] - target missing for show()')
-        return ''
-
-    elif not exist(element_identifier):
-        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
-        return ''
-
-    else:
-        send('read ' + _sdq(element_identifier) + ' to show_result')
-        send('dump show_result to tagui_python.txt')
-        show_result = _tagui_output()
-        print(show_result)
-        return show_result
-
-def save(element_identifier = None, filename_to_save = None):
-    if not _started():
-        print('[TAGUI][ERROR] - use init() before using save()')
-        return False
-
-    if element_identifier is None or element_identifier == '':
-        print('[TAGUI][ERROR] - target missing for save()')
-        return False
-
-    elif filename_to_save is None or filename_to_save == '':
-        print('[TAGUI][ERROR] - filename missing for save()')
-        return False
-
-    elif not exist(element_identifier):
-        print('[TAGUI][ERROR] - cannot find ' + element_identifier)
-        return False
-
-    elif not send('save ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
-        return False
-
-    else:
-        return True
-
-def snap(element_identifier = None, filename_to_save = None):
+def snap(element_identifier = None, filename_to_save = None, test_coord1 = None, test_coord2 = None, test_coord3 = None):
     if not _started():
         print('[TAGUI][ERROR] - use init() before using snap()')
         return False
@@ -918,11 +881,23 @@ def snap(element_identifier = None, filename_to_save = None):
         print('[TAGUI][ERROR] - target missing for snap()')
         return False
 
-    elif filename_to_save is None or filename_to_save == '':
+    if filename_to_save is None or filename_to_save == '':
         print('[TAGUI][ERROR] - filename missing for snap()')
         return False
 
-    elif not exist(element_identifier):
+    if test_coord2 is not None and test_coord3 is None:
+        print('[TAGUI][ERROR] - filename missing for snap()')
+        return False
+
+    if isinstance(element_identifier, int) and isinstance(filename_to_save, int):
+        if test_coord1 is not None and isinstance(test_coord1, int):
+            if test_coord2 is not None and isinstance(test_coord2, int):
+                if test_coord3 is not None and test_coord3 != '':
+                    element_identifier = coord(element_identifier, filename_to_save) + '-'
+                    element_identifier = element_identifier + coord(test_coord1, test_coord2)
+                    filename_to_save = test_coord3
+
+    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -1227,7 +1202,7 @@ def present(element_identifier = None):
 
     # assume that (x,y) coordinates for visual automation always exist
     if element_identifier.startswith('(') and element_identifier.endswith(')'):
-        if len(element_identifier.split(',')) == 2:
+        if len(element_identifier.split(',')) in [2, 3]:
             if not any(c.isalpha() for c in element_identifier):
                 if _visual():
                     return True
@@ -1237,43 +1212,6 @@ def present(element_identifier = None):
 
     send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
     send('dump present_result to tagui_python.txt')
-    if _tagui_output() == 'true':
-        return True
-    else:
-        return False
-
-def visible(element_identifier = None):
-    if not _started():
-        print('[TAGUI][ERROR] - use init() before using visible()')
-        return False
-
-    if element_identifier is None or element_identifier == '':
-        return False
-
-    # return True for keywords as the computer screen is always visible
-    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
-
-    # check for existence of specified image file for visual automation
-    if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
-        if not os.path.isfile(element_identifier):
-            print('[TAGUI][ERROR] - missing image file ' + element_identifier)
-            return False
-        elif not _visual():
-            print('[TAGUI][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
-            return False
-
-    # assume that (x,y) coordinates for visual automation always exist
-    if element_identifier.startswith('(') and element_identifier.endswith(')'):
-        if len(element_identifier.split(',')) == 2:
-            if not any(c.isalpha() for c in element_identifier):
-                if _visual():
-                    return True
-                else:
-                    print('[TAGUI][ERROR] - x, y coordinates require init(visual_automation = True)')
-                    return False
-
-    send('visible_result = visible(\'' + _sdq(element_identifier) + '\').toString()')
-    send('dump visible_result to tagui_python.txt')
     if _tagui_output() == 'true':
         return True
     else:

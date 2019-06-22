@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About**](#about)&ensp;|&ensp;[**v1.1**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About**](#about)&ensp;|&ensp;[**v1.3**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -40,6 +40,16 @@ t.click('send_button.png')
 t.close()
 ```
 
+#### OCR AUTOMATION
+```python
+t.init(visual_automation = True)
+t.echo(t.read('pdf_window.png'))
+t.echo(t.read('image_preview.png'))
+t.hover('anchor_element.png')
+t.echo(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
+t.close()
+```
+
 #### KEYBOARD AUTOMATION
 ```python
 t.init(visual_automation = True, chrome_browser = False)
@@ -67,18 +77,18 @@ t.close()
 
 # API Reference
 
-[See sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py). For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority).
+[See sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py). For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority). There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
 
-An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well.
+An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well. Transparency (0% opacity) is supported in .png images, for eg using an image of an UI element with transparent background to enable clicking on an UI element that appears on different backgrounds on different occasions.
 
-There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
+A further example is an image of the window or frame (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots for application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
 init()|visual_automation = False, chrome_browser = True|start TagUI, auto-call setup() on first run
 close()||close TagUI, Chrome browser, SikuliX
-setup()||setup TagUI to user temporary folder
+setup()||setup TagUI to user home folder
 
 #### DEBUG FUNCTIONS
 Function|Parameters|Purpose
@@ -96,9 +106,7 @@ dclick()|element_identifier (or x, y using visual automation)|double-click on el
 hover()|element_identifier (or x, y using visual automation)|move mouse to element
 type()|element_identifier (or x, y), text_to_type ('[enter]', '[clear]')|enter text at element
 select()|element_identifier (or x, y), option_value (or x, y)|choose dropdown option
-read()|element_identifier (page = web page)|fetch & return element text
-show()|element_identifier (page = web page)|print element text to output
-save()|element_identifier (page = web page), filename_to_save|save element text to file
+read()|element_identifier (page = web page) (or x1, y1, x2, y2)|fetch & return element text
 snap()|element_identifier (page = web page), filename_to_save|save screenshot to file
 load()|filename_to_load|load & return file content
 dump()|text_to_dump, filename_to_save|save text to file
@@ -130,8 +138,7 @@ Function|Parameters|Purpose
 :-------|:---------|:------
 exist()|element_identifier|return True or False if element exists before timeout
 present()|element_identifier|return True or False if element is present now
-visible()|element_identifier|return True or False if element is visible now
-count()|element_identifier|return number of matching elements as integer
+count()|element_identifier|return number of web elements as integer
 coord()|x_coordinate, y_coordinate|return string '(x,y)' from integers x and y
 mouse_xy()||return '(x,y)' coordinates of mouse as string
 mouse_x()||return x coordinate of mouse as integer
