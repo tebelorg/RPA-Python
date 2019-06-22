@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 import subprocess
 import os
@@ -150,6 +150,30 @@ def _tagui_local():
     javascript_file.write(_tagui_local_js)
     javascript_file.close()
 
+def _tagui_delta(base_directory = None):
+    """function to download stable delta files from tagui cutting edge version"""
+    global __version__
+    if base_directory is None or base_directory == '': return False
+    # skip downloading if it is already done before for current release
+    if os.path.isfile(base_directory + '/' + 'tagui_python_' + __version__): return True
+
+    # define list of key tagui files to be downloaded and synced locally
+    delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php', 'tagui.sikuli/tagui.py']
+    for delta_file in delta_list:
+        tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
+        tagui_delta_file = base_directory + '/' + 'src' + '/' + delta_file
+        if not download(tagui_delta_url, tagui_delta_file): return False
+
+    # make sure execute permission is there for .tagui/src/tagui
+    if platform.system() in ['Linux', 'Darwin']:
+        os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'tagui > /dev/null 2>&1')
+
+    # create marker file to skip syncing delta files next time for current release
+    delta_done_file = open(base_directory + '/' + 'tagui_python_' + __version__, 'w')
+    delta_done_file.write('TagUI installation files used by TagUI for Python')
+    delta_done_file.close()
+    return True
+
 def coord(x_coordinate = 0, y_coordinate = 0):
     """function to form a coordinate string from x and y integers"""
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
@@ -191,6 +215,11 @@ def setup():
         home_directory = os.path.expanduser('~')
 
     print('[TAGUI][INFO] - setting up TagUI for use in your Python environment')
+
+    # special check for macOS - download() will fail due to no SSL certs for Python 3
+    if platform.system() == 'Darwin' and _python3_env():
+        if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
+            os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
 
     # set tagui zip filename for respective operating systems
     if platform.system() == 'Linux': tagui_zip_file = 'TagUI_Linux.zip'
@@ -241,11 +270,7 @@ def setup():
 
     # download stable delta files from tagui cutting edge version
     print('[TAGUI][INFO] - done. syncing TagUI with stable cutting edge version')
-    delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php']
-    for delta_file in delta_list:
-        tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
-        tagui_delta_file = tagui_directory + '/' + 'src' + '/' + delta_file
-        if not download(tagui_delta_url, tagui_delta_file): return False
+    if not _tagui_delta(tagui_directory): return False
 
     # perform Linux specific setup actions
     if platform.system() == 'Linux':
@@ -359,6 +384,9 @@ def init(visual_automation = False, chrome_browser = True):
         if not setup():
             # error message is shown by setup(), no need for message here
             return False
+
+    # sync tagui delta files for current release if needed
+    if not _tagui_delta(tagui_directory): return False
 
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
@@ -1092,7 +1120,8 @@ def download(download_url = None, filename_to_save = None):
             import urllib.request; urllib.request.urlretrieve(download_url, filename_to_save)
 
     except Exception as e:
-        print('[TAGUI][ERROR] - failed downloading from ' + download_url)
+        print('[TAGUI][ERROR] - failed downloading from ' + download_url + '...')
+        print(str(e))
         return False
 
     # take the existence of downloaded file as success
