@@ -1,12 +1,15 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 
 import subprocess
 import os
 import sys
 import time
 import platform
+
+# required for python 2 usage of io.open
+if sys.version_info[0] < 3: import io
 
 # default timeout in seconds for UI element
 _tagui_timeout = 10.0
@@ -85,6 +88,25 @@ def _py23_encode(input_variable = None):
     elif _python2_env(): return input_variable
     else: return input_variable.encode('utf-8')
 
+def _py23_open(target_filename, target_mode = 'r'):
+    """function for python 2 and 3 open utf-8 compatibility handling"""
+    if _python2_env():
+        return io.open(target_filename, target_mode, encoding = 'utf-8')
+    else:
+        return open(target_filename, target_mode, encoding = 'utf-8') 
+
+def _py23_read(input_text = None):
+    """function for python 2 and 3 read utf-8 compatibility handling"""
+    if input_text is None: return None
+    if _python2_env(): return input_text.encode('utf-8')
+    else: return input_text
+
+def _py23_write(input_text = None):
+    """function for python 2 and 3 write utf-8 compatibility handling"""
+    if input_text is None: return None
+    if _python2_env(): return input_text.decode('utf-8')
+    else: return input_text
+
 def _tagui_read():
     """function to read from tagui process live mode interface"""
     # readline instead of read, not expecting user input to tagui
@@ -102,8 +124,8 @@ def _tagui_output():
     while not os.path.isfile('tagui_python.txt'):
         time.sleep(_tagui_delay) 
 
-    tagui_output_file = open('tagui_python.txt', 'r')
-    tagui_output_text = tagui_output_file.read()
+    tagui_output_file = _py23_open('tagui_python.txt', 'r')
+    tagui_output_text = _py23_read(tagui_output_file.read())
     tagui_output_file.close()
     os.remove('tagui_python.txt')
     return tagui_output_text
@@ -131,23 +153,23 @@ def _chrome():
 def _python_flow():
     """function to create entry tagui flow without visual automation"""
     flow_text = '// NORMAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n\r\nlive'
-    flow_file = open('tagui_python', 'w')
-    flow_file.write(flow_text)
+    flow_file = _py23_open('tagui_python', 'w')
+    flow_file.write(_py23_write(flow_text))
     flow_file.close()
 
 def _visual_flow():
     """function to create entry tagui flow with visual automation"""
     flow_text = '// VISUAL ENTRY FLOW FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG\r\n' + \
                 '// mouse_xy() - dummy trigger for SikuliX integration\r\n\r\nlive'
-    flow_file = open('tagui_python', 'w')
-    flow_file.write(flow_text)
+    flow_file = _py23_open('tagui_python', 'w')
+    flow_file.write(_py23_write(flow_text))
     flow_file.close()
 
 def _tagui_local():
     """function to create tagui_local.js for custom local functions"""
     global _tagui_local_js
-    javascript_file = open('tagui_local.js', 'w')
-    javascript_file.write(_tagui_local_js)
+    javascript_file = _py23_open('tagui_local.js', 'w')
+    javascript_file.write(_py23_write(_tagui_local_js))
     javascript_file.close()
 
 def _tagui_delta(base_directory = None):
@@ -169,8 +191,8 @@ def _tagui_delta(base_directory = None):
         os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'tagui > /dev/null 2>&1')
 
     # create marker file to skip syncing delta files next time for current release
-    delta_done_file = open(base_directory + '/' + 'tagui_python_' + __version__, 'w')
-    delta_done_file.write('TagUI installation files used by TagUI for Python')
+    delta_done_file = _py23_open(base_directory + '/' + 'tagui_python_' + __version__, 'w')
+    delta_done_file.write(_py23_write('TagUI installation files used by TagUI for Python'))
     delta_done_file.close()
     return True
 
@@ -917,8 +939,8 @@ def load(filename_to_load = None):
         return ''
 
     else:
-        load_input_file = open(filename_to_load, 'r')
-        load_input_file_text = load_input_file.read()
+        load_input_file = _py23_open(filename_to_load, 'r')
+        load_input_file_text = _py23_read(load_input_file.read())
         load_input_file.close()
         return load_input_file_text
 
@@ -936,8 +958,8 @@ def dump(text_to_dump = None, filename_to_save = None):
         return False
 
     else:
-        dump_output_file = open(filename_to_save, 'w')
-        dump_output_file.write(text_to_dump)
+        dump_output_file = _py23_open(filename_to_save, 'w')
+        dump_output_file.write(_py23_write(text_to_dump))
         dump_output_file.close()
         return True
 
@@ -951,8 +973,8 @@ def write(text_to_write = None, filename_to_save = None):
         return False
 
     else:
-        write_output_file = open(filename_to_save, 'a')
-        write_output_file.write(text_to_write)
+        write_output_file = _py23_open(filename_to_save, 'a')
+        write_output_file.write(_py23_write(text_to_write))
         write_output_file.close()
         return True
 
