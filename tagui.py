@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.4.0'
+__version__ = '1.5.0'
 
 import subprocess
 import os
@@ -131,10 +131,9 @@ def _tagui_output():
     return tagui_output_text
 
 def _esq(input_text = ''):
-    """function to escape single quote ' for tagui live mode"""
-    # ie change ' to be `"\'"` which becomes '+"\'"+' in tagui
-    # "[BACKSLASH_QUOTE]" used in interim to work with send()
-    return input_text.replace("'",'`"[BACKSLASH_QUOTE]"`')
+    """function for selective escape of single quote ' for tagui"""
+    # [BACKSLASH_QUOTE] marker to work together with send()
+    return input_text.replace("'",'[BACKSLASH_QUOTE]')
 
 def _sdq(input_text = ''):
     """function to escape ' in xpath for tagui live mode"""
@@ -562,7 +561,7 @@ def send(tagui_instruction = None):
         tagui_instruction = tagui_instruction.replace('\f','\\f')
 
         # special handling for single quote to work with _esq() for tagui
-        tagui_instruction = tagui_instruction.replace('"[BACKSLASH_QUOTE]"','"\\\'"')
+        tagui_instruction = tagui_instruction.replace('[BACKSLASH_QUOTE]','\\\'')
 
         # escape backslash to display source string correctly after echoing
         echo_safe_instruction = tagui_instruction.replace('\\','\\\\')

@@ -15,7 +15,7 @@ t.type('search-box', 'github')
 # use read() to fetch and return text from UI element
 search_text = t.read('search-box')
 
-# use echo() to print to output (tracked in debug log)
+# use echo() to print to output, same as Python print()
 t.echo(search_text)
 
 # use click() to click on an UI element or x, y location
