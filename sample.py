@@ -1,4 +1,7 @@
-# use pip install tagui to install TagUI for Python
+# TagUI for Python's simple, expressive and powerful API makes digital automation fun and easy!
+# pip install tagui to install TagUI for Python, pip install tagui --upgrade for latest version
+
+# to use in Jupyter notebook, Python script or interactive shell
 import tagui as t
 
 # use init() to start TagUI, it autoruns setup() to download TagUI
@@ -32,7 +35,7 @@ t.snap('page', 'results.png')
 t.snap('logo', 'logo.png')
 
 # another example of interacting with a web page
-# include http:// or https:// in URL parameter
+# do include http:// or https:// in URL parameter
 t.url('https://duckduckgo.com')
 t.type('search_form_input_homepage', 'The search engine that doesn\'t track you.')
 t.snap('page', 'duckduckgo.png')
@@ -45,9 +48,9 @@ t.close()
 # in above web automation example, web element identifier can be XPath selector, CSS selector or
 # attributes id, name, class, title, aria-label, text(), href (in decreasing order of priority)
 
-# TagUI also supports visual element identifier using .png or .bmp image snapshot
+# also supports visual element identifier using .png or .bmp image snapshot
 # representing the UI element (can be on desktop applications or web browser)
-# for eg t.click('start_menu.png'), t.type('username_box.png[enter]', 'Sonic')
+# for eg t.click('start_menu.png'), t.type('username_box.png', 'Sonic')
 
 # image transparency (0% opacity) is supported, ie images with empty sections
 # t.read('image_preview_frame.png'), t.snap('application_window_frame.png')
@@ -57,5 +60,3 @@ t.close()
 
 # another eg is limits of area of interest x1, y1, x2, y2 for read() and snap()
 # t.read(200, 200, 600, 400), t.snap(200, 200, 600, 400, 'results.png')
-
-# TagUI's simple, expressive and powerful API makes digital automation fun and easy! 

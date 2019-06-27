@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.5.0'
+__version__ = '1.6.0'
 
 import subprocess
 import os
@@ -179,15 +179,18 @@ def _tagui_delta(base_directory = None):
     if os.path.isfile(base_directory + '/' + 'tagui_python_' + __version__): return True
 
     # define list of key tagui files to be downloaded and synced locally
-    delta_list = ['tagui', 'tagui.cmd', 'tagui_header.js', 'tagui_parse.php', 'tagui.sikuli/tagui.py']
+    delta_list = ['tagui', 'tagui.cmd', 'end_processes', 'end_processes.cmd', 
+                    'tagui_header.js', 'tagui_parse.php', 'tagui.sikuli/tagui.py']
+
     for delta_file in delta_list:
         tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
         tagui_delta_file = base_directory + '/' + 'src' + '/' + delta_file
         if not download(tagui_delta_url, tagui_delta_file): return False
 
-    # make sure execute permission is there for .tagui/src/tagui
+    # make sure execute permission is there for .tagui/src/tagui and end_processes
     if platform.system() in ['Linux', 'Darwin']:
         os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'tagui > /dev/null 2>&1')
+        os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'end_processes > /dev/null 2>&1')
 
     # create marker file to skip syncing delta files next time for current release
     delta_done_file = _py23_open(base_directory + '/' + 'tagui_python_' + __version__, 'w')
@@ -399,6 +402,7 @@ def init(visual_automation = False, chrome_browser = True):
         tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
+    end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
 
     # if tagui executable is not found, initiate setup() to install tagui
     if not os.path.isfile(tagui_executable):
@@ -441,7 +445,11 @@ def init(visual_automation = False, chrome_browser = True):
     
     # entry shell command to invoke tagui process
     tagui_cmd = tagui_executable + ' tagui_python ' + browser_option
-    
+
+    # run tagui end processes script to flush dead processes
+    # for eg execution ended with ctrl+c or forget to close()
+    os.system(end_processes_executable)
+
     try:
         # launch tagui using subprocess
         _process = subprocess.Popen(
