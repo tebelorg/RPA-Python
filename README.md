@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About**](#about)&ensp;|&ensp;[**v1.6**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.6**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -147,7 +147,7 @@ title()||return page title of current web page as string
 text()||return text content of current web page as string
 timer()||return time elapsed in sec between calls as float
 
-# About
+# About & Credits
 
 TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
@@ -157,7 +157,7 @@ Lastly, at a mere 1000 lines of code, it would make my day to see developers of 
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
-You are invited to [connect with me](https://www.linkedin.com/in/kensoh) on LinkedIn, and I would like to credit and express my appreciation below -
+I would like to credit and express my appreciation below, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
 - [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@kelaberetiv](https://github.com/kelaberetiv)
 - [SikuliX](http://sikulix.com) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
