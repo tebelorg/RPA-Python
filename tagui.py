@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.7.0'
+__version__ = '1.8.0'
 
 import subprocess
 import os
@@ -659,7 +659,12 @@ def exist(element_identifier = None):
         return False
 
     # return True for keywords as the computer screen always exists
-    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
+    if element_identifier.lower() in ['page.png', 'page.bmp']:
+        if _visual():
+            return True
+        else:
+            print('[TAGUI][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
+            return False
 
     # pre-emptive check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
@@ -840,7 +845,7 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
         return False
 
     if element_identifier.lower() in ['page.png', 'page.bmp'] or option_value.lower() in ['page.png', 'page.bmp']:
-        print('[TAGUI][ERROR] - page.png and page.bmp invalid for select()')
+        print('[TAGUI][ERROR] - page.png / page.bmp identifiers invalid for select()')
         return False
 
     if test_coordinate1 is not None and test_coordinate2 is not None and \
@@ -986,15 +991,19 @@ def write(text_to_write = None, filename_to_save = None):
         return True
 
 def ask(text_to_prompt = ''):
-    if text_to_prompt == '':
-        space_padding = ''
-    else:
-        space_padding = ' '
+    if _chrome():
+        return dom("return prompt('" + _esq(text_to_prompt) + "')")
 
-    if _python2_env():
-        return raw_input(text_to_prompt + space_padding)
     else:
-        return input(text_to_prompt + space_padding)
+        if text_to_prompt == '':
+            space_padding = ''
+        else:
+            space_padding = ' '
+
+        if _python2_env():
+            return raw_input(text_to_prompt + space_padding)
+        else:
+            return input(text_to_prompt + space_padding)
 
 def keyboard(keys_and_modifiers = None):
     if not _started():
@@ -1218,7 +1227,12 @@ def present(element_identifier = None):
         return False
 
     # return True for keywords as the computer screen is always present
-    if element_identifier.lower() in ['page.png', 'page.bmp']: return True
+    if element_identifier.lower() in ['page.png', 'page.bmp']:
+        if _visual():
+            return True
+        else:
+            print('[TAGUI][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
+            return False
 
     # check for existence of specified image file for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):

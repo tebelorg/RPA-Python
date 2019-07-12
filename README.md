@@ -77,11 +77,13 @@ t.close()
 
 # API Reference
 
-[See sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py). For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority). There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
+Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24).
 
-An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well. Transparency (0% opacity) is supported in .png images, for eg using an image of an UI element with transparent background to enable clicking on an UI element that appears on different backgrounds on different occasions.
+- For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority). There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
 
-A further example is an image of the window or frame (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots for application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
+- An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well. Transparency (0% opacity) is supported in .png images, for eg using an image of an UI element with transparent background to enable clicking on an UI element that appears on different backgrounds on different occasions.
+
+- A further example is an image of the window or frame (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots of application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
@@ -99,7 +101,7 @@ send()|tagui_instruction|send TagUI instruction to TagUI for execution
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-url()|webpage_url (blank to return current URL)|go to web URL
+url()|webpage_url (no parameter to return current URL)|go to web URL
 click()|element_identifier (or x, y using visual automation)| left-click on element
 rclick()|element_identifier (or x, y using visual automation)|right-click on element
 dclick()|element_identifier (or x, y using visual automation)|double-click on element
@@ -111,7 +113,7 @@ snap()|element_identifier (page = web page), filename_to_save|save screenshot to
 load()|filename_to_load|load & return file content
 dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
-echo()|text_to_echo|print text to output
+echo()|text_to_echo|print text to screen
 ask()|text_to_prompt|ask & return user input
 
 #### PRO FUNCTIONS
@@ -128,9 +130,9 @@ unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified loc
 run()|command_to_run (; between commands)|run OS command & return output
 dom()|statement_to_run (JavaScript code)|run code in DOM & return output
 vision()|command_to_run (Python code)|run custom SikuliX commands
-timeout()|timeout_in_seconds (blank to return current timeout)|change wait timeout (default 10s)
+timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
 
-**keyboard() modifiers and special keys**
+**keyboard() - modifiers and special keys**
 >[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]
 
 #### HELPER FUNCTIONS
