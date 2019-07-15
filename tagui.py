@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.9.0'
+__version__ = '1.9.1'
 
 import subprocess
 import os
@@ -637,6 +637,12 @@ def close():
 
         # loop until tagui process has closed before returning control
         while _process.poll() is None: pass
+
+        # remove again generated tagui flow, js code and custom functions files
+        if os.path.isfile('tagui_python'): os.remove('tagui_python')
+        if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')
+        if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
+        if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
 
         # remove generated tagui log and data files if not in debug mode
         if not debug():
