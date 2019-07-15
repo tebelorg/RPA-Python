@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.8.0'
+__version__ = '1.9.0'
 
 import subprocess
 import os
@@ -413,6 +413,11 @@ def init(visual_automation = False, chrome_browser = True):
     # sync tagui delta files for current release if needed
     if not _tagui_delta(tagui_directory): return False
 
+    # on Windows, check if there is space in folder path name
+    if platform.system() == 'Windows' and ' ' in os.getcwd():
+        print('[TAGUI][INFO] - to use TagUI for Python on Windows, avoid space in folder path name')
+        return False
+
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
         # check for working java jdk for visual automation mode
@@ -491,6 +496,12 @@ def init(visual_automation = False, chrome_browser = True):
                 if not _tagui_started:
                     print('[TAGUI][ERROR] - TagUI process ended unexpectedly')
                     return False
+
+                # remove generated tagui flow, js code and custom functions files
+                if os.path.isfile('tagui_python'): os.remove('tagui_python')
+                if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')
+                if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
+                if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
 
                 # increment id and prepare for next instruction
                 _tagui_id = _tagui_id + 1
@@ -626,12 +637,6 @@ def close():
 
         # loop until tagui process has closed before returning control
         while _process.poll() is None: pass
-
-        # remove generated tagui flow, js code and custom functions files
-        if os.path.isfile('tagui_python'): os.remove('tagui_python')
-        if os.path.isfile('tagui_python.js'): os.remove('tagui_python.js')
-        if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
-        if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
 
         # remove generated tagui log and data files if not in debug mode
         if not debug():
