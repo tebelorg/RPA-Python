@@ -1,6 +1,6 @@
 """INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.9.1'
+__version__ = '1.10.0'
 
 import subprocess
 import os
@@ -1167,8 +1167,12 @@ def run(command_to_run = None):
         return ''
 
     else:
+        if platform.system() == 'Windows':
+            command_delimiter = ' & '
+        else:
+            command_delimiter = '; '
         return _py23_decode(subprocess.check_output(
-            command_to_run + '; exit 0',
+            command_to_run + command_delimiter + 'exit 0',
             stderr=subprocess.STDOUT,
             shell=True))
 
