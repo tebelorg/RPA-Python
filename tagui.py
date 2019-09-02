@@ -944,6 +944,7 @@ def snap(element_identifier = None, filename_to_save = None, test_coord1 = None,
                     element_identifier = element_identifier + coord(test_coord1, test_coord2)
                     filename_to_save = test_coord3
 
+    if element_identifier.lower() != 'page' and not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
