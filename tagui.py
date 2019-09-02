@@ -1,6 +1,8 @@
-"""INTEGRATION ENGINE FOR TAGUI PYTHON PACKAGE ~ TEBEL.ORG"""
+"""INTEGRATION ENGINE FOR TAGUI FOR PYTHON PACKAGE ~ TEBEL.ORG"""
+# Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
+# https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.10.0'
+__version__ = '1.11.0'
 
 import subprocess
 import os
@@ -907,7 +909,7 @@ def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = 
                 element_identifier = coord(element_identifier, test_coordinate1) + '-'
                 element_identifier = element_identifier + coord(test_coordinate2, test_coordinate3)
 
-    if not exist(element_identifier):
+    if element_identifier.lower() != 'page' and not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return ''
 
@@ -942,7 +944,6 @@ def snap(element_identifier = None, filename_to_save = None, test_coord1 = None,
                     element_identifier = element_identifier + coord(test_coord1, test_coord2)
                     filename_to_save = test_coord3
 
-    if not exist(element_identifier):
         print('[TAGUI][ERROR] - cannot find ' + element_identifier)
         return False
 
@@ -1154,6 +1155,81 @@ def download(download_url = None, filename_to_save = None):
 
     else:
         print('[TAGUI][ERROR] - failed downloading to ' + filename_to_save)
+        return False
+
+def frame(main_frame = None, sub_frame = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using frame()')
+        return False
+
+    if not _chrome():
+        print('[TAGUI][ERROR] - frame() requires init(chrome_browser = True)')
+        return False
+
+    # reset webpage context to document root, by sending custom tagui javascript code
+    send('js chrome_step("Runtime.evaluate", {expression: "mainframe_context = null"})')
+    send('js chrome_step("Runtime.evaluate", {expression: "subframe_context = null"})')
+    send('js chrome_context = "document"')
+
+    # return True if no parameter, after resetting webpage context above
+    if main_frame is None or main_frame == '':
+        return True
+
+    # set webpage context to main frame specified, by sending custom tagui javascript code
+    frame_identifier = '(//frame|//iframe)[@name="' + main_frame + '" or @id="' + main_frame + '"]'
+    if not exist(frame_identifier):
+        print('[TAGUI][ERROR] - cannot find frame with @name or @id as \'' + main_frame + '\'')
+        return False
+
+    send('js new_context = "mainframe_context"')
+    send('js frame_xpath = \'(//frame|//iframe)[@name="' + main_frame + '" or @id="' + main_frame + '"]\'')
+    send('js chrome_step("Runtime.evaluate", {expression: new_context + " = document.evaluate(\'" + frame_xpath + "\'," + chrome_context + ",null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0).contentDocument"})')
+    send('js chrome_context = new_context')
+
+    # set webpage context to sub frame if specified, by sending custom tagui javascript code
+    if sub_frame is not None and sub_frame != '':
+        frame_identifier = '(//frame|//iframe)[@name="' + sub_frame + '" or @id="' + sub_frame + '"]'
+        if not exist(frame_identifier):
+            print('[TAGUI][ERROR] - cannot find sub frame with @name or @id as \'' + sub_frame + '\'')
+            return False
+
+        send('js new_context = "subframe_context"')
+        send('js frame_xpath = \'(//frame|//iframe)[@name="' + sub_frame + '" or @id="' + sub_frame + '"]\'')
+        send('js chrome_step("Runtime.evaluate", {expression: new_context + " = document.evaluate(\'" + frame_xpath + "\'," + chrome_context + ",null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0).contentDocument"})')
+        send('js chrome_context = new_context')
+
+    return True
+
+def popup(string_in_url = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using popup()')
+        return False
+
+    if not _chrome():
+        print('[TAGUI][ERROR] - popup() requires init(chrome_browser = True)')
+        return False
+
+    # reset webpage context to main page, by sending custom tagui javascript code
+    send('js if (chrome_targetid !== "") {found_targetid = chrome_targetid; chrome_targetid = ""; chrome_step("Target.detachFromTarget", {sessionId: found_targetid});}')
+
+    # return True if no parameter, after resetting webpage context above
+    if string_in_url is None or string_in_url == '':
+        return True
+
+    # set webpage context to the popup tab specified, by sending custom tagui javascript code 
+    send('js found_targetid = ""; chrome_targets = []; ws_message = chrome_step("Target.getTargets", {});')
+    send('js try {ws_json = JSON.parse(ws_message); if (ws_json.result.targetInfos) chrome_targets = ws_json.result.targetInfos; else chrome_targets = [];} catch (e) {chrome_targets = [];}')
+    send('js chrome_targets.forEach(function(target) {if (target.url.indexOf("' + string_in_url + '") !== -1) found_targetid = target.targetId;})')
+    send('js if (found_targetid !== "") {ws_message = chrome_step("Target.attachToTarget", {targetId: found_targetid}); try {ws_json = JSON.parse(ws_message); if (ws_json.result.sessionId !== "") found_targetid = ws_json.result.sessionId; else found_targetid = "";} catch (e) {found_targetid = "";}}')
+    send('js chrome_targetid = found_targetid')
+
+    # check if chrome_targetid is successfully set to sessionid of popup tab
+    send('dump chrome_targetid to tagui_python.txt')
+    popup_result = _tagui_output()
+    if popup_result != '':
+        return True
+    else:
+        print('[TAGUI][ERROR] - cannot find popup tab containing URL string \'' + string_in_url + '\'')
         return False
 
 def api(url_to_query = None):

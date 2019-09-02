@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.10**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.11**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -127,6 +127,8 @@ table()|element_identifier (XPath only), filename_to_save|save basic HTML table 
 upload()|element_identifier (CSS only), filename_to_upload|upload file to web element
 download()|download_url, filename_to_save(optional)|download from URL to file
 unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified location
+frame()|main_frame id or name, sub_frame (optional)|set web frame, frame() to reset
+popup()|string_in_url (no parameter to reset to main page)|set context to web popup tab
 run()|command_to_run (; between commands)|run OS command & return output
 dom()|statement_to_run (JavaScript code)|run code in DOM & return output
 vision()|command_to_run (Python code)|run custom SikuliX commands
