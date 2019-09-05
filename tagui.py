@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.11.0'
+__version__ = '1.11.3'
 
 import subprocess
 import os
@@ -1170,7 +1170,7 @@ def frame(main_frame = None, sub_frame = None):
     # reset webpage context to document root, by sending custom tagui javascript code
     send('js chrome_step("Runtime.evaluate", {expression: "mainframe_context = null"})')
     send('js chrome_step("Runtime.evaluate", {expression: "subframe_context = null"})')
-    send('js chrome_context = "document"')
+    send('js chrome_context = "document"; frame_step_offset_x = 0; frame_step_offset_y = 0;')
 
     # return True if no parameter, after resetting webpage context above
     if main_frame is None or main_frame == '':
@@ -1184,6 +1184,8 @@ def frame(main_frame = None, sub_frame = None):
 
     send('js new_context = "mainframe_context"')
     send('js frame_xpath = \'(//frame|//iframe)[@name="' + main_frame + '" or @id="' + main_frame + '"]\'')
+    send('js frame_rect = chrome.getRect(xps666(frame_xpath))')
+    send('js frame_step_offset_x = frame_rect.left; frame_step_offset_y = frame_rect.top;')
     send('js chrome_step("Runtime.evaluate", {expression: new_context + " = document.evaluate(\'" + frame_xpath + "\'," + chrome_context + ",null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0).contentDocument"})')
     send('js chrome_context = new_context')
 
@@ -1196,6 +1198,8 @@ def frame(main_frame = None, sub_frame = None):
 
         send('js new_context = "subframe_context"')
         send('js frame_xpath = \'(//frame|//iframe)[@name="' + sub_frame + '" or @id="' + sub_frame + '"]\'')
+        send('js frame_rect = chrome.getRect(xps666(frame_xpath))')
+        send('js frame_step_offset_x = frame_rect.left; frame_step_offset_y = frame_rect.top;')
         send('js chrome_step("Runtime.evaluate", {expression: new_context + " = document.evaluate(\'" + frame_xpath + "\'," + chrome_context + ",null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0).contentDocument"})')
         send('js chrome_context = new_context')
 
