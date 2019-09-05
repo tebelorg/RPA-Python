@@ -16,6 +16,11 @@ To use TagUI for Python in Jupyter notebook, Python script or interactive shell 
 import tagui as t
 ```
 
+To deploy in environments without internet access, join the discussion here -
+```py
+t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
+```
+
 # Use Cases
 
 TagUI for Python's simple, expressive and powerful API makes digital process automation fun and easy!
