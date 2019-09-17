@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.12.0'
+__version__ = '1.12.1'
 
 import subprocess
 import os
@@ -1460,7 +1460,7 @@ def clipboard(text_to_put = None):
         clipboard_result = _tagui_output()
         return clipboard_result
 
-    elif not send('js clipboard("' + text_to_put + '")'):
+    elif not send("js clipboard('" + text_to_put.replace("'",'[BACKSLASH_QUOTE]') + "')"):
         return False
 
     else:
