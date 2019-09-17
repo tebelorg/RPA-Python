@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.11.3'
+__version__ = '1.12.0'
 
 import subprocess
 import os
@@ -1445,3 +1445,23 @@ def mouse_y():
     send('dump mouse_y() to tagui_python.txt')
     mouse_y_result = _tagui_output()
     return int(mouse_y_result)
+
+def clipboard(text_to_put = None):
+    if not _started():
+        print('[TAGUI][ERROR] - use init() before using clipboard()')
+        return False
+
+    if not _visual():
+        print('[TAGUI][ERROR] - clipboard() requires init(visual_automation = True)')
+        return False
+
+    if text_to_put is None:
+        send('dump clipboard() to tagui_python.txt')
+        clipboard_result = _tagui_output()
+        return clipboard_result
+
+    elif not send('js clipboard("' + text_to_put + '")'):
+        return False
+
+    else:
+        return True

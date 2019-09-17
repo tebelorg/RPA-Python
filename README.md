@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.11**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.12**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -148,6 +148,7 @@ Function|Parameters|Purpose
 exist()|element_identifier|return True or False if element exists before timeout
 present()|element_identifier|return True or False if element is present now
 count()|element_identifier|return number of web elements as integer
+clipboard()|text_to_put or no parameter|put text or return clipboard text as string
 coord()|x_coordinate, y_coordinate|return string '(x,y)' from integers x and y
 mouse_xy()||return '(x,y)' coordinates of mouse as string
 mouse_x()||return x coordinate of mouse as integer
@@ -160,9 +161,9 @@ timer()||return time elapsed in sec between calls as float
 
 TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and that `pip install tagui` would make lives easier for Python users.
+Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and `pip install tagui` would make lives easier for Python users.
 
-Lastly, at a mere 1000 lines of code, it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and should not be difficult, given the ample comments I sprinkled all over this single-file package in tagui.py, and its intuitive architecture.
+Lastly, at only 1k lines of code (excluding comments), it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and not too difficult, given the ample comments I sprinkled all over this single-file package (tagui.py), and its intuitive architecture.
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
