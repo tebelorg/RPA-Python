@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.12.1'
+__version__ = '1.13.0'
 
 import subprocess
 import os
@@ -33,6 +33,9 @@ _tagui_chrome = False
 
 # id to track instruction count from tagui python to tagui
 _tagui_id = 0
+
+# to track the original directory when init() was called
+_tagui_init_directory = ''
 
 # delete tagui temp output text file to avoid reading old data 
 if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
@@ -121,15 +124,28 @@ def _tagui_write(input_text = ''):
 
 def _tagui_output():
     """function to wait for tagui output file to read and delete it"""
-    global _tagui_delay
+    global _tagui_delay, _tagui_init_directory
+
+    # to handle user changing current directory after init() is called
+    init_directory_output_file = os.path.join(_tagui_init_directory, 'tagui_python.txt')
+
     # sleep to not splurge cpu cycles in while loop
     while not os.path.isfile('tagui_python.txt'):
+        if os.path.isfile(init_directory_output_file): break
         time.sleep(_tagui_delay) 
 
-    tagui_output_file = _py23_open('tagui_python.txt', 'r')
-    tagui_output_text = _py23_read(tagui_output_file.read())
-    tagui_output_file.close()
-    os.remove('tagui_python.txt')
+    # roundabout implementation to ensure backward compatibility
+    if os.path.isfile('tagui_python.txt'):
+        tagui_output_file = _py23_open('tagui_python.txt', 'r')
+        tagui_output_text = _py23_read(tagui_output_file.read())
+        tagui_output_file.close()
+        os.remove('tagui_python.txt')
+    else:
+        tagui_output_file = _py23_open(init_directory_output_file, 'r')
+        tagui_output_text = _py23_read(tagui_output_file.read())
+        tagui_output_file.close()
+        os.remove(init_directory_output_file)
+
     return tagui_output_text
 
 def _esq(input_text = ''):
@@ -388,7 +404,7 @@ def setup():
 def init(visual_automation = False, chrome_browser = True):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
-    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
 
     if _tagui_started:
         print('[TAGUI][ERROR] - use close() before using init() again')
@@ -396,6 +412,9 @@ def init(visual_automation = False, chrome_browser = True):
 
     # reset id to track instruction count from tagui python to tagui
     _tagui_id = 0
+
+    # reset variable to track original directory when init() was called
+    _tagui_init_directory = ''
 
     # get user home folder location to locate tagui executable
     if platform.system() == 'Windows':
@@ -508,6 +527,9 @@ def init(visual_automation = False, chrome_browser = True):
                 # increment id and prepare for next instruction
                 _tagui_id = _tagui_id + 1
 
+                # set variable to track original directory when init() was called
+                _tagui_init_directory = os.getcwd() 
+
                 return True
 
     except Exception as e:
@@ -618,7 +640,7 @@ def send(tagui_instruction = None):
 def close():
     """disconnect from tagui process by sending 'done' trigger instruction"""
 
-    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
 
     if not _tagui_started:
         print('[TAGUI][ERROR] - use init() before using close()')
@@ -646,10 +668,26 @@ def close():
         if os.path.isfile('tagui_python.raw'): os.remove('tagui_python.raw')
         if os.path.isfile('tagui_local.js'): os.remove('tagui_local.js')
 
+        # to handle user changing current directory after init() is called
+        if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_python')):
+            os.remove(os.path.join(_tagui_init_directory, 'tagui_python'))
+        if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_python.js')):
+            os.remove(os.path.join(_tagui_init_directory, 'tagui_python.js'))
+        if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_python.raw')):
+            os.remove(os.path.join(_tagui_init_directory, 'tagui_python.raw'))
+        if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_local.js')):
+            os.remove(os.path.join(_tagui_init_directory, 'tagui_local.js'))   
+
         # remove generated tagui log and data files if not in debug mode
         if not debug():
             if os.path.isfile('tagui_python.log'): os.remove('tagui_python.log')
             if os.path.isfile('tagui_python.txt'): os.remove('tagui_python.txt')
+        
+            # to handle user changing current directory after init() is called
+            if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_python.log')):
+                os.remove(os.path.join(_tagui_init_directory, 'tagui_python.log'))
+            if os.path.isfile(os.path.join(_tagui_init_directory, 'tagui_python.txt')):
+                os.remove(os.path.join(_tagui_init_directory, 'tagui_python.txt'))
 
         _tagui_visual = False
         _tagui_chrome = False
