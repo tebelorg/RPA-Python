@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.13**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**v1.14**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -16,7 +16,7 @@ To use TagUI for Python in Jupyter notebook, Python script or interactive shell 
 import tagui as t
 ```
 
-To deploy in environments without internet access, join the discussion here -
+To deploy in environments without internet access, add your constraints here -
 ```py
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
@@ -61,7 +61,7 @@ t.init(visual_automation = True, chrome_browser = False)
 t.keyboard('[cmd][space]')
 t.keyboard('safari[enter]')
 t.keyboard('[cmd]t')
-t.keyboard('avengers[enter]')
+t.keyboard('joker[enter]')
 t.wait(2.5)
 t.snap('page.png', 'results.png')
 t.close()
@@ -96,11 +96,12 @@ Function|Parameters|Purpose
 init()|visual_automation = False, chrome_browser = True|start TagUI, auto-call setup() on first run
 close()||close TagUI, Chrome browser, SikuliX
 setup()||setup TagUI to user home folder
+pack()|(beta feature - [see this issue](https://github.com/tebelorg/TagUI-Python/issues/36))|for deployment without internet
 
 #### DEBUG FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-debug()|True or False|toggle debug mode, eg print and log debug info
+debug()|True or False|toggle debug mode, ie print and log debug info
 send()|tagui_instruction|send TagUI instruction to TagUI for execution
 
 #### BASIC FUNCTIONS
@@ -163,7 +164,7 @@ TagUI is the number #1 open-source RPA software with thousands of active users. 
 
 Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and `pip install tagui` would make lives easier for Python users.
 
-Lastly, at only 1k lines of code (excluding comments), it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and not too difficult, given the ample comments I sprinkled all over this single-file package (tagui.py), and its intuitive architecture.
+Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and not too difficult, given the ample comments I sprinkled across this [single-file package (tagui.py)](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture.
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 

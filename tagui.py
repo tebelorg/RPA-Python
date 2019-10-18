@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.13.0'
+__version__ = '1.14.0'
 
 import subprocess
 import os
@@ -270,21 +270,37 @@ def setup():
     else:
         print('[TAGUI][ERROR] - unknown ' + platform.system() + ' operating system to setup TagUI')
         return False
+    
+    if not os.path.isfile('tagui_python.zip'):
+        # primary installation pathway by downloading from internet, requiring internet access
+        print('[TAGUI][INFO] - downloading TagUI (~200MB) and unzipping to below folder...')
+        print('[TAGUI][INFO] - ' + home_directory)
 
-    print('[TAGUI][INFO] - downloading TagUI (~200MB) and unzipping to below folder...')
-    print('[TAGUI][INFO] - ' + home_directory)
+        # set tagui zip download url and download zip for respective operating systems
+        tagui_zip_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/' + tagui_zip_file 
+        if not download(tagui_zip_url, home_directory + '/' + tagui_zip_file):
+            # error message is shown by download(), no need for message here 
+            return False
 
-    # set tagui zip download url and download zip for respective operating systems
-    tagui_zip_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/' + tagui_zip_file 
-    if not download(tagui_zip_url, home_directory + '/' + tagui_zip_file):
-        # error message is shown by download(), no need for message here 
-        return False
+        # unzip downloaded zip file to user home folder
+        unzip(home_directory + '/' + tagui_zip_file, home_directory)
+        if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
+            print('[TAGUI][ERROR] - unable to unzip TagUI to ' + home_directory)
+            return False
 
-    # unzip downloaded zip file to user home folder
-    unzip(home_directory + '/' + tagui_zip_file, home_directory)
-    if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
-        print('[TAGUI][ERROR] - unable to unzip TagUI to ' + home_directory)
-        return False
+    else:
+        # secondary installation pathway by using the tagui_python.zip generated from pack()
+        print('[TAGUI][INFO] - unzipping TagUI (~200MB) from tagui_python.zip to below folder...')
+        print('[TAGUI][INFO] - ' + home_directory)
+
+        import shutil
+        shutil.move('tagui_python.zip', home_directory + '/' + tagui_zip_file)
+
+        if not os.path.isdir(home_directory + '/tagui'): os.mkdir(home_directory + '/tagui')
+        unzip(home_directory + '/' + tagui_zip_file, home_directory + '/tagui')
+        if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
+            print('[TAGUI][ERROR] - unable to unzip TagUI to ' + home_directory)
+            return False
 
     # set correct tagui folder for different operating systems
     if platform.system() == 'Windows':
@@ -538,6 +554,39 @@ def init(visual_automation = False, chrome_browser = True):
         _tagui_chrome = False
         _tagui_started = False
         return False
+
+def pack():
+    """function to pack TagUI files for installation on an air-gapped computer without internet"""
+
+    print('[TAGUI][INFO] - detecting and zipping your TagUI installation to tagui_python.zip ...')
+
+    # first make sure TagUI files have been downloaded and synced to latest stable delta files
+    global _tagui_started
+    if _tagui_started:
+        if not close():
+            return False
+    if not init(False, False):
+        return False
+    if not close():
+        return False
+
+    # next download jython to tagui/src/sikulix folder (after init() it can be moved away)
+    if platform.system() == 'Windows':
+        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+    else:
+        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
+    sikulix_directory = tagui_directory + '/' + 'src' + '/' + 'sikulix'
+    sikulix_jython_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/jython-standalone-2.7.1.jar'
+    if not download(sikulix_jython_url, sikulix_directory + '/' + 'jython-standalone-2.7.1.jar'):
+        return False
+
+    # next zip entire TagUI installation and save a copy of tagui.py to the current folder
+    import shutil
+    shutil.make_archive('tagui_python', 'zip', tagui_directory)
+    shutil.copyfile(os.path.dirname(__file__) + '/tagui.py', 'tagui.py')
+
+    print('[TAGUI][INFO] - done. copy tagui_python.zip and tagui.py to your target computer.')
+    print('[TAGUI][INFO] - then install and use with import tagui as t followed by t.init()')
 
 def _ready():
     """internal function to check if tagui is ready to receive instructions after init() is called"""
