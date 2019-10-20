@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.14.0'
+__version__ = '1.15.0'
 
 import subprocess
 import os
