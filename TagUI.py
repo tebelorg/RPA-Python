@@ -63,7 +63,7 @@ t.keyboard(message)
 t.wait(10)
 
 if t.present('//*[text()="Send"]')==False:
-    t.close
+    t.close()
 t.click('//*[text()="Send"]')
 t.wait(10)
 t.close()
