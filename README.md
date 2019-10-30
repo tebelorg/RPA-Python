@@ -16,10 +16,12 @@ To use TagUI for Python in Jupyter notebook, Python script or interactive shell 
 import tagui as t
 ```
 
-To deploy in environments without internet access, add your constraints here -
+To deploy in environments without internet, let me know your constraints here -
 ```py
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
+
+**macOS Catalina update** has tighter security controls, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
 
 # Use Cases
 
@@ -96,7 +98,7 @@ Function|Parameters|Purpose
 init()|visual_automation = False, chrome_browser = True|start TagUI, auto-call setup() on first run
 close()||close TagUI, Chrome browser, SikuliX
 setup()||setup TagUI to user home folder
-pack()|(beta feature - [see this issue](https://github.com/tebelorg/TagUI-Python/issues/36))|for deployment without internet
+pack()|(beta feature - [let me know your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deployment without internet
 
 #### DEBUG FUNCTIONS
 Function|Parameters|Purpose
@@ -164,7 +166,7 @@ TagUI is the number #1 open-source RPA software with thousands of active users. 
 
 Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and `pip install tagui` would make lives easier for Python users.
 
-Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite programming language. It would be an interesting exercise and not too difficult, given the ample comments I sprinkled across this [single-file package (tagui.py)](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture.
+Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture -
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
@@ -178,4 +180,3 @@ I would like to credit and express my appreciation below, and you are invited to
 
 # License
 TagUI for Python is open-source software released under Apache 2.0 license
-
