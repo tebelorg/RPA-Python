@@ -21,7 +21,7 @@ To deploy in environments without internet, let me know your constraints here -
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
-**macOS Catalina update** has tighter security controls, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
+**macOS users** - the Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
 
 # Use Cases
 
