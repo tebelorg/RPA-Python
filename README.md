@@ -21,7 +21,7 @@ To deploy in environments without internet, let me know your constraints here -
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
-**macOS users** - the Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
+**macOS users -** the Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
 
 # Use Cases
 
@@ -33,6 +33,7 @@ t.init()
 t.url('https://www.google.com')
 t.type('q', 'decentralization[enter]')
 t.snap('page', 'results.png')
+print(t.read('resultStats'))
 t.close()
 ```
 
@@ -137,9 +138,9 @@ download()|download_url, filename_to_save(optional)|download from URL to file
 unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified location
 frame()|main_frame id or name, sub_frame (optional)|set web frame, frame() to reset
 popup()|string_in_url (no parameter to reset to main page)|set context to web popup tab
-run()|command_to_run (; between commands)|run OS command & return output
-dom()|statement_to_run (JavaScript code)|run code in DOM & return output
-vision()|command_to_run (Python code)|run custom SikuliX commands
+run()|command_to_run (use ; between commands)|run OS command & return output
+dom()|statement_to_run (JS code to run in browser)|run code in DOM & return output
+vision()|command_to_run (Python code for SikuliX)|run custom SikuliX commands
 timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
 
 **keyboard() - modifiers and special keys**
@@ -172,7 +173,7 @@ Lastly, at only ~1k lines of code, it would make my day to see developers of oth
 
 I would like to credit and express my appreciation below, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
-- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@kelaberetiv](https://github.com/kelaberetiv)
+- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](http://sikulix.com) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
 - [CasperJS](http://casperjs.org) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
 - [PhantomJS](http://phantomjs.org) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
