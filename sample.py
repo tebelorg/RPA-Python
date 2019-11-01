@@ -1,4 +1,5 @@
 # Sample script to search github on Yahoo, capture screenshot of results and visit DuckDuckgo
+
 # TagUI for Python's simple, expressive and powerful API makes digital automation fun and easy!
 # pip install tagui to install TagUI for Python, pip install tagui --upgrade for latest version
 
@@ -9,7 +10,7 @@ import tagui as t
 # default init(visual_automation = False, chrome_browser = True)
 t.init()
 
-# use url(URL) to go to a web page, url() returns the current URL
+# use url('your_url') to go to web page, url() returns current URL
 t.url('https://ca.yahoo.com')
 
 # use type() to enter text into an UI element or x, y location
@@ -36,7 +37,7 @@ t.snap('page', 'results.png')
 t.snap('logo', 'logo.png')
 
 # another example of interacting with a web page
-# do include http:// or https:// in URL parameter
+# include http:// or https:// in URL parameter
 t.url('https://duckduckgo.com')
 t.type('search_form_input_homepage', 'The search engine that doesn\'t track you.')
 t.snap('page', 'duckduckgo.png')
@@ -52,10 +53,12 @@ t.close()
 # also supports visual element identifier using .png or .bmp image snapshot
 # representing the UI element (can be on desktop applications or web browser)
 # for eg t.click('start_menu.png'), t.type('username_box.png', 'Sonic')
+
 # image transparency (0% opacity) is supported, ie images with empty sections
 # t.read('image_preview_frame.png'), t.snap('application_window_frame.png')
 
 # visual element identifiers can also be x, y coordinates of elements on the screen
 # for eg t.click(600, 300), t.type(600, 300, 'Mario'), t.select(600, 300, 600, 400)
-# another eg is limits of area of interest x1, y1, x2, y2 for read() and snap()
+
+# another eg is boundary of area of interest x1, y1, x2, y2 for read() and snap()
 # t.read(200, 200, 600, 400), t.snap(200, 200, 600, 400, 'results.png')
