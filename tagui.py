@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.15.0'
+__version__ = '1.16.0'
 
 import subprocess
 import os
@@ -463,17 +463,28 @@ def init(visual_automation = False, chrome_browser = True):
         else:
             shell_silencer = '> /dev/null 2>&1'
 
+        # check whether java is installed on the computer
         if os.system('java -version ' + shell_silencer) != 0:
-            print('[TAGUI][INFO] - for visual automation mode, Java JDK v8 (64-bit) or later is required')
-            print('[TAGUI][INFO] - to use visual automation feature, download Java JDK v8 (64-bit) from below')
-            print('[TAGUI][INFO] - https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html')
+            print('[TAGUI][INFO] - to use visual automation mode, OpenJDK v8 (64-bit) or later is required')
+            print('[TAGUI][INFO] - download from Amazon Corretto\'s website - https://aws.amazon.com/corretto')
+            print('[TAGUI][INFO] - OpenJDK is preferred over Java JDK which is free for non-commercial use only')
             return False
         else:
-            # start a dummy first run if never run before, to let sikulix integrate jython 
-            sikulix_folder = tagui_directory + '/' + 'src' + '/' + 'sikulix'
-            if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
-                os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
-            _visual_flow()
+            # then check whether it is 64-bit required by sikulix
+            os.system('java -version > java_version.txt 2>&1')
+            java_version_info = load('java_version.txt').lower()
+            os.remove('java_version.txt')
+            if '64 bit' not in java_version_info and '64-bit' not in java_version_info:
+                print('[TAGUI][INFO] - to use visual automation mode, OpenJDK v8 (64-bit) or later is required')
+                print('[TAGUI][INFO] - download from Amazon Corretto\'s website - https://aws.amazon.com/corretto')
+                print('[TAGUI][INFO] - OpenJDK is preferred over Java JDK which is free for non-commercial use only')
+                return False
+            else:
+                # start a dummy first run if never run before, to let sikulix integrate jython 
+                sikulix_folder = tagui_directory + '/' + 'src' + '/' + 'sikulix'
+                if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
+                    os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
+                _visual_flow()
     else:
         _python_flow()
 
