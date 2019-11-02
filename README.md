@@ -51,10 +51,10 @@ t.close()
 #### OCR AUTOMATION
 ```python
 t.init(visual_automation = True)
-t.echo(t.read('pdf_window.png'))
-t.echo(t.read('image_preview.png'))
+print(t.read('pdf_window.png'))
+print(t.read('image_preview.png'))
 t.hover('anchor_element.png')
-t.echo(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
+print(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
 t.close()
 ```
 
