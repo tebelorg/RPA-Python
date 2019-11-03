@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.16.0'
+__version__ = '1.17.0'
 
 import subprocess
 import os
@@ -344,10 +344,16 @@ def setup():
             print('[TAGUI][INFO] - PHP is not installed by default on your Linux distribution')
             print('[TAGUI][INFO] - google how to install PHP (eg for Ubuntu, apt-get install php)')
             print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
+            print('[TAGUI][INFO] - visual automation (optional) requires special setup on Linux,')
+            print('[TAGUI][INFO] - see the link below to install OpenCV and Tesseract libraries')
+            print('[TAGUI][INFO] - https://sikulix-2014.readthedocs.io/en/latest/newslinux.html')
             return False
 
         else:
             print('[TAGUI][INFO] - TagUI now ready for use in your Python environment')
+            print('[TAGUI][INFO] - visual automation (optional) requires special setup on Linux,')
+            print('[TAGUI][INFO] - see the link below to install OpenCV and Tesseract libraries')
+            print('[TAGUI][INFO] - https://sikulix-2014.readthedocs.io/en/latest/newslinux.html')
 
     # perform macOS specific setup actions
     if platform.system() == 'Darwin':

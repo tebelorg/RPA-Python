@@ -20,8 +20,11 @@ To deploy in environments without internet, let me know your constraints here -
 ```py
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
+**Windows users -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 
-**macOS users -** the Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78).
+**Linux users -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
+
+**macOS users -** the Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78)
 
 # Use Cases
 
@@ -181,3 +184,4 @@ I would like to credit and express my appreciation below, and you are invited to
 
 # License
 TagUI for Python is open-source software released under Apache 2.0 license
+
