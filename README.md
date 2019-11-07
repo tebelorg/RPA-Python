@@ -94,7 +94,7 @@ Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/m
 
 - An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications or web browser). x, y coordinates of elements on the screen work as well. Transparency (0% opacity) is supported in .png images, for eg using an image of an UI element with transparent background to enable clicking on an UI element that appears on different backgrounds on different occasions.
 
-- A further example is an image of the window or frame (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots of application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
+>A further image identifier example is an image of the window (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots of application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
@@ -168,7 +168,7 @@ timer()||return time elapsed in sec between calls as float
 
 TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over the past 2 months I took on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I decided to use my time pockets to create a Python package for TagUI. I would like to bring RPA into the heart of machine learning - the Python ecosystem. I hope that TagUI for Python and ML frameworks would be a match made in heaven, and `pip install tagui` would make lives easier for Python users.
+Over the past 2 months I take on a daddy role full-time, taking care of my newborn baby girl and wife. In between nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make lives easier for Python users.
 
 Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture -
 
