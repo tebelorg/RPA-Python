@@ -1,7 +1,7 @@
-# Sample script to search github on Yahoo, capture screenshot of results and visit DuckDuckgo
+# Sample script to search on Yahoo, take screenshot of results and visit DuckDuckgo
 
-# TagUI for Python's simple, expressive and powerful API makes digital automation fun and easy!
-# pip install tagui to install TagUI for Python, pip install tagui --upgrade for latest version
+# TagUI for Python's simple and powerful API makes digital process automation fun!
+# pip install tagui to install, pip install tagui --upgrade for latest version
 
 # to use in Jupyter notebook, Python script or interactive shell
 import tagui as t
