@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Video #PyCon**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks**](#api-reference)&ensp;|&ensp;[**v1.17**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**#PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**'Free' Starbucks**](#api-reference)&ensp;|&ensp;[**v1.17**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -21,7 +21,7 @@ To deploy in environments without internet, let me know your constraints here -
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
-Notes on different operating systems and optional visual automation mode -
+Notes on different operating systems and the optional visual automation mode -
 - **Windows users -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 - **macOS users -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78)
 - **Linux users -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
@@ -88,7 +88,7 @@ t.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). If you've discovered an unknown bug in using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size).
+Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). If you've discovered an unknown bug in using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city).
 
 - For web automation, web element identifier can be XPath selector, CSS selector or the following attributes - id, name, class, title, aria-label, text(), href (in decreasing order of priority). There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
 
@@ -183,4 +183,3 @@ I would like to credit and express my appreciation below, and you are invited to
 
 # License
 TagUI for Python is open-source software released under Apache 2.0 license
-
