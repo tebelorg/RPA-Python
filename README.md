@@ -2,7 +2,7 @@
 
 # TagUI for Python
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**#PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.17**](https://github.com/tebelorg/TagUI-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.17**](https://github.com/tebelorg/TagUI-Python/releases)
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -16,12 +16,12 @@ To use TagUI for Python in Jupyter notebook, Python script or interactive shell 
 import tagui as t
 ```
 
-To deploy in environments without internet, let me know your constraints here -
+To deploy in environments without internet, tell me your constraints here -
 ```py
 t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
-Notes on different operating systems and the optional visual automation mode -
+Notes on different operating systems and optional visual automation mode -
 - **Windows users -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 - **macOS users -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78)
 - **Linux users -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
@@ -102,7 +102,7 @@ Function|Parameters|Purpose
 init()|visual_automation = False, chrome_browser = True|start TagUI, auto-call setup() on first run
 close()||close TagUI, Chrome browser, SikuliX
 setup()||setup TagUI to user home folder
-pack()|(beta feature - [let me know your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deployment without internet
+pack()|(beta feature - [tell me your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deployment without internet
 
 #### DEBUG FUNCTIONS
 Function|Parameters|Purpose
