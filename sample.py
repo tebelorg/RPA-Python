@@ -48,7 +48,9 @@ t.wait(4.4)
 t.close()
 
 # in above web automation example, web element identifier can be XPath selector, CSS selector or
-# attributes id, name, class, title, aria-label, text(), href (in decreasing order of priority)
+# attributes id, name, class, title, aria-label, text(), href, in decreasing order of priority
+# if you don't mind using ugly and less robust XPath, it can be copied from Chrome inspector
+# otherwise recommend googling on writing XPath manually, or simply make use of attributes
 
 # also supports visual element identifier using .png or .bmp image snapshot
 # representing the UI element (can be on desktop applications or web browser)
