@@ -1,6 +1,4 @@
-<img src="https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/tebel_logo.png" height="111" align="right">
-
-# TagUI for Python
+# TagUI for Python :snake:
 
 [**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.17**](https://github.com/tebelorg/TagUI-Python/releases)
 
@@ -169,7 +167,7 @@ TagUI is the number #1 open-source RPA software with thousands of active users. 
 
 Over the past 2 months I take on a daddy role full-time :cowboy_hat_face:, taking care of my newborn baby girl and wife 🤱. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make life easier for Python users.
 
-Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py) :package:, and its intuitive architecture -
+Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py) :package:, and its intuitive architecture -
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
