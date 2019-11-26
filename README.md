@@ -22,15 +22,15 @@ t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
 Notes on different operating systems and optional visual automation mode -
-- **Windows users -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
-- **macOS users -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78)
-- **Linux users -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
+- :rainbow_flag: **Windows -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
+- :apple: **macOS -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/TagUI-Python/issues/79) and [Java popups](https://github.com/tebelorg/TagUI-Python/issues/78)
+- :penguin: **Linux -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
 
 # Use Cases
 
 TagUI for Python's simple and powerful API makes digital process automation fun!
 
-#### WEB AUTOMATION
+#### WEB AUTOMATION :globe_with_meridians:
 ```python
 t.init()
 t.url('https://www.google.com')
@@ -40,7 +40,7 @@ print(t.read('resultStats'))
 t.close()
 ```
 
-#### VISUAL AUTOMATION
+#### VISUAL AUTOMATION :eyes:
 ```python
 t.init(visual_automation = True)
 t.dclick('outlook_icon.png')
@@ -51,7 +51,7 @@ t.click('send_button.png')
 t.close()
 ```
 
-#### OCR AUTOMATION
+#### OCR AUTOMATION :abc:
 ```python
 t.init(visual_automation = True)
 print(t.read('pdf_window.png'))
@@ -61,7 +61,7 @@ print(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
 t.close()
 ```
 
-#### KEYBOARD AUTOMATION
+#### KEYBOARD AUTOMATION :musical_keyboard:
 ```python
 t.init(visual_automation = True, chrome_browser = False)
 t.keyboard('[cmd][space]')
@@ -73,7 +73,7 @@ t.snap('page.png', 'results.png')
 t.close()
 ```
 
-#### MOUSE AUTOMATION
+#### MOUSE AUTOMATION :mouse:
 ```python
 t.init(visual_automation = True)
 t.type(600, 300, 'open source')
@@ -88,7 +88,7 @@ t.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). \* If you've discovered an unknown bug in using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city).
+Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). \* If you've discovered an unknown bug in using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city). I appreciate your time in fiddling with a bug, trying to replicate it, and working with me to fix it. :tea::coffee:
 
 - For web automation, the web element identifier can be XPath selector, CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
 
@@ -146,7 +146,7 @@ dom()|statement_to_run (JS code to run in browser)|run code in DOM & return outp
 vision()|command_to_run (Python code for SikuliX)|run custom SikuliX commands
 timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
 
-**keyboard() - modifiers and special keys**
+**keyboard() modifiers and special keys**
 >[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]
 
 #### HELPER FUNCTIONS
@@ -165,9 +165,9 @@ timer()||return time elapsed in sec between calls as float
 
 # About & Credits
 
-TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is the number #1 open-source RPA software :robot: with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe :beach_umbrella:. Most of its code base was written in Novi Sad Serbia :serbia:. My wife and I also spent a couple of months in Budapest Hungary :hungary:, as well as Chiang Mai Thailand :thailand: for visa runs. In 2018, I joined AI Singapore :singapore: to continue development of TagUI.
 
-Over the past 2 months I take on a daddy role full-time, taking care of my newborn baby girl and wife. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make lives easier for Python users.
+Over the past 2 months I take on a daddy role full-time, taking care of my newborn baby girl and wife :family_man_woman_girl:. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make life easier for Python users.
 
 Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture -
 
@@ -175,12 +175,11 @@ Lastly, at only ~1k lines of code, it would make my day to see developers of oth
 
 I would like to credit and express my appreciation below, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
-- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
-- [SikuliX](http://sikulix.com) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
-- [CasperJS](http://casperjs.org) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
-- [PhantomJS](http://phantomjs.org) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
-- [SlimerJS](https://slimerjs.org) - Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
+- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore :singapore: / [@aisingapore](https://www.aisingapore.org)
+- [SikuliX](http://sikulix.com) - Raimund Hocke from Germany :de: / [@RaiMan](https://github.com/RaiMan)
+- [CasperJS](http://casperjs.org) - Nicolas Perriault from France :fr: / [@n1k0](https://github.com/n1k0)
+- [PhantomJS](http://phantomjs.org) - Ariya Hidayat from Indonesia :indonesia: / [@ariya](https://github.com/ariya)
+- [SlimerJS](https://slimerjs.org) - Laurent Jouanneau from France :fr: / [@laurentj](https://github.com/laurentj)
 
 # License
 TagUI for Python is open-source software released under Apache 2.0 license
-
