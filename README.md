@@ -51,7 +51,7 @@ t.click('send_button.png')
 t.close()
 ```
 
-#### OCR AUTOMATION :abc:
+#### OCR AUTOMATION :capital_abcd:
 ```python
 t.init(visual_automation = True)
 print(t.read('pdf_window.png'))
@@ -88,7 +88,7 @@ t.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). \* If you've discovered an unknown bug in using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city). I appreciate your time in fiddling with a bug, trying to replicate it, and working with me to fix it. :tea::coffee:
+Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/master/sample.py) and [RedMart groceries example](https://github.com/tebelorg/TagUI-Python/issues/24). \* If you've discovered an unknown bug when using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/TagUI-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city). I appreciate your time fiddling with a bug, trying to replicate it, and working with me to fix it. :tea::coffee:
 
 - For web automation, the web element identifier can be XPath selector, CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
 
@@ -165,15 +165,15 @@ timer()||return time elapsed in sec between calls as float
 
 # About & Credits
 
-TagUI is the number #1 open-source RPA software :robot: with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe :beach_umbrella:. Most of its code base was written in Novi Sad Serbia :serbia:. My wife and I also spent a couple of months in Budapest Hungary :hungary:, as well as Chiang Mai Thailand :thailand: for visa runs. In 2018, I joined AI Singapore :singapore: to continue development of TagUI.
+TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe :beach_umbrella:. Most of its code base was written in Novi Sad Serbia :serbia:. My wife and I also spent a couple of months in Budapest Hungary :hungary:, as well as Chiang Mai Thailand :thailand: for visa runs. In 2018, I joined AI Singapore :singapore: to continue development of TagUI.
 
-Over the past 2 months I take on a daddy role full-time, taking care of my newborn baby girl and wife :family_man_woman_girl:. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make life easier for Python users.
+Over the past 2 months I take on a daddy role full-time :cowboy_hat_face:, taking care of my newborn baby girl and wife 🤱. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make life easier for Python users.
 
-Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py), and its intuitive architecture -
+Lastly, at only ~1k lines of code, it would make my day to see developers of other languages porting this project over to their favourite coding language. See the ample comments in this [single-file package](https://github.com/tebelorg/TagUI-Python/blob/master/tagui.py) :package:, and its intuitive architecture -
 
 ![TagUI for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
-I would like to credit and express my appreciation below, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
+I would like to credit and express my appreciation below :bowing_man:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) :handshake: -
 
 - [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore :singapore: / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](http://sikulix.com) - Raimund Hocke from Germany :de: / [@RaiMan](https://github.com/RaiMan)
@@ -182,4 +182,4 @@ I would like to credit and express my appreciation below, and you are invited to
 - [SlimerJS](https://slimerjs.org) - Laurent Jouanneau from France :fr: / [@laurentj](https://github.com/laurentj)
 
 # License
-TagUI for Python is open-source software released under Apache 2.0 license
+TagUI for Python is open-source software released under Apache 2.0 license :yum:
