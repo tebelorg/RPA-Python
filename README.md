@@ -28,7 +28,7 @@ Notes on different operating systems and optional visual automation mode -
 
 TagUI for Python's simple and powerful API makes digital process automation fun!
 
-#### WEB AUTOMATION :globe_with_meridians:
+#### WEB AUTOMATION&ensp;:globe_with_meridians:
 ```python
 t.init()
 t.url('https://www.google.com')
@@ -38,7 +38,7 @@ print(t.read('resultStats'))
 t.close()
 ```
 
-#### VISUAL AUTOMATION :eyes:
+#### VISUAL AUTOMATION&ensp;:eyes:
 ```python
 t.init(visual_automation = True)
 t.dclick('outlook_icon.png')
@@ -49,7 +49,7 @@ t.click('send_button.png')
 t.close()
 ```
 
-#### OCR AUTOMATION :capital_abcd:
+#### OCR AUTOMATION&ensp;:capital_abcd:
 ```python
 t.init(visual_automation = True, chrome_browser = False)
 print(t.read('pdf_window.png'))
@@ -59,7 +59,7 @@ print(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
 t.close()
 ```
 
-#### KEYBOARD AUTOMATION :musical_keyboard:
+#### KEYBOARD AUTOMATION&ensp;:musical_keyboard:
 ```python
 t.init(visual_automation = True, chrome_browser = False)
 t.keyboard('[cmd][space]')
@@ -71,7 +71,7 @@ t.snap('page.png', 'results.png')
 t.close()
 ```
 
-#### MOUSE AUTOMATION :mouse:
+#### MOUSE AUTOMATION&ensp;:mouse:
 ```python
 t.init(visual_automation = True)
 t.type(600, 300, 'open source')
