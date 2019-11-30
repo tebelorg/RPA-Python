@@ -28,7 +28,7 @@ Notes on different operating systems and optional visual automation mode -
 
 TagUI for Python's simple and powerful API makes digital process automation fun!
 
-#### WEB AUTOMATION&ensp;:globe_with_meridians:
+#### WEB AUTOMATION&ensp;:spider_web:
 ```python
 t.init()
 t.url('https://www.google.com')
@@ -38,7 +38,7 @@ print(t.read('resultStats'))
 t.close()
 ```
 
-#### VISUAL AUTOMATION&ensp;:eyes:
+#### VISUAL AUTOMATION&ensp;:see_no_evil:
 ```python
 t.init(visual_automation = True)
 t.dclick('outlook_icon.png')
@@ -49,7 +49,7 @@ t.click('send_button.png')
 t.close()
 ```
 
-#### OCR AUTOMATION&ensp;:capital_abcd:
+#### OCR AUTOMATION&ensp;:book:
 ```python
 t.init(visual_automation = True, chrome_browser = False)
 print(t.read('pdf_window.png'))
@@ -163,7 +163,7 @@ timer()||return time elapsed in sec between calls as float
 
 # About & Credits
 
-TagUI is the number #1 open-source RPA software with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is the number #1 open-source RPA software :robot: with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe :earth_africa:. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
 Over the past 2 months I take on a daddy role full-time :cowboy_hat_face:, taking care of my newborn baby girl and wife 🤱. In between the nannying and caregiving, I use my time pockets to create this Python package for TagUI. I hope that TagUI for Python and ML frameworks would be good friends, and `pip install tagui` would make life easier for Python users.
 
