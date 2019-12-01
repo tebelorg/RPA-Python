@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.17.2'
+__version__ = '1.18.0'
 
 import subprocess
 import os
@@ -368,7 +368,9 @@ def setup():
         if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
 
             # if openssl is missing, first attempt to install using homebrew
-            os.system('brew install openssl > /dev/null 2>&1')
+            os.system('brew uninstall openssl > /dev/null 2>&1')
+            os.system('brew uninstall openssl > /dev/null 2>&1')
+            os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb > /dev/null 2>&1')
 
             # if it is still missing, attempt again by first installing homebrew
             if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
@@ -377,16 +379,21 @@ def setup():
                 print('[TAGUI][INFO] - you may be prompted for login password to continue')
                 print('')
                 os.system('echo | /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
-                os.system('brew install openssl')
+                os.system('brew uninstall openssl > /dev/null 2>&1')
+                os.system('brew uninstall openssl > /dev/null 2>&1')
+                os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
 
                 # if it is still missing, prompt user to install homebrew and openssl
                 if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
                     print('[TAGUI][INFO] - OpenSSL was not able to be installed automatically')
-                    print('[TAGUI][INFO] - run below 2 commands in your terminal to install manually')
+                    print('[TAGUI][INFO] - run below commands in your terminal to install manually')
                     print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
                     print('')
                     print('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
-                    print('brew install openssl')
+                    print('brew uninstall openssl; brew uninstall openssl; brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
+                    print('')
+                    print('[TAGUI][INFO] - if there is an issue running brew command, check the solution below')
+                    print('[TAGUI][INFO] - https://github.com/kelaberetiv/TagUI/issues/86#issuecomment-532466727')
                     print('')
                     return False
 
