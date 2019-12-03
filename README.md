@@ -33,8 +33,8 @@ TagUI for Python's simple and powerful API makes digital process automation fun!
 t.init()
 t.url('https://www.google.com')
 t.type('//*[@name="q"]', 'decentralization[enter]')
-t.snap('page', 'results.png')
 print(t.read('resultStats'))
+t.snap('page', 'results.png')
 t.close()
 ```
 
