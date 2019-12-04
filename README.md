@@ -97,16 +97,11 @@ Check out [sample Python script](https://github.com/tebelorg/TagUI-Python/blob/m
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-init()|visual_automation = False, chrome_browser = True|start TagUI, auto-call setup() on first run
+init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup on first run
 close()||close TagUI, Chrome browser, SikuliX
-setup()||setup TagUI to user home folder
 pack()|(beta feature - [tell me your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deployment without internet
 
-#### DEBUG FUNCTIONS
-Function|Parameters|Purpose
-:-------|:---------|:------
-debug()|True or False|toggle debug mode, ie print and log debug info
-send()|tagui_instruction|send TagUI instruction to TagUI for execution
+>to toggle debug mode, ie print and log debug info, use debug(True)
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
@@ -123,7 +118,6 @@ snap()|element_identifier (page = web page), filename_to_save|save screenshot to
 load()|filename_to_load|load & return file content
 dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
-echo()|text_to_echo|print text to screen
 ask()|text_to_prompt|ask & return user input
 
 #### PRO FUNCTIONS
@@ -132,7 +126,6 @@ Function|Parameters|Purpose
 keyboard()|keys_and_modifiers (using visual automation)|send keystrokes to screen
 mouse()|'down' or 'up' (using visual automation)|send mouse event to screen
 wait()|delay_in_seconds (default 5 seconds)|explicitly wait for some time
-check()|condition_to_check, text_if_true, text_if_false|check condition & print result
 table()|element_identifier (XPath only), filename_to_save|save basic HTML table to CSV
 upload()|element_identifier (CSS only), filename_to_upload|upload file to web element
 download()|download_url, filename_to_save(optional)|download from URL to file

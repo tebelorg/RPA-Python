@@ -6,7 +6,7 @@
 # to use in Jupyter notebook, Python script or interactive shell
 import tagui as t
 
-# use init() to start TagUI, it autoruns setup() to download TagUI
+# use init() to start TagUI, it auto downloads TagUI on first run
 # default init(visual_automation = False, chrome_browser = True)
 t.init()
 
@@ -19,9 +19,7 @@ t.type('search-box', 'github')
 
 # use read() to fetch and return text from UI element
 search_text = t.read('search-box')
-
-# use echo() to print to output, same as Python print()
-t.echo(search_text)
+print(search_text)
 
 # use click() to click on an UI element or x, y location
 # rclick() = right-click, dclick() = double-click
