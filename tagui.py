@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.19.0'
+__version__ = '1.20.0'
 
 import subprocess
 import os
@@ -582,6 +582,8 @@ def init(visual_automation = False, chrome_browser = True):
 def pack():
     """function to pack TagUI files for installation on an air-gapped computer without internet"""
 
+    print('[TAGUI][INFO] - pack() is to deploy TagUI for Python to a computer without internet')
+    print('[TAGUI][INFO] - update() is to update an existing installation deployed from pack()')
     print('[TAGUI][INFO] - detecting and zipping your TagUI installation to tagui_python.zip ...')
 
     # first make sure TagUI files have been downloaded and synced to latest stable delta files
@@ -604,13 +606,110 @@ def pack():
     if not download(sikulix_jython_url, sikulix_directory + '/' + 'jython-standalone-2.7.1.jar'):
         return False
 
-    # next zip entire TagUI installation and save a copy of tagui.py to the current folder
+    # finally zip entire TagUI installation and save a copy of tagui.py to the current folder
     import shutil
     shutil.make_archive('tagui_python', 'zip', tagui_directory)
     shutil.copyfile(os.path.dirname(__file__) + '/tagui.py', 'tagui.py')
 
     print('[TAGUI][INFO] - done. copy tagui_python.zip and tagui.py to your target computer.')
     print('[TAGUI][INFO] - then install and use with import tagui as t followed by t.init()')
+    return True
+
+def update():
+    """function to update package and TagUI files on an air-gapped computer without internet"""
+
+    print('[TAGUI][INFO] - pack() is to deploy TagUI for Python to a computer without internet')
+    print('[TAGUI][INFO] - update() is to update an existing installation deployed from pack()')
+    print('[TAGUI][INFO] - downloading latest TagUI for Python and TagUI files...')
+
+    # first download updated files to tagui_update folder and zip them to tagui_update.zip
+    if not os.path.isdir('tagui_update'): os.mkdir('tagui_update')
+    if not os.path.isdir('tagui_update/tagui.sikuli'): os.mkdir('tagui_update/tagui.sikuli')
+
+    tagui_python_url = 'https://raw.githubusercontent.com/tebelorg/TagUI-Python/master/tagui.py'
+    if not download(tagui_python_url, 'tagui_update' + '/' + 'tagui.py'): return False
+
+    # get version number of latest release for the package to use in generated update.py
+    tagui_python_py = load('tagui_update' + '/' + 'tagui.py')
+    v_front_marker = "__version__ = '"; v_back_marker = "'"
+    tagui_python_py = tagui_python_py[tagui_python_py.find(v_front_marker) + len(v_front_marker):]
+    tagui_python_py = tagui_python_py[:tagui_python_py.find(v_back_marker)]
+
+    delta_list = ['tagui', 'tagui.cmd', 'end_processes', 'end_processes.cmd',
+                    'tagui_header.js', 'tagui_parse.php', 'tagui.sikuli/tagui.py']
+
+    for delta_file in delta_list:
+        tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
+        tagui_delta_file = 'tagui_update' + '/' + delta_file
+        if not download(tagui_delta_url, tagui_delta_file): return False
+
+    import shutil
+    shutil.make_archive('tagui_update', 'zip', 'tagui_update')
+
+    # next define string variables for update.py header and footer to be used in next section
+    # indentation formatting has to be removed below, else unwanted indentation added to file
+    update_py_header = \
+"""import tagui as t
+import platform
+import base64
+import shutil
+import os
+
+tagui_update_zip = \\
+"""
+
+    update_py_footer = \
+"""
+
+# create update.zip from base64 data embedded in update.py
+update_zip_file = open('update.zip','wb')
+update_zip_file.write(base64.b64decode(tagui_update_zip))
+update_zip_file.close()
+
+# unzip update.zip to tagui folder in user home directory
+if platform.system() == 'Windows':
+    base_directory = os.environ['APPDATA'] + '/tagui'
+else:
+    base_directory = os.path.expanduser('~') + '/.tagui'
+t.unzip('update.zip', base_directory + '/src')
+if os.path.isfile('update.zip'): os.remove('update.zip')
+
+# make sure execute permission is there for Linux / macOS
+if platform.system() in ['Linux', 'Darwin']:
+    os.system('chmod -R 755 ' + base_directory + '/src/tagui > /dev/null 2>&1')
+    os.system('chmod -R 755 ' + base_directory + '/src/end_processes > /dev/null 2>&1')
+
+# create marker file to skip syncing for current release
+delta_done_file = t._py23_open(base_directory + '/' + 'tagui_python_' + __version__, 'w')
+delta_done_file.write(t._py23_write('TagUI installation files used by TagUI for Python'))
+delta_done_file.close()
+
+# move updated package file tagui.py to package folder
+shutil.move(base_directory + '/src/tagui.py', os.path.dirname(t.__file__) + '/tagui.py')
+print('[TAGUI][INFO] - done. TagUI for Python updated to version ' + __version__)
+"""
+
+    # finally create update.py containing python code and zipped data of update in base64
+    try:
+        import base64
+        dump("__version__ = '" + tagui_python_py + "'\n\n", 'update.py')
+        write(update_py_header, 'update.py')
+        update_zip_file = open('tagui_update.zip','rb')
+        zip_base64_data = (base64.b64encode(update_zip_file.read())).decode('utf-8')
+        update_zip_file.close()
+        write('"""' + zip_base64_data + '"""', 'update.py')
+        write(update_py_footer, 'update.py')
+
+        # remove temporary folder and downloaded files, show result and usage message
+        if os.path.isdir('tagui_update'): shutil.rmtree('tagui_update')
+        if os.path.isfile('tagui_update.zip'): os.remove('tagui_update.zip')
+        print('[TAGUI][INFO] - done. copy or email update.py to your target computer and run')
+        print('[TAGUI][INFO] - python update.py to update TagUI for Python to version ' + tagui_python_py)
+        return True
+
+    except Exception as e:
+        print('[TAGUI][ERROR] - ' + str(e))
+        return False
 
 def _ready():
     """internal function to check if tagui is ready to receive instructions after init() is called"""
