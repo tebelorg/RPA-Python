@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/TagUI-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.20.0'
+__version__ = '1.21.0'
 
 import subprocess
 import os
@@ -411,13 +411,20 @@ def setup():
         # check that tagui packaged php is working, it has dependency on MSVCR110.dll
         if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
             print('[TAGUI][INFO] - now installing missing Visual C++ Redistributable dependency')
-            vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
-            if download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
-                os.system(tagui_directory + '/vcredist_x86.exe')
 
+            # download from hosted setup file, if not already present when deployed using pack()
+            if not os.path.isfile(tagui_directory + '/vcredist_x86.exe'):
+                vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
+                if not download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
+                    return False
+
+            # run setup to install the MSVCR110.dll dependency (user action required)
+            os.system(tagui_directory + '/vcredist_x86.exe')
+                
             # check again if tagui packaged php is working, after installing vcredist_x86.exe
             if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
                 print('[TAGUI][INFO] - MSVCR110.dll is still missing, install vcredist_x86.exe from')
+                print('[TAGUI][INFO] - the vcredist_x86.exe file in ' + home_directory + '\\tagui or from')
                 print('[TAGUI][INFO] - https://www.microsoft.com/en-us/download/details.aspx?id=30679')
                 print('[TAGUI][INFO] - after that, TagUI ready for use in your Python environment')
                 return False
@@ -599,6 +606,10 @@ def pack():
     # next download jython to tagui/src/sikulix folder (after init() it can be moved away)
     if platform.system() == 'Windows':
         tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+        # pack in Visual C++ MSVCR110.dll dependency from PHP for offline installation 
+        vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
+        if not download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
+            return False
     else:
         tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
     sikulix_directory = tagui_directory + '/' + 'src' + '/' + 'sikulix'
