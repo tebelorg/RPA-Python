@@ -26,7 +26,7 @@ Notes on different operating systems and optional visual automation mode -
 
 # Use Cases
 
-TagUI for Python's simple and powerful API makes digital process automation fun!
+TagUI for Python's simple and powerful API makes digital process automation fun! You can use it to quickly automate repetitive time-consuming tasks, whether the tasks involve websites, desktop applications, or the command line.
 
 #### WEB AUTOMATION&ensp;:spider_web:
 ```python
