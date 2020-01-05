@@ -105,7 +105,7 @@ close()||close TagUI, Chrome browser, SikuliX
 pack()|(beta feature - [tell me your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deploying package without internet
 update()|(beta feature - [if any issue let me know here](https://github.com/tebelorg/TagUI-Python/issues/94#issuecomment-569112147))|for updating package without internet
 
->to switch on debug mode, ie print and log debug info, use debug(True)
+>to print and log debug info to tagui_python.log use debug(True), to switch off use debug(False)
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
@@ -123,6 +123,8 @@ load()|filename_to_load|load & return file content
 dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
 ask()|text_to_prompt|ask & return user input
+
+>drag-and-drop is not a common action, to do that you can write simple functions [like these](https://github.com/tebelorg/TagUI-Python/issues/58#issuecomment-570778431)
 
 #### PRO FUNCTIONS
 Function|Parameters|Purpose
@@ -157,6 +159,8 @@ mouse_y()||return y coordinate of mouse as integer
 title()||return page title of current web page as string
 text()||return text content of current web page as string
 timer()||return time elapsed in sec between calls as float
+
+>to type large amount of text quickly, use clipboard() and keyboard() to paste instead of type()
 
 # About & Credits
 
