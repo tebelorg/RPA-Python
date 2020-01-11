@@ -2,13 +2,13 @@ from setuptools import setup
 
 setup(
     name='tagui',
-    version='1.22.1',
+    version='1.22.2',
     py_modules=['tagui'],
     author='Ken Soh',
     author_email='opensource@tebel.org',
     license='Apache License 2.0',
     url='https://github.com/tebelorg/TagUI-Python',
-    description='TagUI for Python is a Python package for RPA (digital process automation)',
+    description='TagUI for Python is a Python package for RPA (robotic process automation)',
     long_description='TagUI for Python homepage - https://github.com/tebelorg/TagUI-Python',
     classifiers=[
         'Development Status :: 4 - Beta',
