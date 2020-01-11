@@ -1,7 +1,7 @@
 # Sample script to search on Yahoo, take screenshot of results and visit DuckDuckgo
 
-# TagUI for Python's simple and powerful API makes digital process automation fun!
-# pip install tagui to install, pip install tagui --upgrade for latest version
+# TagUI for Python's simple and powerful API makes RPA digital process automation fun!
+# pip install rpa to install, pip install rpa --upgrade to get the latest version
 
 # to use in Jupyter notebook, Python script or interactive shell
 import tagui as t

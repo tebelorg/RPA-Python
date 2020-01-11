@@ -4,7 +4,7 @@
 
 ![TagUI for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
-To install this Python package for RPA (also known as digital process automation) -
+To install this Python package for RPA (for automating your digital processes) -
 ```
 pip install rpa
 ```
