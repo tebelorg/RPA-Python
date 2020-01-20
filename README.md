@@ -11,12 +11,12 @@ pip install rpa
 
 To use RPA for Python in Jupyter notebook, Python script or interactive shell -
 ```python
-import tagui as t
+import rpa as r
 ```
 
 To deploy in environments without internet, tell me your constraints here -
 ```py
-t.init(); t.url('https://github.com/tebelorg/TagUI-Python/issues/36')
+r.init(); r.url('https://github.com/tebelorg/TagUI-Python/issues/36')
 ```
 
 Notes on different operating systems and optional visual automation mode -
@@ -30,58 +30,58 @@ RPA for Python's simple and powerful API makes robotic process automation fun! Y
 
 #### WEB AUTOMATION&ensp;:spider_web:
 ```python
-t.init()
-t.url('https://www.google.com')
-t.type('//*[@name="q"]', 'decentralization[enter]')
+r.init()
+r.url('https://www.google.com')
+r.type('//*[@name="q"]', 'decentralization[enter]')
 print(t.read('resultStats'))
-t.snap('page', 'results.png')
-t.close()
+r.snap('page', 'results.png')
+r.close()
 ```
 
 #### VISUAL AUTOMATION&ensp;:see_no_evil:
 ```python
-t.init(visual_automation = True)
-t.dclick('outlook_icon.png')
-t.click('new_mail.png')
+r.init(visual_automation = True)
+r.dclick('outlook_icon.png')
+r.click('new_mail.png')
 ...
-t.type('message_box.png', 'message')
-t.click('send_button.png')
-t.close()
+r.type('message_box.png', 'message')
+r.click('send_button.png')
+r.close()
 ```
 
 #### OCR AUTOMATION&ensp;🧿
 ```python
-t.init(visual_automation = True, chrome_browser = False)
+r.init(visual_automation = True, chrome_browser = False)
 print(t.read('pdf_window.png'))
 print(t.read('image_preview.png'))
-t.hover('anchor_element.png')
+r.hover('anchor_element.png')
 print(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
-t.close()
+r.close()
 ```
 
 #### KEYBOARD AUTOMATION&ensp;:musical_keyboard:
 ```python
-t.init(visual_automation = True, chrome_browser = False)
-t.keyboard('[cmd][space]')
-t.keyboard('safari[enter]')
-t.keyboard('[cmd]t')
-t.keyboard('joker[enter]')
-t.wait(2.5)
-t.snap('page.png', 'results.png')
-t.close()
+r.init(visual_automation = True, chrome_browser = False)
+r.keyboard('[cmd][space]')
+r.keyboard('safari[enter]')
+r.keyboard('[cmd]t')
+r.keyboard('joker[enter]')
+r.wait(2.5)
+r.snap('page.png', 'results.png')
+r.close()
 ```
 
 #### MOUSE AUTOMATION&ensp;:mouse:
 ```python
-t.init(visual_automation = True)
-t.type(600, 300, 'open source')
-t.click(900, 300)
-t.snap('page.bmp', 'results.bmp')
-t.hover('button_to_drag.bmp')
-t.mouse('down')
-t.hover(t.mouse_x() + 300, t.mouse_y())
-t.mouse('up')
-t.close()
+r.init(visual_automation = True)
+r.type(600, 300, 'open source')
+r.click(900, 300)
+r.snap('page.bmp', 'results.bmp')
+r.hover('button_to_drag.bmp')
+r.mouse('down')
+r.hover(t.mouse_x() + 300, t.mouse_y())
+r.mouse('up')
+r.close()
 ```
 
 # API Reference
@@ -100,8 +100,8 @@ An element identifier helps to tell RPA for Python exactly which element on the 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-init()|visual_automation = False, chrome_browser = True|start RPA, auto-setup on first run
-close()||close RPA, Chrome browser, SikuliX
+init()|visual_automation = False, chrome_browser = True|start RPA process, auto-setup on first run
+close()||close RPA process, Chrome browser, SikuliX
 pack()|(beta feature - [tell me your constraints here](https://github.com/tebelorg/TagUI-Python/issues/36#issuecomment-543670292))|for deploying package without internet
 update()|(beta feature - [if any issue let me know here](https://github.com/tebelorg/TagUI-Python/issues/94#issuecomment-569112147))|for updating package without internet
 
