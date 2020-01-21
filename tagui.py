@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.22.6'
+__version__ = '1.22.7'
 
 import subprocess
 import os
@@ -446,7 +446,7 @@ def init(visual_automation = False, chrome_browser = True):
         print('[RPA][ERROR] - use close() before using init() again')
         return False
 
-    # reset id to track instruction count from tagui python to tagui
+    # reset id to track instruction count from rpa python to tagui
     _tagui_id = 0
 
     # reset variable to track original directory when init() was called
@@ -617,13 +617,13 @@ def pack():
     if not download(sikulix_jython_url, sikulix_directory + '/' + 'jython-standalone-2.7.1.jar'):
         return False
 
-    # finally zip entire TagUI installation and save a copy of tagui.py to the current folder
+    # finally zip entire TagUI installation and save a copy of tagui.py to current folder
     import shutil
     shutil.make_archive('rpa_python', 'zip', tagui_directory)
-    shutil.copyfile(os.path.dirname(__file__) + '/tagui.py', 'tagui.py')
+    shutil.copyfile(os.path.dirname(__file__) + '/tagui.py', 'rpa.py')
 
-    print('[RPA][INFO] - done. copy rpa_python.zip and tagui.py to your target computer.')
-    print('[RPA][INFO] - then install and use with import tagui as t followed by t.init()')
+    print('[RPA][INFO] - done. copy rpa_python.zip and rpa.py to your target computer.')
+    print('[RPA][INFO] - then install and use with import rpa as r followed by r.init()')
     return True
 
 def update():
@@ -637,14 +637,14 @@ def update():
     if not os.path.isdir('tagui_update'): os.mkdir('tagui_update')
     if not os.path.isdir('tagui_update/tagui.sikuli'): os.mkdir('tagui_update/tagui.sikuli')
 
-    tagui_python_url = 'https://raw.githubusercontent.com/tebelorg/RPA-Python/master/tagui.py'
-    if not download(tagui_python_url, 'tagui_update' + '/' + 'tagui.py'): return False
+    rpa_python_url = 'https://raw.githubusercontent.com/tebelorg/RPA-Python/master/tagui.py'
+    if not download(rpa_python_url, 'tagui_update' + '/' + 'rpa.py'): return False
 
     # get version number of latest release for the package to use in generated update.py
-    tagui_python_py = load('tagui_update' + '/' + 'tagui.py')
+    rpa_python_py = load('tagui_update' + '/' + 'rpa.py')
     v_front_marker = "__version__ = '"; v_back_marker = "'"
-    tagui_python_py = tagui_python_py[tagui_python_py.find(v_front_marker) + len(v_front_marker):]
-    tagui_python_py = tagui_python_py[:tagui_python_py.find(v_back_marker)]
+    rpa_python_py = rpa_python_py[rpa_python_py.find(v_front_marker) + len(v_front_marker):]
+    rpa_python_py = rpa_python_py[:rpa_python_py.find(v_back_marker)]
 
     delta_list = ['tagui', 'tagui.cmd', 'end_processes', 'end_processes.cmd',
                     'tagui_header.js', 'tagui_parse.php', 'tagui.sikuli/tagui.py']
@@ -660,7 +660,7 @@ def update():
     # next define string variables for update.py header and footer to be used in next section
     # indentation formatting has to be removed below, else unwanted indentation added to file
     update_py_header = \
-"""import tagui as t
+"""import rpa as r
 import platform
 import base64
 import shutil
@@ -682,7 +682,7 @@ if platform.system() == 'Windows':
     base_directory = os.environ['APPDATA'] + '/tagui'
 else:
     base_directory = os.path.expanduser('~') + '/.tagui'
-t.unzip('update.zip', base_directory + '/src')
+r.unzip('update.zip', base_directory + '/src')
 if os.path.isfile('update.zip'): os.remove('update.zip')
 
 # make sure execute permission is there for Linux / macOS
@@ -691,19 +691,19 @@ if platform.system() in ['Linux', 'Darwin']:
     os.system('chmod -R 755 ' + base_directory + '/src/end_processes > /dev/null 2>&1')
 
 # create marker file to skip syncing for current release
-delta_done_file = t._py23_open(base_directory + '/' + 'rpa_python_' + __version__, 'w')
-delta_done_file.write(t._py23_write('TagUI installation files used by RPA for Python'))
+delta_done_file = r._py23_open(base_directory + '/' + 'rpa_python_' + __version__, 'w')
+delta_done_file.write(r._py23_write('TagUI installation files used by RPA for Python'))
 delta_done_file.close()
 
-# move updated package file tagui.py to package folder
-shutil.move(base_directory + '/src/tagui.py', os.path.dirname(t.__file__) + '/tagui.py')
+# move updated package file rpa.py to package folder
+shutil.move(base_directory + '/src/rpa.py', os.path.dirname(r.__file__) + '/rpa.py')
 print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
 """
 
     # finally create update.py containing python code and zipped data of update in base64
     try:
         import base64
-        dump("__version__ = '" + tagui_python_py + "'\n\n", 'update.py')
+        dump("__version__ = '" + rpa_python_py + "'\n\n", 'update.py')
         write(update_py_header, 'update.py')
         update_zip_file = open('tagui_update.zip','rb')
         zip_base64_data = (base64.b64encode(update_zip_file.read())).decode('utf-8')
@@ -715,7 +715,7 @@ print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
         if os.path.isdir('tagui_update'): shutil.rmtree('tagui_update')
         if os.path.isfile('tagui_update.zip'): os.remove('tagui_update.zip')
         print('[RPA][INFO] - done. copy or email update.py to your target computer and run')
-        print('[RPA][INFO] - python update.py to update RPA for Python to version ' + tagui_python_py)
+        print('[RPA][INFO] - python update.py to update RPA for Python to version ' + rpa_python_py)
         return True
 
     except Exception as e:
