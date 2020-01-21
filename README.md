@@ -33,7 +33,7 @@ RPA for Python's simple and powerful API makes robotic process automation fun! Y
 r.init()
 r.url('https://www.google.com')
 r.type('//*[@name="q"]', 'decentralization[enter]')
-print(t.read('resultStats'))
+print(r.read('resultStats'))
 r.snap('page', 'results.png')
 r.close()
 ```
@@ -52,10 +52,10 @@ r.close()
 #### OCR AUTOMATION&ensp;🧿
 ```python
 r.init(visual_automation = True, chrome_browser = False)
-print(t.read('pdf_window.png'))
-print(t.read('image_preview.png'))
+print(r.read('pdf_window.png'))
+print(r.read('image_preview.png'))
 r.hover('anchor_element.png')
-print(t.read(t.mouse_x(), t.mouse_y(), t.mouse_x() + 400, t.mouse_y() + 200))
+print(r.read(r.mouse_x(), r.mouse_y(), r.mouse_x() + 400, r.mouse_y() + 200))
 r.close()
 ```
 
@@ -79,7 +79,7 @@ r.click(900, 300)
 r.snap('page.bmp', 'results.bmp')
 r.hover('button_to_drag.bmp')
 r.mouse('down')
-r.hover(t.mouse_x() + 300, t.mouse_y())
+r.hover(r.mouse_x() + 300, r.mouse_y())
 r.mouse('up')
 r.close()
 ```
