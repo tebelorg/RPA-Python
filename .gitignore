@@ -2,21 +2,26 @@
 /dist
 /MANIFEST
 /tagui.egg-info
+/rpa_package/dist
+/rpa_package/MANIFEST
+/rpa_package/rpa.egg-info
 
 # exclude pycache directory
 /__pycache__
+/rpa_package/__pycache__
 
 # exclude generated .pyc file
 /tagui.pyc
+/rpa_package/rpa.pyc
 
 # exclude entry flow and logs
-/tagui_python
-/tagui_python.log
-/tagui_python.raw
-/tagui_python.js
+/rpa_python
+/rpa_python.log
+/rpa_python.raw
+/rpa_python.js
 
 # exclude entry flow output file
-/tagui_python.txt
+/rpa_python.txt
 
 # exclude custom js functions 
 /tagui_local.js
