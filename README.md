@@ -170,7 +170,7 @@ Over the past few months I take on a daddy role full-time, taking care of my new
 
 Lastly, at only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture -
 
-![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/RPA-Python/architecture.png)
+![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
 I would like to credit and express my appreciation below :bowing_man:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
