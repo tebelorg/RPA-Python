@@ -1,6 +1,8 @@
-# RPA for Python :snake: (WIP moving from TagUI for Python)
+# RPA for Python :snake:
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.22**](https://github.com/tebelorg/RPA-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.23**](https://github.com/tebelorg/RPA-Python/releases)
+
+>_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change. There is backward compatibility so existing scripts written with `import tagui as t` and `t.function()` will continue to work._
 
 ![RPA for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -105,7 +107,7 @@ close()||close TagUI, Chrome browser, SikuliX
 pack()|(beta feature - [tell me your constraints here](https://github.com/tebelorg/RPA-Python/issues/36#issuecomment-543670292))|for deploying package without internet
 update()|(beta feature - [if any issue let me know here](https://github.com/tebelorg/RPA-Python/issues/94#issuecomment-569112147))|for updating package without internet
 
->to print and log debug info to rpa_python.log use debug(True), to switch off use debug(False)
+>_to print and log debug info to rpa_python.log use debug(True), to switch off use debug(False)_
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
@@ -124,7 +126,7 @@ dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
 ask()|text_to_prompt|ask & return user input
 
->drag-and-drop is not a common action, to do that you can write simple functions [like these](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)
+>_drag-and-drop is not a common action, to do that you can write simple functions [like these](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)_
 
 #### PRO FUNCTIONS
 Function|Parameters|Purpose
@@ -144,7 +146,7 @@ vision()|command_to_run (Python code for SikuliX)|run custom SikuliX commands
 timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
 
 keyboard() modifiers and special keys -
->[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]
+>_[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]_
 
 #### HELPER FUNCTIONS
 Function|Parameters|Purpose
@@ -160,7 +162,7 @@ title()||return page title of current web page as string
 text()||return text content of current web page as string
 timer()||return time elapsed in sec between calls as float
 
->to type large amount of text quickly, use clipboard() and keyboard() to paste instead of type()
+>_to type large amount of text quickly, use clipboard() and keyboard() to paste instead of type()_
 
 # About & Credits
 

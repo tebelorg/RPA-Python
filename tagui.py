@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.22.7'
+__version__ = '1.23.0'
 
 import subprocess
 import os
@@ -633,15 +633,15 @@ def update():
     print('[RPA][INFO] - update() is to update an existing installation deployed from pack()')
     print('[RPA][INFO] - downloading latest RPA for Python and TagUI files...')
 
-    # first download updated files to tagui_update folder and zip them to tagui_update.zip
-    if not os.path.isdir('tagui_update'): os.mkdir('tagui_update')
-    if not os.path.isdir('tagui_update/tagui.sikuli'): os.mkdir('tagui_update/tagui.sikuli')
+    # first download updated files to rpa_update folder and zip them to rpa_update.zip
+    if not os.path.isdir('rpa_update'): os.mkdir('rpa_update')
+    if not os.path.isdir('rpa_update/tagui.sikuli'): os.mkdir('rpa_update/tagui.sikuli')
 
     rpa_python_url = 'https://raw.githubusercontent.com/tebelorg/RPA-Python/master/tagui.py'
-    if not download(rpa_python_url, 'tagui_update' + '/' + 'rpa.py'): return False
+    if not download(rpa_python_url, 'rpa_update' + '/' + 'rpa.py'): return False
 
     # get version number of latest release for the package to use in generated update.py
-    rpa_python_py = load('tagui_update' + '/' + 'rpa.py')
+    rpa_python_py = load('rpa_update' + '/' + 'rpa.py')
     v_front_marker = "__version__ = '"; v_back_marker = "'"
     rpa_python_py = rpa_python_py[rpa_python_py.find(v_front_marker) + len(v_front_marker):]
     rpa_python_py = rpa_python_py[:rpa_python_py.find(v_back_marker)]
@@ -651,11 +651,11 @@ def update():
 
     for delta_file in delta_list:
         tagui_delta_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/' + delta_file
-        tagui_delta_file = 'tagui_update' + '/' + delta_file
+        tagui_delta_file = 'rpa_update' + '/' + delta_file
         if not download(tagui_delta_url, tagui_delta_file): return False
 
     import shutil
-    shutil.make_archive('tagui_update', 'zip', 'tagui_update')
+    shutil.make_archive('rpa_update', 'zip', 'rpa_update')
 
     # next define string variables for update.py header and footer to be used in next section
     # indentation formatting has to be removed below, else unwanted indentation added to file
@@ -666,7 +666,7 @@ import base64
 import shutil
 import os
 
-tagui_update_zip = \\
+rpa_update_zip = \\
 """
 
     update_py_footer = \
@@ -674,7 +674,7 @@ tagui_update_zip = \\
 
 # create update.zip from base64 data embedded in update.py
 update_zip_file = open('update.zip','wb')
-update_zip_file.write(base64.b64decode(tagui_update_zip))
+update_zip_file.write(base64.b64decode(rpa_update_zip))
 update_zip_file.close()
 
 # unzip update.zip to tagui folder in user home directory
@@ -705,15 +705,15 @@ print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
         import base64
         dump("__version__ = '" + rpa_python_py + "'\n\n", 'update.py')
         write(update_py_header, 'update.py')
-        update_zip_file = open('tagui_update.zip','rb')
+        update_zip_file = open('rpa_update.zip','rb')
         zip_base64_data = (base64.b64encode(update_zip_file.read())).decode('utf-8')
         update_zip_file.close()
         write('"""' + zip_base64_data + '"""', 'update.py')
         write(update_py_footer, 'update.py')
 
         # remove temporary folder and downloaded files, show result and usage message
-        if os.path.isdir('tagui_update'): shutil.rmtree('tagui_update')
-        if os.path.isfile('tagui_update.zip'): os.remove('tagui_update.zip')
+        if os.path.isdir('rpa_update'): shutil.rmtree('rpa_update')
+        if os.path.isfile('rpa_update.zip'): os.remove('rpa_update.zip')
         print('[RPA][INFO] - done. copy or email update.py to your target computer and run')
         print('[RPA][INFO] - python update.py to update RPA for Python to version ' + rpa_python_py)
         return True
