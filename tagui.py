@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.24.0'
+__version__ = '1.24.1'
 
 import subprocess
 import os
@@ -900,12 +900,9 @@ def exist(element_identifier = None):
             print('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
             return False
 
-    # pre-emptive check for existence of specified image file for visual automation
+    # pre-emptive checks if image files are specified for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
-        if not os.path.isfile(element_identifier):
-            print('[RPA][ERROR] - missing image file ' + element_identifier)
-            return False
-        elif not _visual():
+        if not _visual():
             print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
@@ -1088,20 +1085,13 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
         option_value = coord(test_coordinate1, test_coordinate2) 
 
     # pre-emptive checks if image files are specified for visual automation
-    # eg without below checks, a missing image file for option will crash
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
-        if not os.path.isfile(element_identifier):
-            print('[RPA][ERROR] - missing image file ' + element_identifier)
-            return False
-        elif not _visual():
+        if not _visual():
             print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     if option_value.lower().endswith('.png') or option_value.lower().endswith('.bmp'):
-        if not os.path.isfile(option_value):
-            print('[RPA][ERROR] - missing image file ' + option_value)
-            return False
-        elif not _visual():
+        if not _visual():
             print('[RPA][ERROR] - ' + option_value + ' identifier requires init(visual_automation = True)')
             return False
 
@@ -1551,12 +1541,9 @@ def present(element_identifier = None):
             print('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
             return False
 
-    # check for existence of specified image file for visual automation
+    # pre-emptive checks if image files are specified for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
-        if not os.path.isfile(element_identifier):
-            print('[RPA][ERROR] - missing image file ' + element_identifier)
-            return False
-        elif not _visual():
+        if not _visual():
             print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
