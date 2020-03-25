@@ -176,7 +176,7 @@ Lastly, at only ~1k lines of code, it would make my day to see developers of oth
 
 I would like to credit and express my appreciation below :bowing_man:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
-- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
+- [TagUI](https://github.com/kelaberetiv/TagUI/tree/pre_v6) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](http://sikulix.com) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
 - [CasperJS](http://casperjs.org) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
 - [PhantomJS](http://phantomjs.org) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
