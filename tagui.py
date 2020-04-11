@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.26.0'
+__version__ = '1.26.1'
 
 import subprocess
 import os
@@ -378,7 +378,7 @@ def setup():
                 print('[RPA][INFO] - now installing OpenSSL dependency using Homebrew')
                 print('[RPA][INFO] - you may be prompted for login password to continue')
                 print('')
-                os.system('echo | /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+                os.system('echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
                 os.system('brew uninstall openssl > /dev/null 2>&1')
                 os.system('brew uninstall openssl > /dev/null 2>&1')
                 os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
@@ -389,7 +389,7 @@ def setup():
                     print('[RPA][INFO] - run below commands in your terminal to install manually')
                     print('[RPA][INFO] - after that, TagUI ready for use in your Python environment')
                     print('')
-                    print('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+                    print('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
                     print('brew uninstall openssl; brew uninstall openssl; brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
                     print('')
                     print('[RPA][INFO] - if there is an issue running brew command, check the solution below')
