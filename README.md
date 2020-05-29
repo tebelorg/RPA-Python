@@ -16,11 +16,6 @@ To use it in Jupyter notebook, Python script or interactive shell -
 import rpa as r
 ```
 
-To deploy in environments without internet, tell me your constraints -
-```py
-r.init(); r.url('https://github.com/tebelorg/RPA-Python/issues/36')
-```
-
 Notes on different operating systems and optional visual automation mode -
 - :rainbow_flag: **Windows -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 - :apple: **macOS -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/RPA-Python/issues/79) and [Java popups](https://github.com/tebelorg/RPA-Python/issues/78)
@@ -88,7 +83,7 @@ r.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run faster 20-30X, without normal UI interaction delays, [see this advanced hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
+Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this advanced hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
