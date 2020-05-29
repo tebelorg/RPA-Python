@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Free Starbucks \***](#api-reference)&ensp;|&ensp;[**v1.26**](https://github.com/tebelorg/RPA-Python/releases)
+[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**v1.26**](https://github.com/tebelorg/RPA-Python/releases)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will continue to work._
 
@@ -88,7 +88,7 @@ r.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge example](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). \* If you've discovered an unknown bug when using this tool, [kindly raise a GitHub issue](https://github.com/tebelorg/RPA-Python/issues) and I'll buy you and one friend a cup of Starbucks (one each, any drink, any size, any city). I appreciate your time fiddling with a bug, trying to replicate it, and working with me to fix it. :tea::coffee:
+Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge example](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
