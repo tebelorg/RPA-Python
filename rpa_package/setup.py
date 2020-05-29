@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rpa',
-    version='1.26.1',
+    version='1.27.0',
     py_modules=['rpa'], install_requires=['tagui>=1.26.1'],
     author='Ken Soh',
     author_email='opensource@tebel.org',
@@ -11,7 +11,7 @@ setup(
     description='RPA for Python is a Python package for RPA (robotic process automation)',
     long_description='RPA for Python\'s simple and powerful API makes robotic process automation fun! You can use it to quickly automate repetitive time-consuming tasks, whether the tasks involve websites, desktop applications, or the command line.\n\nBuilt on AI Singapore\'s TagUI open-source RPA software, RPA capabilities out-of-the-box for this package include website automation, computer vision automation, optical character recognition, keyboard & mouse automation.\n\nTables can\'t be displayed here, please refer to RPA for Python homepage for full API - https://github.com/tebelorg/RPA-Python',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License',
