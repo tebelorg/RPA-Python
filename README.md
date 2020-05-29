@@ -88,7 +88,7 @@ r.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge example](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24).
+Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
