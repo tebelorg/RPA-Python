@@ -247,14 +247,11 @@ def unzip(file_to_unzip = None, unzip_location = None):
     zip_file.close()
     return True
 
-def setup():
+def setup(installation_dir):
     """function to setup TagUI to user home folder on Linux / macOS / Windows"""
 
-    # get user home folder location to setup tagui
-    if platform.system() == 'Windows':
-        home_directory = os.environ['APPDATA']
-    else:
-        home_directory = os.path.expanduser('~')
+    # set directory to setup tagui
+    home_directory = installation_dir
 
     print('[RPA][INFO] - setting up TagUI for use in your Python environment')
 
@@ -437,7 +434,7 @@ def setup():
 
     return True
 
-def init(visual_automation = False, chrome_browser = True):
+def init(visual_automation = False, chrome_browser = True, installation_dir = None):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
@@ -458,12 +455,16 @@ def init(visual_automation = False, chrome_browser = True):
     else:
         tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
 
+    # override home folder when manual path is set
+    if installation_dir:
+        tagui_directory = installation_dir
+
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
 
     # if tagui executable is not found, initiate setup() to install tagui
     if not os.path.isfile(tagui_executable):
-        if not setup():
+        if not setup(installation_dir):
             # error message is shown by setup(), no need for message here
             return False
 
