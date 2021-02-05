@@ -247,11 +247,18 @@ def unzip(file_to_unzip = None, unzip_location = None):
     zip_file.close()
     return True
 
-def setup(installation_dir):
+def setup(installation_dir = None):
     """function to setup TagUI to user home folder on Linux / macOS / Windows"""
 
-    # set directory to setup tagui
-    home_directory = installation_dir
+    # get user home folder location to setup tagui
+    if platform.system() == 'Windows':
+        home_directory = os.environ['APPDATA']
+    else:
+        home_directory = os.path.expanduser('~')
+
+    # override home folder when manual path is set
+    if installation_dir:
+        home_directory = installation_dir
 
     print('[RPA][INFO] - setting up TagUI for use in your Python environment')
 
@@ -304,6 +311,10 @@ def setup(installation_dir):
         tagui_directory = home_directory + '/' + 'tagui'
     else:
         tagui_directory = home_directory + '/' + '.tagui'
+
+    # override with custome dir
+    if installation_dir:
+        tagui_directory = installation_dir + '/' + '.tagui'
 
         # overwrite tagui to .tagui folder for Linux / macOS
 
@@ -457,7 +468,7 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
 
     # override home folder when manual path is set
     if installation_dir:
-        tagui_directory = installation_dir
+        tagui_directory = installation_dir + '/' + '.tagui'
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
