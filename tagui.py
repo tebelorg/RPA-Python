@@ -312,7 +312,7 @@ def setup(installation_dir = None):
     else:
         tagui_directory = home_directory + '/' + '.tagui'
 
-    # override with custome dir
+    # override with custom dir
     if installation_dir:
         tagui_directory = installation_dir + '/' + '.tagui'
 
@@ -466,9 +466,14 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
     else:
         tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
 
-    # override home folder when manual path is set
+    # check if custom installation path is set
     if installation_dir:
-        tagui_directory = installation_dir + '/' + '.tagui'
+        if "tagui" in installation_dir:
+            print('[RPA][INFO] - It was detected to use a custom directory.')
+            tagui_directory = installation_dir
+        else:
+            print('[RPA][ERROR] - Please use path with target directory name tagui.')
+            sys.exit(1)
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
@@ -598,19 +603,26 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
         _tagui_started = False
         return False
 
-def pack():
+def pack(installation_dir = None):
     """function to pack TagUI files for installation on an air-gapped computer without internet"""
 
     print('[RPA][INFO] - pack() is to deploy RPA for Python to a computer without internet')
     print('[RPA][INFO] - update() is to update an existing installation deployed from pack()')
     print('[RPA][INFO] - detecting and zipping your TagUI installation to rpa_python.zip ...')
 
+    # check custom installation path
+    if installation_dir:
+        print('[RPA][INFO] - It was detected to use a custom directory as source for packing.')
+        if not os.path.isdir(installation_dir + "/src"):
+            print('[RPA][ERROR] - Your target destination is not a valid path.')
+            sys.exit(1)
+
     # first make sure TagUI files have been downloaded and synced to latest stable delta files
     global _tagui_started
     if _tagui_started:
         if not close():
             return False
-    if not init(False, False):
+    if not init(False, False, installation_dir):
         return False
     if not close():
         return False
@@ -689,11 +701,24 @@ update_zip_file = open('update.zip','wb')
 update_zip_file.write(base64.b64decode(rpa_update_zip))
 update_zip_file.close()
 
-# unzip update.zip to tagui folder in user home directory
+# check tagui path
 if platform.system() == 'Windows':
     base_directory = os.environ['APPDATA'] + '/tagui'
 else:
     base_directory = os.path.expanduser('~') + '/.tagui'
+
+if len(sys.argv) == 2:
+    print('[RPA][INFO] - It was detected to use a custom directory for updating.')
+    if os.path.isdir(sys.argv[1]):
+        if "tagui" in sys.argv[1]:
+            base_directory = sys.argv[1]
+        else:
+            print('[RPA][ERROR] - Please use path with target directory name tagui.')
+            sys.exit(1)
+    else:
+        print('[RPA][ERROR] - Your target destination is not a valid path.')
+      
+# unzip update.zip to tagui folder in target directory
 r.unzip('update.zip', base_directory + '/src')
 if os.path.isfile('update.zip'): os.remove('update.zip')
 
