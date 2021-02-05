@@ -97,12 +97,13 @@ An element identifier helps to tell RPA for Python exactly which element on the 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup on first run
+init()|visual_automation = False, chrome_browser = True, installation_dir = "path"|start TagUI, auto-setup on first run
 close()||close TagUI, Chrome browser, SikuliX
 pack()||for deploying package without internet
 update()||for updating package without internet
 
 >_to print and log debug info to rpa_python.log use debug(True), to switch off use debug(False)_
+>_to set custome installation path use r.init(installation_dir="/home/user/opt/.tagui")_
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
