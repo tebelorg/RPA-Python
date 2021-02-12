@@ -259,6 +259,9 @@ def setup(installation_dir = None):
     # override home folder when manual path is set
     if installation_dir:
         home_directory = installation_dir
+        # Check if directory exists, if not create one
+        if not os.path.isdir(home_directory):
+            os.mkdir(home_directory)
 
     print('[RPA][INFO] - setting up TagUI for use in your Python environment')
 
@@ -309,12 +312,16 @@ def setup(installation_dir = None):
     # set correct tagui folder for different operating systems
     if platform.system() == 'Windows':
         tagui_directory = home_directory + '/' + 'tagui'
+
+    elif installation_dir:
+        # copy content to parent folder
+        from distutils.dir_util import copy_tree, remove_tree
+        tagui_directory = home_directory
+        copy_tree(home_directory + '/' + 'tagui', home_directory)
+        remove_tree(home_directory + '/' + 'tagui')
+
     else:
         tagui_directory = home_directory + '/' + '.tagui'
-
-    # override with custom dir
-    if installation_dir:
-        tagui_directory = installation_dir + '/' + '.tagui'
 
         # overwrite tagui to .tagui folder for Linux / macOS
 
@@ -473,7 +480,7 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
             tagui_directory = installation_dir
         else:
             print('[RPA][ERROR] - Please use path with target directory name tagui.')
-            sys.exit(1)
+            return False
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
@@ -615,7 +622,7 @@ def pack(installation_dir = None):
         print('[RPA][INFO] - It was detected to use a custom directory as source for packing.')
         if not os.path.isdir(installation_dir + "/src"):
             print('[RPA][ERROR] - Your target destination is not a valid path.')
-            sys.exit(1)
+            return False
 
     # first make sure TagUI files have been downloaded and synced to latest stable delta files
     global _tagui_started
@@ -717,7 +724,8 @@ if len(sys.argv) == 2:
             sys.exit(1)
     else:
         print('[RPA][ERROR] - Your target destination is not a valid path.')
-      
+        sys.exit(1)
+
 # unzip update.zip to tagui folder in target directory
 r.unzip('update.zip', base_directory + '/src')
 if os.path.isfile('update.zip'): os.remove('update.zip')
