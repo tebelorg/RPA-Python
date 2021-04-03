@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.27.1'
+__version__ = '1.28.0'
 
 import subprocess
 import os
@@ -260,8 +260,10 @@ def setup():
 
     # special check for macOS - download() will fail due to no SSL certs for Python 3
     if platform.system() == 'Darwin' and _python3_env():
-        if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
-            os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
+        if os.system('/Applications/Python\ 3.9/Install\ Certificates.command > /dev/null 2>&1') != 0:
+            if os.system('/Applications/Python\ 3.8/Install\ Certificates.command > /dev/null 2>&1') != 0:
+                if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
+                    os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
 
     # set tagui zip filename for respective operating systems
     if platform.system() == 'Linux': tagui_zip_file = 'TagUI_Linux.zip'
