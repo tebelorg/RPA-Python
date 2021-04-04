@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.29.0'
+__version__ = '1.30.0'
 
 import subprocess
 import os
@@ -216,6 +216,22 @@ def _tagui_delta(base_directory = None):
     delta_done_file.close()
     return True
 
+def _patch_macos_pjs():
+    """patch PhantomJS to latest v2.1.1 that plays well with new macOS versions"""
+    if platform.system() == 'Darwin' and not os.path.isdir(os.path.expanduser('~') + '/.tagui/src/phantomjs_old'):
+        original_directory = os.getcwd(); os.chdir(os.path.expanduser('~') + '/.tagui/src')
+        print('[RPA][INFO] - downloading latest PhantomJS to fix OpenSSL issue')
+        download('https://github.com/tebelorg/Tump/releases/download/v1.0.0/phantomjs-2.1.1-macosx.zip', 'phantomjs.zip')
+        if not os.path.isfile('phantomjs.zip'):
+            print('[RPA][ERROR] - unable to download latest PhantomJS v2.1.1')
+            os.chdir(original_directory); return False
+        unzip('phantomjs.zip'); os.rename('phantomjs', 'phantomjs_old'); os.rename('phantomjs-2.1.1-macosx', 'phantomjs')
+        if os.path.isfile('phantomjs.zip'): os.remove('phantomjs.zip')
+        os.system('chmod -R 755 phantomjs > /dev/null 2>&1')
+        os.chdir(original_directory); return True
+    else:
+        return True
+
 def coord(x_coordinate = 0, y_coordinate = 0):
     """function to form a coordinate string from x and y integers"""
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
@@ -366,47 +382,9 @@ def setup():
             print('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False
 
-        # check for openssl, a dependency of phantomjs removed in newer macOS
-        if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-
-            # if openssl is missing, first attempt to install using homebrew
-            os.system('brew uninstall openssl > /dev/null 2>&1')
-            os.system('brew uninstall openssl > /dev/null 2>&1')
-            os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb > /dev/null 2>&1')
-
-            # if it is still missing, attempt again by first installing homebrew
-            if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-                print('')
-                print('[RPA][INFO] - now installing OpenSSL dependency using Homebrew')
-                print('[RPA][INFO] - you may be prompted for login password to continue')
-                print('')
-                os.system('echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
-                os.system('brew uninstall openssl > /dev/null 2>&1')
-                os.system('brew uninstall openssl > /dev/null 2>&1')
-                os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
-
-                # if it is still missing, prompt user to install homebrew and openssl
-                if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-                    print('[RPA][INFO] - OpenSSL was not able to be installed automatically')
-                    print('[RPA][INFO] - run below commands in your terminal to install manually')
-                    print('[RPA][INFO] - after that, TagUI ready for use in your Python environment')
-                    print('')
-                    print('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
-                    print('brew uninstall openssl; brew uninstall openssl; brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
-                    print('')
-                    print('[RPA][INFO] - if there is an issue running brew command, check the solution below')
-                    print('[RPA][INFO] - https://github.com/kelaberetiv/TagUI/issues/86#issuecomment-532466727')
-                    print('')
-                    return False
-
-                else:
-                    print('[RPA][INFO] - TagUI now ready for use in your Python environment')
-
-            else:
-                print('[RPA][INFO] - TagUI now ready for use in your Python environment')
-
-        else:
-            print('[RPA][INFO] - TagUI now ready for use in your Python environment')
+        # patch PhantomJS to solve OpenSSL issue
+        if not _patch_macos_pjs(): return False
+        print('[RPA][INFO] - TagUI now ready for use in your Python environment')
 
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
@@ -471,6 +449,9 @@ def init(visual_automation = False, chrome_browser = True):
 
     # sync tagui delta files for current release if needed
     if not _tagui_delta(tagui_directory): return False
+
+    # on macOS, patch PhantomJS to latest v2.1.1 to solve OpenSSL issue
+    if platform.system() == 'Darwin' and not _patch_macos_pjs(): return False
 
     # on Windows, check if there is space in folder path name
     if platform.system() == 'Windows' and ' ' in os.getcwd():
