@@ -1,31 +1,35 @@
 # RPA for Python :snake:
 
-[**v1.32**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
+[**v1.32**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Examples**](#examples)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will continue to work._
 
+Python-RPA is a no-nonsense Robotic Process  Automation (RPA) library. It provides a clean, high-level, easy-to-use, Pythonic API for developers who just wants to automate their work without going through the messy details of integrating various open sources libraries together.
+
 ![RPA for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
-To install this Python package for RPA (robotic process automation) -
+To install this Python package
 ```
 pip install rpa
 ```
 
-To use it in Jupyter notebook, Python script or interactive shell -
+To use it in Jupyter notebook, Python script or interactive shell
 ```python
 import rpa as r
 ```
 
-Notes on different operating systems and optional visual automation mode -
+Notes on different operating systems and optional visual automation mode
 - :rainbow_flag: **Windows -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 - :apple: **macOS -** Catalina update introduces tighter app security, see solutions for [PhantomJS](https://github.com/tebelorg/RPA-Python/issues/79) and [Java popups](https://github.com/tebelorg/RPA-Python/issues/78)
 - :penguin: **Linux -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
 
-# Use Cases
+# Examples
 
-RPA for Python's simple and powerful API makes robotic process automation fun! You can use it to quickly automate repetitive time-consuming tasks, whether the tasks involve websites, desktop applications, or the command line.
+Our simple and powerful API makes robotic process automation fun! You can use it to quickly automate repetitive time-consuming tasks, whether the tasks involve websites, desktop applications, or the command line.
 
-#### WEB AUTOMATION&ensp;:spider_web:
+Check out our [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this advanced hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
+
+## WEB AUTOMATION&ensp;:spider_web:
 ```python
 r.init()
 r.url('https://www.google.com')
@@ -35,7 +39,7 @@ r.snap('page', 'results.png')
 r.close()
 ```
 
-#### VISUAL AUTOMATION&ensp;:see_no_evil:
+## VISUAL AUTOMATION&ensp;:see_no_evil:
 ```python
 r.init(visual_automation = True)
 r.dclick('outlook_icon.png')
@@ -46,7 +50,7 @@ r.click('send_button.png')
 r.close()
 ```
 
-#### OCR AUTOMATION&ensp;🧿
+## OCR AUTOMATION&ensp;🧿
 ```python
 r.init(visual_automation = True, chrome_browser = False)
 print(r.read('pdf_window.png'))
@@ -56,7 +60,7 @@ print(r.read(r.mouse_x(), r.mouse_y(), r.mouse_x() + 400, r.mouse_y() + 200))
 r.close()
 ```
 
-#### KEYBOARD AUTOMATION&ensp;:musical_keyboard:
+## KEYBOARD AUTOMATION&ensp;:musical_keyboard:
 ```python
 r.init(visual_automation = True, chrome_browser = False)
 r.keyboard('[cmd][space]')
@@ -68,7 +72,7 @@ r.snap('page.png', 'results.png')
 r.close()
 ```
 
-#### MOUSE AUTOMATION&ensp;:mouse:
+## MOUSE AUTOMATION&ensp;:mouse:
 ```python
 r.init(visual_automation = True)
 r.type(600, 300, 'open source')
@@ -83,18 +87,16 @@ r.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this advanced hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
+## ELEMENT IDENTIFIERS
+An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with.
 
-#### ELEMENT IDENTIFIERS
-An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
-
-- :globe_with_meridians: For web automation, the web element identifier can be XPath selector, CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function.
+- :globe_with_meridians: For web automation, the web element identifier can be XPath selector, CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
 
 - :camera_flash: An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications, terminal window or web browser). If the image file specified does not exist, OCR will be used to search for that text on the screen to act on the UI element containing the text, eg r.click('Submit Form.png'). Transparency (0% opacity) is supported in .png images. x, y coordinates of elements on the screen can be used as well.
 
 - :page_facing_up: A further image identifier example is an image of the window (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots of application windows, containers, frames, textboxes with varying content. Also for read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
 
-#### CORE FUNCTIONS
+## CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
 init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup on first run
@@ -104,7 +106,7 @@ update()||for updating package without internet
 
 >_to print and log debug info to rpa_python.log use debug(True), to switch off use debug(False)_
 
-#### BASIC FUNCTIONS
+## BASIC FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
 url()|webpage_url (no parameter to return current URL)|go to web URL
@@ -123,7 +125,7 @@ ask()|text_to_prompt|ask & return user input
 
 >_to wait for an element to appear until timeout() value, use hover(). to drag-and-drop, [you can do this](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)_
 
-#### PRO FUNCTIONS
+## PRO FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
 keyboard()|keys_and_modifiers (using visual automation)|send keystrokes to screen
@@ -143,7 +145,7 @@ timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout
 keyboard() modifiers and special keys -
 >_[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]_
 
-#### HELPER FUNCTIONS
+## HELPER FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
 exist()|element_identifier|return True or False if element exists before timeout
@@ -159,6 +161,10 @@ timer()||return time elapsed in sec between calls as float
 
 >_to type large amount of text quickly, use clipboard() and keyboard() to paste instead of type()_
 
+# High Level Architecture Diagram
+
+![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
+
 # About & Credits
 
 TagUI is the leading open-source RPA software :robot: with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
@@ -167,7 +173,6 @@ Over the past few months I take on a daddy role full-time, taking care of my new
 
 Lastly, at only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture -
 
-![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
 I would like to credit and express my appreciation below :bowing_man:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
