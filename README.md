@@ -2,7 +2,7 @@
 
 [**v1.32**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Run in Colab**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
->_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will continue to work._
+>_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` still work._
 
 ![RPA for Python demo in Jupyter notebook](https://raw.githubusercontent.com/tebelorg/Tump/master/tagui_python.gif)
 
@@ -23,7 +23,7 @@ Notes on different operating systems and optional visual automation mode -
 
 # Use Cases
 
-RPA for Python's simple and powerful API makes robotic process automation fun! You can use it to quickly automate repetitive time-consuming tasks, whether the tasks involve websites, desktop applications, or the command line.
+RPA for Python's simple and powerful API makes robotic process automation fun! You can use it to quickly automate repetitive time-consuming tasks on websites, desktop applications, or the command line.
 
 #### WEB AUTOMATION&ensp;:spider_web:
 ```python
@@ -62,7 +62,7 @@ r.init(visual_automation = True, chrome_browser = False)
 r.keyboard('[cmd][space]')
 r.keyboard('safari[enter]')
 r.keyboard('[cmd]t')
-r.keyboard('joker[enter]')
+r.keyboard('mortal kombat[enter]')
 r.wait(2.5)
 r.snap('page.png', 'results.png')
 r.close()
@@ -73,8 +73,8 @@ r.close()
 r.init(visual_automation = True)
 r.type(600, 300, 'open source')
 r.click(900, 300)
-r.snap('page.bmp', 'results.bmp')
-r.hover('button_to_drag.bmp')
+r.snap('page.png', 'results.png')
+r.hover('button_to_drag.png')
 r.mouse('down')
 r.hover(r.mouse_x() + 300, r.mouse_y())
 r.mouse('up')
@@ -83,7 +83,7 @@ r.close()
 
 # API Reference
 
-Check out [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this advanced hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
+See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082). You can even run on the cloud [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) on your phone browser (eg datascraping in headless mode).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
@@ -141,7 +141,7 @@ vision()|command_to_run (Python code for SikuliX)|run custom SikuliX commands
 timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
 
 keyboard() modifiers and special keys -
->_[shift] [ctrl] [alt] [cmd] [win] [meta] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]_
+>_[shift] [ctrl] [alt] [win] [cmd] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]_
 
 #### HELPER FUNCTIONS
 Function|Parameters|Purpose
@@ -157,19 +157,19 @@ title()||return page title of current web page as string
 text()||return text content of current web page as string
 timer()||return time elapsed in sec between calls as float
 
->_to type large amount of text quickly, use clipboard() and keyboard() to paste instead of type()_
+>_to type a large amount of text quickly, use clipboard() and keyboard() to paste instead of type()_
 
 # About & Credits
 
-TagUI is the leading open-source RPA software :robot: with thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is a leading open-source RPA software :robot: with tens of thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over the past few months I take on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between the nannying, I use my time pockets to create this Python package that's built on TagUI. I hope that RPA for Python and ML frameworks would be good friends, and `pip install rpa` would make life easier for Python users.
+Over the past few months I take on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I use my time pockets to create this Python package built on TagUI. I hope that RPA for Python and ML frameworks would be good friends, and `pip install rpa` would make life easier for Python users.
 
-Lastly, at only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture -
+At only ~1k lines of code, I hope would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture -
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
-I would like to credit and express my appreciation below :bowing_man:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
+I would like to credit and express my appreciation below :heart:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
 - [TagUI](https://github.com/kelaberetiv/TagUI/tree/pre_v6) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](https://github.com/RaiMan/SikuliX1) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
