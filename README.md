@@ -83,7 +83,7 @@ r.close()
 
 # API Reference
 
-See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082). You can even run on the cloud [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) on your phone browser (eg datascraping in headless mode).
+See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082). You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
@@ -161,11 +161,11 @@ timer()||return time elapsed in sec between calls as float
 
 # About & Credits
 
-TagUI is a leading open-source RPA software :robot: with tens of thousands of active users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is a leading open-source RPA software :robot: with tens of thousands of users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
 Over the past few months I take on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I use my time pockets to create this Python package built on TagUI. I hope that RPA for Python and ML frameworks would be good friends, and `pip install rpa` would make life easier for Python users.
 
-At only ~1k lines of code, I hope would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture -
+At only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture.
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
