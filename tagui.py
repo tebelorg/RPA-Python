@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.33.0'
+__version__ = '1.34.0'
 
 import subprocess
 import os
@@ -417,7 +417,7 @@ def setup():
 
     return True
 
-def init(visual_automation = False, chrome_browser = True):
+def init(visual_automation = False, chrome_browser = True, headless_mode = False):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
@@ -498,6 +498,8 @@ def init(visual_automation = False, chrome_browser = True):
     browser_option = ''
     if chrome_browser:
         browser_option = 'chrome'
+    if headless_mode:
+        browser_option = 'headless'
     
     # entry shell command to invoke tagui process
     tagui_cmd = tagui_executable + ' rpa_python ' + browser_option
