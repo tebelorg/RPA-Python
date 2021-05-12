@@ -101,8 +101,9 @@ init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup 
 close()||close TagUI, Chrome browser, SikuliX
 pack()||for deploying package without internet
 update()||for updating package without internet
+debug()|True or False|print & log debug info to rpa_python.log
 
->_to print and log debug info to rpa_python.log use debug(True), to switch off use debug(False)_
+>_by default Chrome runs with visible mode, to run Chrome invisibly use init(headless_mode = True)_
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
