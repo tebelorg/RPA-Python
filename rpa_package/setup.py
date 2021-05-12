@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rpa',
-    version='1.32.0',
+    version='1.33.0',
     py_modules=['rpa'], install_requires=['tagui>=1.32.0'],
     author='Ken Soh',
     author_email='opensource@tebel.org',
