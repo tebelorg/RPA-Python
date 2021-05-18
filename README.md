@@ -83,7 +83,7 @@ r.close()
 
 # API Reference
 
-See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, see this [simple hack](https://github.com/tebelorg/RPA-Python/issues/133#issuecomment-634113838). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082). You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode).
+See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, use [headless_mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082). You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id="email"] is an XPath pointing to the webpage element having the id attribute "email".
