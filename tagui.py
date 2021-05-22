@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.34.0'
+__version__ = '1.35.0'
 
 import subprocess
 import os
@@ -453,11 +453,6 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
     # on macOS, patch PhantomJS to latest v2.1.1 to solve OpenSSL issue
     if platform.system() == 'Darwin' and not _patch_macos_pjs(): return False
 
-    # on Windows, check if there is space in folder path name
-    if platform.system() == 'Windows' and ' ' in os.getcwd():
-        print('[RPA][INFO] - to use TagUI on Windows, avoid space in folder path name')
-        return False
-
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
         # check for working java jdk for visual automation mode
@@ -506,7 +501,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
 
     # run tagui end processes script to flush dead processes
     # for eg execution ended with ctrl+c or forget to close()
-    os.system(end_processes_executable)
+    os.system('"' + end_processes_executable + '"')
 
     try:
         # launch tagui using subprocess

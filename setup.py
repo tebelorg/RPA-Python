@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tagui',
-    version='1.34.0',
+    version='1.35.0',
     py_modules=['tagui'],
     author='Ken Soh',
     author_email='opensource@tebel.org',
