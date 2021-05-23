@@ -15,10 +15,10 @@ r.url('https://ca.yahoo.com')
 
 # use type() to enter text into an UI element or x, y location
 # '[enter]' = enter key, '[clear]' = clear field
-r.type('search-box', 'github')
+r.type('search-input', 'github')
 
 # use read() to fetch and return text from UI element
-search_text = r.read('search-box')
+search_text = r.read('search-input')
 print(search_text)
 
 # use click() to click on an UI element or x, y location
