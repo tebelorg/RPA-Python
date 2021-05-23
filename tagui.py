@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.35.0'
+__version__ = '1.36.0'
 
 import subprocess
 import os
@@ -37,6 +37,12 @@ _tagui_id = 0
 # to track the original directory when init() was called
 _tagui_init_directory = ''
 
+# to track location of TagUI (default user home folder)
+if platform.system() == 'Windows':
+    _tagui_location = os.environ['APPDATA']
+else:
+    _tagui_location = os.path.expanduser('~')
+ 
 # delete tagui temp output text file to avoid reading old data 
 if os.path.isfile('rpa_python.txt'): os.remove('rpa_python.txt')
 
@@ -218,8 +224,8 @@ def _tagui_delta(base_directory = None):
 
 def _patch_macos_pjs():
     """patch PhantomJS to latest v2.1.1 that plays well with new macOS versions"""
-    if platform.system() == 'Darwin' and not os.path.isdir(os.path.expanduser('~') + '/.tagui/src/phantomjs_old'):
-        original_directory = os.getcwd(); os.chdir(os.path.expanduser('~') + '/.tagui/src')
+    if platform.system() == 'Darwin' and not os.path.isdir(tagui_location() + '/.tagui/src/phantomjs_old'):
+        original_directory = os.getcwd(); os.chdir(tagui_location() + '/.tagui/src')
         print('[RPA][INFO] - downloading latest PhantomJS to fix OpenSSL issue')
         download('https://github.com/tebelorg/Tump/releases/download/v1.0.0/phantomjs-2.1.1-macosx.zip', 'phantomjs.zip')
         if not os.path.isfile('phantomjs.zip'):
@@ -241,6 +247,12 @@ def debug(on_off = None):
     global _tagui_debug
     if on_off is not None: _tagui_debug = on_off
     return _tagui_debug
+
+def tagui_location(location = None):
+    """function to set location of TagUI installation"""
+    global _tagui_location
+    if location is not None: _tagui_location = location
+    return _tagui_location
 
 def unzip(file_to_unzip = None, unzip_location = None):
     """function to unzip zip file to specified location"""
@@ -267,10 +279,7 @@ def setup():
     """function to setup TagUI to user home folder on Linux / macOS / Windows"""
 
     # get user home folder location to setup tagui
-    if platform.system() == 'Windows':
-        home_directory = os.environ['APPDATA']
-    else:
-        home_directory = os.path.expanduser('~')
+    home_directory = tagui_location()
 
     print('[RPA][INFO] - setting up TagUI for use in your Python environment')
 
@@ -434,9 +443,9 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
 
     # get user home folder location to locate tagui executable
     if platform.system() == 'Windows':
-        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+        tagui_directory = tagui_location() + '/' + 'tagui'
     else:
-        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
+        tagui_directory = tagui_location() + '/' + '.tagui'
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
@@ -585,13 +594,13 @@ def pack():
 
     # next download jython to tagui/src/sikulix folder (after init() it can be moved away)
     if platform.system() == 'Windows':
-        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+        tagui_directory = tagui_location() + '/' + 'tagui'
         # pack in Visual C++ MSVCR110.dll dependency from PHP for offline installation 
         vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
         if not download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
             return False
     else:
-        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
+        tagui_directory = tagui_location() + '/' + '.tagui'
     sikulix_directory = tagui_directory + '/' + 'src' + '/' + 'sikulix'
     sikulix_jython_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/jython-standalone-2.7.1.jar'
     if not download(sikulix_jython_url, sikulix_directory + '/' + 'jython-standalone-2.7.1.jar'):
@@ -662,6 +671,10 @@ if platform.system() == 'Windows':
     base_directory = os.environ['APPDATA'] + '/tagui'
 else:
     base_directory = os.path.expanduser('~') + '/.tagui'
+
+# uncomment below to define and use custom TagUI folder
+#base_directory = 'your_full_path'
+
 r.unzip('update.zip', base_directory + '/src')
 if os.path.isfile('update.zip'): os.remove('update.zip')
 
@@ -696,6 +709,7 @@ print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
         if os.path.isfile('rpa_update.zip'): os.remove('rpa_update.zip')
         print('[RPA][INFO] - done. copy or email update.py to your target computer and run')
         print('[RPA][INFO] - python update.py to update RPA for Python to version ' + rpa_python_py)
+        print('[RPA][INFO] - to use custom TagUI folder, set base_directory in update.py')
         return True
 
     except Exception as e:
