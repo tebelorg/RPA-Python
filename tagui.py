@@ -1,8 +1,8 @@
 """INTEGRATION ENGINE OF RPA FOR PYTHON PACKAGE ~ TEBEL.ORG"""
-# Apache License 2.0, Copyright 2020 Tebel.Automation Private Limited
+# Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.27.1'
+__version__ = '1.36.0'
 
 import subprocess
 import os
@@ -37,6 +37,12 @@ _tagui_id = 0
 # to track the original directory when init() was called
 _tagui_init_directory = ''
 
+# to track location of TagUI (default user home folder)
+if platform.system() == 'Windows':
+    _tagui_location = os.environ['APPDATA']
+else:
+    _tagui_location = os.path.expanduser('~')
+ 
 # delete tagui temp output text file to avoid reading old data 
 if os.path.isfile('rpa_python.txt'): os.remove('rpa_python.txt')
 
@@ -216,6 +222,22 @@ def _tagui_delta(base_directory = None):
     delta_done_file.close()
     return True
 
+def _patch_macos_pjs():
+    """patch PhantomJS to latest v2.1.1 that plays well with new macOS versions"""
+    if platform.system() == 'Darwin' and not os.path.isdir(tagui_location() + '/.tagui/src/phantomjs_old'):
+        original_directory = os.getcwd(); os.chdir(tagui_location() + '/.tagui/src')
+        print('[RPA][INFO] - downloading latest PhantomJS to fix OpenSSL issue')
+        download('https://github.com/tebelorg/Tump/releases/download/v1.0.0/phantomjs-2.1.1-macosx.zip', 'phantomjs.zip')
+        if not os.path.isfile('phantomjs.zip'):
+            print('[RPA][ERROR] - unable to download latest PhantomJS v2.1.1')
+            os.chdir(original_directory); return False
+        unzip('phantomjs.zip'); os.rename('phantomjs', 'phantomjs_old'); os.rename('phantomjs-2.1.1-macosx', 'phantomjs')
+        if os.path.isfile('phantomjs.zip'): os.remove('phantomjs.zip')
+        os.system('chmod -R 755 phantomjs > /dev/null 2>&1')
+        os.chdir(original_directory); return True
+    else:
+        return True
+
 def coord(x_coordinate = 0, y_coordinate = 0):
     """function to form a coordinate string from x and y integers"""
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
@@ -225,6 +247,12 @@ def debug(on_off = None):
     global _tagui_debug
     if on_off is not None: _tagui_debug = on_off
     return _tagui_debug
+
+def tagui_location(location = None):
+    """function to set location of TagUI installation"""
+    global _tagui_location
+    if location is not None: _tagui_location = location
+    return _tagui_location
 
 def unzip(file_to_unzip = None, unzip_location = None):
     """function to unzip zip file to specified location"""
@@ -247,28 +275,20 @@ def unzip(file_to_unzip = None, unzip_location = None):
     zip_file.close()
     return True
 
-def setup(installation_dir = None):
+def setup():
     """function to setup TagUI to user home folder on Linux / macOS / Windows"""
 
     # get user home folder location to setup tagui
-    if platform.system() == 'Windows':
-        home_directory = os.environ['APPDATA']
-    else:
-        home_directory = os.path.expanduser('~')
-
-    # override home folder when manual path is set
-    if installation_dir:
-        home_directory = installation_dir
-        # Check if directory exists, if not create one
-        if not os.path.isdir(home_directory):
-            os.mkdir(home_directory)
+    home_directory = tagui_location()
 
     print('[RPA][INFO] - setting up TagUI for use in your Python environment')
 
     # special check for macOS - download() will fail due to no SSL certs for Python 3
     if platform.system() == 'Darwin' and _python3_env():
-        if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
-            os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
+        if os.system('/Applications/Python\ 3.9/Install\ Certificates.command > /dev/null 2>&1') != 0:
+            if os.system('/Applications/Python\ 3.8/Install\ Certificates.command > /dev/null 2>&1') != 0:
+                if os.system('/Applications/Python\ 3.7/Install\ Certificates.command > /dev/null 2>&1') != 0:
+                    os.system('/Applications/Python\ 3.6/Install\ Certificates.command > /dev/null 2>&1')
 
     # set tagui zip filename for respective operating systems
     if platform.system() == 'Linux': tagui_zip_file = 'TagUI_Linux.zip'
@@ -312,14 +332,6 @@ def setup(installation_dir = None):
     # set correct tagui folder for different operating systems
     if platform.system() == 'Windows':
         tagui_directory = home_directory + '/' + 'tagui'
-
-    elif installation_dir:
-        # copy content to parent folder
-        from distutils.dir_util import copy_tree, remove_tree
-        tagui_directory = home_directory
-        copy_tree(home_directory + '/' + 'tagui', home_directory)
-        remove_tree(home_directory + '/' + 'tagui')
-
     else:
         tagui_directory = home_directory + '/' + '.tagui'
 
@@ -379,47 +391,9 @@ def setup(installation_dir = None):
             print('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False
 
-        # check for openssl, a dependency of phantomjs removed in newer macOS
-        if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-
-            # if openssl is missing, first attempt to install using homebrew
-            os.system('brew uninstall openssl > /dev/null 2>&1')
-            os.system('brew uninstall openssl > /dev/null 2>&1')
-            os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb > /dev/null 2>&1')
-
-            # if it is still missing, attempt again by first installing homebrew
-            if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-                print('')
-                print('[RPA][INFO] - now installing OpenSSL dependency using Homebrew')
-                print('[RPA][INFO] - you may be prompted for login password to continue')
-                print('')
-                os.system('echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
-                os.system('brew uninstall openssl > /dev/null 2>&1')
-                os.system('brew uninstall openssl > /dev/null 2>&1')
-                os.system('brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
-
-                # if it is still missing, prompt user to install homebrew and openssl
-                if not os.path.isfile('/usr/local/opt/openssl/lib/libssl.1.0.0.dylib'):
-                    print('[RPA][INFO] - OpenSSL was not able to be installed automatically')
-                    print('[RPA][INFO] - run below commands in your terminal to install manually')
-                    print('[RPA][INFO] - after that, TagUI ready for use in your Python environment')
-                    print('')
-                    print('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"')
-                    print('brew uninstall openssl; brew uninstall openssl; brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb')
-                    print('')
-                    print('[RPA][INFO] - if there is an issue running brew command, check the solution below')
-                    print('[RPA][INFO] - https://github.com/kelaberetiv/TagUI/issues/86#issuecomment-532466727')
-                    print('')
-                    return False
-
-                else:
-                    print('[RPA][INFO] - TagUI now ready for use in your Python environment')
-
-            else:
-                print('[RPA][INFO] - TagUI now ready for use in your Python environment')
-
-        else:
-            print('[RPA][INFO] - TagUI now ready for use in your Python environment')
+        # patch PhantomJS to solve OpenSSL issue
+        if not _patch_macos_pjs(): return False
+        print('[RPA][INFO] - TagUI now ready for use in your Python environment')
 
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
@@ -452,7 +426,7 @@ def setup(installation_dir = None):
 
     return True
 
-def init(visual_automation = False, chrome_browser = True, installation_dir = None):
+def init(visual_automation = False, chrome_browser = True, headless_mode = False):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
@@ -469,35 +443,24 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
 
     # get user home folder location to locate tagui executable
     if platform.system() == 'Windows':
-        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+        tagui_directory = tagui_location() + '/' + 'tagui'
     else:
-        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
-
-    # check if custom installation path is set
-    if installation_dir:
-        if "tagui" in installation_dir:
-            print('[RPA][INFO] - It was detected to use a custom directory.')
-            tagui_directory = installation_dir
-        else:
-            print('[RPA][ERROR] - Please use path with target directory name tagui.')
-            return False
+        tagui_directory = tagui_location() + '/' + '.tagui'
 
     tagui_executable = tagui_directory + '/' + 'src' + '/' + 'tagui'
     end_processes_executable = tagui_directory + '/' + 'src' + '/' + 'end_processes'
 
     # if tagui executable is not found, initiate setup() to install tagui
     if not os.path.isfile(tagui_executable):
-        if not setup(installation_dir):
+        if not setup():
             # error message is shown by setup(), no need for message here
             return False
 
     # sync tagui delta files for current release if needed
     if not _tagui_delta(tagui_directory): return False
 
-    # on Windows, check if there is space in folder path name
-    if platform.system() == 'Windows' and ' ' in os.getcwd():
-        print('[RPA][INFO] - to use RPA for Python on Windows, avoid space in folder path name')
-        return False
+    # on macOS, patch PhantomJS to latest v2.1.1 to solve OpenSSL issue
+    if platform.system() == 'Darwin' and not _patch_macos_pjs(): return False
 
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
@@ -539,13 +502,15 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
     browser_option = ''
     if chrome_browser:
         browser_option = 'chrome'
+    if headless_mode:
+        browser_option = 'headless'
     
     # entry shell command to invoke tagui process
     tagui_cmd = tagui_executable + ' rpa_python ' + browser_option
 
     # run tagui end processes script to flush dead processes
     # for eg execution ended with ctrl+c or forget to close()
-    os.system(end_processes_executable)
+    os.system('"' + end_processes_executable + '"')
 
     try:
         # launch tagui using subprocess
@@ -610,39 +575,32 @@ def init(visual_automation = False, chrome_browser = True, installation_dir = No
         _tagui_started = False
         return False
 
-def pack(installation_dir = None):
+def pack():
     """function to pack TagUI files for installation on an air-gapped computer without internet"""
 
     print('[RPA][INFO] - pack() is to deploy RPA for Python to a computer without internet')
     print('[RPA][INFO] - update() is to update an existing installation deployed from pack()')
     print('[RPA][INFO] - detecting and zipping your TagUI installation to rpa_python.zip ...')
 
-    # check custom installation path
-    if installation_dir:
-        print('[RPA][INFO] - It was detected to use a custom directory as source for packing.')
-        if not os.path.isdir(installation_dir + "/src"):
-            print('[RPA][ERROR] - Your target destination is not a valid path.')
-            return False
-
     # first make sure TagUI files have been downloaded and synced to latest stable delta files
     global _tagui_started
     if _tagui_started:
         if not close():
             return False
-    if not init(False, False, installation_dir):
+    if not init(False, False):
         return False
     if not close():
         return False
 
     # next download jython to tagui/src/sikulix folder (after init() it can be moved away)
     if platform.system() == 'Windows':
-        tagui_directory = os.environ['APPDATA'] + '/' + 'tagui'
+        tagui_directory = tagui_location() + '/' + 'tagui'
         # pack in Visual C++ MSVCR110.dll dependency from PHP for offline installation 
         vcredist_x86_url = 'https://raw.githubusercontent.com/tebelorg/Tump/master/vcredist_x86.exe'
         if not download(vcredist_x86_url, tagui_directory + '/vcredist_x86.exe'):
             return False
     else:
-        tagui_directory = os.path.expanduser('~') + '/' + '.tagui'
+        tagui_directory = tagui_location() + '/' + '.tagui'
     sikulix_directory = tagui_directory + '/' + 'src' + '/' + 'sikulix'
     sikulix_jython_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/jython-standalone-2.7.1.jar'
     if not download(sikulix_jython_url, sikulix_directory + '/' + 'jython-standalone-2.7.1.jar'):
@@ -708,25 +666,15 @@ update_zip_file = open('update.zip','wb')
 update_zip_file.write(base64.b64decode(rpa_update_zip))
 update_zip_file.close()
 
-# check tagui path
+# unzip update.zip to tagui folder in user home directory
 if platform.system() == 'Windows':
     base_directory = os.environ['APPDATA'] + '/tagui'
 else:
     base_directory = os.path.expanduser('~') + '/.tagui'
 
-if len(sys.argv) == 2:
-    print('[RPA][INFO] - It was detected to use a custom directory for updating.')
-    if os.path.isdir(sys.argv[1]):
-        if "tagui" in sys.argv[1]:
-            base_directory = sys.argv[1]
-        else:
-            print('[RPA][ERROR] - Please use path with target directory name tagui.')
-            sys.exit(1)
-    else:
-        print('[RPA][ERROR] - Your target destination is not a valid path.')
-        sys.exit(1)
+# uncomment below to define and use custom TagUI folder
+#base_directory = 'your_full_path'
 
-# unzip update.zip to tagui folder in target directory
 r.unzip('update.zip', base_directory + '/src')
 if os.path.isfile('update.zip'): os.remove('update.zip')
 
@@ -761,6 +709,7 @@ print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
         if os.path.isfile('rpa_update.zip'): os.remove('rpa_update.zip')
         print('[RPA][INFO] - done. copy or email update.py to your target computer and run')
         print('[RPA][INFO] - python update.py to update RPA for Python to version ' + rpa_python_py)
+        print('[RPA][INFO] - to use custom TagUI folder, set base_directory in update.py')
         return True
 
     except Exception as e:
