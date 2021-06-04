@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.36.0'
+__version__ = '1.37.0'
 
 import subprocess
 import os
@@ -213,8 +213,8 @@ def _tagui_delta(base_directory = None):
 
     # make sure execute permission is there for .tagui/src/tagui and end_processes
     if platform.system() in ['Linux', 'Darwin']:
-        os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'tagui > /dev/null 2>&1')
-        os.system('chmod -R 755 ' + base_directory + '/' + 'src' + '/' + 'end_processes > /dev/null 2>&1')
+        os.system('chmod -R 755 "' + base_directory + '/' + 'src' + '/' + 'tagui" > /dev/null 2>&1')
+        os.system('chmod -R 755 "' + base_directory + '/' + 'src' + '/' + 'end_processes" > /dev/null 2>&1')
 
     # create marker file to skip syncing delta files next time for current release
     delta_done_file = _py23_open(base_directory + '/' + 'rpa_python_' + __version__, 'w')
@@ -362,7 +362,7 @@ def setup():
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
-        if os.system('chmod -R 755 ' + tagui_directory + ' > /dev/null 2>&1') != 0:
+        if os.system('chmod -R 755 "' + tagui_directory + '" > /dev/null 2>&1') != 0:
             print('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False 
 
@@ -387,7 +387,7 @@ def setup():
         # zipfile extractall does not preserve execute permissions
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
-        if os.system('chmod -R 755 ' + tagui_directory + ' > /dev/null 2>&1') != 0:
+        if os.system('chmod -R 755 "' + tagui_directory + '" > /dev/null 2>&1') != 0:
             print('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False
 
@@ -398,7 +398,7 @@ def setup():
     # perform Windows specific setup actions
     if platform.system() == 'Windows':
         # check that tagui packaged php is working, it has dependency on MSVCR110.dll
-        if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+        if os.system('"' + tagui_directory + '/' + 'src' + '/' + 'php/php.exe" -v > nul 2>&1') != 0:
             print('[RPA][INFO] - now installing missing Visual C++ Redistributable dependency')
 
             # download from hosted setup file, if not already present when deployed using pack()
@@ -408,10 +408,10 @@ def setup():
                     return False
 
             # run setup to install the MSVCR110.dll dependency (user action required)
-            os.system(tagui_directory + '/vcredist_x86.exe')
+            os.system('"' + tagui_directory + '/vcredist_x86.exe"')
                 
             # check again if tagui packaged php is working, after installing vcredist_x86.exe
-            if os.system(tagui_directory + '/' + 'src' + '/' + 'php/php.exe -v > nul 2>&1') != 0:
+            if os.system('"' + tagui_directory + '/' + 'src' + '/' + 'php/php.exe" -v > nul 2>&1') != 0:
                 print('[RPA][INFO] - MSVCR110.dll is still missing, install vcredist_x86.exe from')
                 print('[RPA][INFO] - the vcredist_x86.exe file in ' + home_directory + '\\tagui or from')
                 print('[RPA][INFO] - https://www.microsoft.com/en-us/download/details.aspx?id=30679')
@@ -490,7 +490,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
                 # start a dummy first run if never run before, to let sikulix integrate jython 
                 sikulix_folder = tagui_directory + '/' + 'src' + '/' + 'sikulix'
                 if os.path.isfile(sikulix_folder + '/' + 'jython-standalone-2.7.1.jar'):
-                    os.system('java -jar ' + sikulix_folder + '/' + 'sikulix.jar -h ' + shell_silencer)
+                    os.system('java -jar "' + sikulix_folder + '/' + 'sikulix.jar" -h ' + shell_silencer)
                 _visual_flow()
     else:
         _python_flow()
@@ -528,7 +528,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
             if _process.poll() is not None:
                 print('[RPA][ERROR] - following happens when starting TagUI...')
                 print('')
-                os.system(tagui_cmd)
+                os.system('"' + tagui_cmd + '"')
                 print('')
                 _tagui_visual = False
                 _tagui_chrome = False
@@ -680,8 +680,8 @@ if os.path.isfile('update.zip'): os.remove('update.zip')
 
 # make sure execute permission is there for Linux / macOS
 if platform.system() in ['Linux', 'Darwin']:
-    os.system('chmod -R 755 ' + base_directory + '/src/tagui > /dev/null 2>&1')
-    os.system('chmod -R 755 ' + base_directory + '/src/end_processes > /dev/null 2>&1')
+    os.system('chmod -R 755 "' + base_directory + '/src/tagui" > /dev/null 2>&1')
+    os.system('chmod -R 755 "' + base_directory + '/src/end_processes" > /dev/null 2>&1')
 
 # create marker file to skip syncing for current release
 delta_done_file = r._py23_open(base_directory + '/' + 'rpa_python_' + __version__, 'w')
