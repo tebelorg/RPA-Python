@@ -116,7 +116,7 @@ rclick()|element_identifier (or x, y using visual automation)|right-click on ele
 dclick()|element_identifier (or x, y using visual automation)|double-click on element
 hover()|element_identifier (or x, y using visual automation)|move mouse to element
 type()|element_identifier (or x, y), text_to_type ('[enter]', '[clear]')|enter text at element
-select()|element_identifier (or x, y), option_value (or x, y)|choose dropdown option
+select()|element_identifier (or x, y), option_value/text (or x, y)|choose dropdown option
 read()|element_identifier (page = web page) (or x1, y1, x2, y2)|fetch & return element text
 snap()|element_identifier (page = web page), filename_to_save|save screenshot to file
 load()|filename_to_load|load & return file content
