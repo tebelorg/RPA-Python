@@ -116,7 +116,7 @@ rclick()|element_identifier (or x, y using visual automation)|right-click on ele
 dclick()|element_identifier (or x, y using visual automation)|double-click on element
 hover()|element_identifier (or x, y using visual automation)|move mouse to element
 type()|element_identifier (or x, y), text_to_type ('[enter]', '[clear]')|enter text at element
-select()|element_identifier (or x, y), option_value/text (or x, y)|choose dropdown option
+select()|element_identifier (or x, y), option_value / text (or x, y)|choose dropdown option
 read()|element_identifier (page = web page) (or x1, y1, x2, y2)|fetch & return element text
 snap()|element_identifier (page = web page), filename_to_save|save screenshot to file
 load()|filename_to_load|load & return file content
@@ -174,7 +174,7 @@ At only ~1k lines of code, it would make my day to see developers of other langu
 
 I would like to credit and express my appreciation below :heart:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
 
-- [TagUI](https://github.com/kelaberetiv/TagUI/tree/pre_v6) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
+- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](https://github.com/RaiMan/SikuliX1) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
 - [CasperJS](https://github.com/casperjs/casperjs) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
 - [PhantomJS](https://github.com/ariya/phantomjs) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
