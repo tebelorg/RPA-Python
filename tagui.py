@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.37.0'
+__version__ = '1.38.0'
 
 import subprocess
 import os
@@ -927,6 +927,7 @@ def url(webpage_url = None):
         return False
 
     if webpage_url is not None and webpage_url != '':
+        if webpage_url.lower().startswith('www.'): webpage_url = 'https://' + webpage_url 
         if webpage_url.startswith('http://') or webpage_url.startswith('https://'):
             if not send(_esq(webpage_url)):
                 return False
