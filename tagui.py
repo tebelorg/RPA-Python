@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.39.0'
+__version__ = '1.40.0'
 
 import subprocess
 import os
@@ -1279,7 +1279,9 @@ def table(element_identifier = None, filename_to_save = None):
         print('[RPA][ERROR] - filename missing for table()')
         return False
 
-    elif not exist(element_identifier):
+    element_identifier = str(element_identifier)
+
+    if not exist(element_identifier):
         print('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 

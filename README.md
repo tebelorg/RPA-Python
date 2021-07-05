@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.39**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
+[**v1.40**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -132,7 +132,7 @@ Function|Parameters|Purpose
 keyboard()|keys_and_modifiers (using visual automation)|send keystrokes to screen
 mouse()|'down' or 'up' (using visual automation)|send mouse event to screen
 wait()|delay_in_seconds (default 5 seconds)|explicitly wait for some time
-table()|element_identifier (XPath only), filename_to_save|save basic HTML table to CSV
+table()|table number or XPath, filename_to_save|save webpage table to CSV
 upload()|element_identifier (CSS only), filename_to_upload|upload file to web element
 download()|download_url, filename_to_save(optional)|download from URL to file
 unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified location
