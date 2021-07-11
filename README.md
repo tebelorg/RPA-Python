@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.40**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
+[**v1.41**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -85,7 +85,9 @@ r.close()
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To automate Chrome browser invisibly, use [headless_mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
 
-You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode). This package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) by design and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully control error handling [using this example](https://github.com/tebelorg/RPA-Python/issues/269), eg snapshot of missing element or posting to custom API endpoint.
+You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode). This RPA package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) by design and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully control error handling, [refer to this example](https://github.com/tebelorg/RPA-Python/issues/269), eg snapshot of missing element or posting to custom API endpoint.
+
+For setting or returning web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). If you require fine-grained control over setting or returning the parent folder location to install and use TagUI RPA, use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id='email'] is an XPath pointing to the webpage element having the id attribute 'email'.
