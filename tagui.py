@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.40.0'
+__version__ = '1.41.0'
 
 import subprocess
 import os
@@ -36,6 +36,9 @@ _tagui_id = 0
 
 # to track the original directory when init() was called
 _tagui_init_directory = ''
+
+# to track file download directory for web browser
+_tagui_download_directory = ''
 
 # to track location of TagUI (default user home folder)
 if platform.system() == 'Windows':
@@ -429,7 +432,7 @@ def setup():
 def init(visual_automation = False, chrome_browser = True, headless_mode = False):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
-    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
+    global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory, _tagui_download_directory
 
     if _tagui_started:
         print('[RPA][ERROR] - use close() before using init() again')
@@ -564,7 +567,10 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
                 _tagui_id = _tagui_id + 1
 
                 # set variable to track original directory when init() was called
-                _tagui_init_directory = os.getcwd() 
+                _tagui_init_directory = os.getcwd()
+
+                # set variable to track file download directory for web browser 
+                _tagui_download_directory = os.getcwd()
 
                 return True
 
@@ -1669,4 +1675,27 @@ def clipboard(text_to_put = None):
         return False
 
     else:
+        return True
+
+def download_location(location = None):
+    global _tagui_download_directory
+    if not _started():
+        print('[RPA][ERROR] - use init() before using download_location()')
+        return False
+
+    if location is None:
+        return _tagui_download_directory
+
+    if "'" in location:
+        print('[RPA][ERROR] - single quote in location not supported here')
+        return False
+
+    if platform.system() == 'Windows':
+        location = location.replace('/', '\\')
+
+    if not send("chrome_step('Page.setDownloadBehavior',{behavior: 'allow', downloadPath: '" + location + "'});"):
+        return False
+
+    else:
+        _tagui_download_directory = location
         return True
