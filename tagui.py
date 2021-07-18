@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.41.0'
+__version__ = '1.42.0'
 
 import subprocess
 import os
@@ -1229,6 +1229,33 @@ def ask(text_to_prompt = ''):
             return raw_input(text_to_prompt + space_padding)
         else:
             return input(text_to_prompt + space_padding)
+
+def telegram(telegram_id = None, text_to_send = None):
+    if telegram_id is None or telegram_id == '':
+        print('[RPA][ERROR] - Telegram ID missing for telegram()')
+        return False
+
+    if text_to_send is None or text_to_send == '':
+        print('[RPA][ERROR] - text message missing for telegram()')
+        return False
+
+    # in case number is given instead of string
+    telegram_id = str(telegram_id)
+
+    telegram_endpoint = 'https://tebel.org/rpapybot'
+    telegram_params = {'chat_id': telegram_id, 'text': text_to_send}
+
+    if _python2_env():
+        import json; import urllib
+        telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.urlencode(telegram_params)
+        telegram_response = urllib.urlopen(telegram_endpoint).read()
+        return json.loads(telegram_response)['ok']
+        
+    else:
+        import json; import urllib.request; import urllib.parse
+        telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.parse.urlencode(telegram_params)
+        telegram_response = urllib.request.urlopen(telegram_endpoint).read()
+        return json.loads(telegram_response)['ok']
 
 def keyboard(keys_and_modifiers = None):
     if not _started():
