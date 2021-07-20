@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.42.0'
+__version__ = '1.43.0'
 
 import subprocess
 import os
@@ -1734,3 +1734,35 @@ def download_location(location = None):
     else:
         _tagui_download_directory = location
         return True
+
+def get_text(source_text = None, left = None, right = None, count = 1):
+    if source_text is None or left is None or right is None:
+        return ''
+
+    left_position = source_text.find(left)
+    if left_position == -1: return ''
+    right_position = source_text.find(right, left_position + 1)
+    if right_position == -1: return ''
+
+    if count > 1:
+        occurrence_count = 2
+        while occurrence_count <= count:
+            occurrence_count += 1
+            left_position = source_text.find(left, right_position + 1)
+            if left_position == -1: return ''
+            right_position = source_text.find(right, left_position + 1)
+            if right_position == -1: return ''
+
+    return source_text[left_position + len(left) : right_position].strip()
+
+def del_chars(source_text = None, characters = None):
+    if source_text is None:
+        return ''
+
+    elif characters is None:
+        return source_text
+
+    for character in characters:
+        source_text = source_text.replace(character, '')
+
+    return source_text
