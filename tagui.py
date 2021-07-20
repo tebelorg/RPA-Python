@@ -1230,7 +1230,7 @@ def ask(text_to_prompt = ''):
         else:
             return input(text_to_prompt + space_padding)
 
-def telegram(telegram_id = None, text_to_send = None):
+def telegram(telegram_id = None, text_to_send = None, custom_endpoint = None):
     if telegram_id is None or telegram_id == '':
         print('[RPA][ERROR] - Telegram ID missing for telegram()')
         return False
@@ -1245,17 +1245,25 @@ def telegram(telegram_id = None, text_to_send = None):
     telegram_endpoint = 'https://tebel.org/rpapybot'
     telegram_params = {'chat_id': telegram_id, 'text': text_to_send}
 
-    if _python2_env():
-        import json; import urllib
-        telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.urlencode(telegram_params)
-        telegram_response = urllib.urlopen(telegram_endpoint).read()
-        return json.loads(telegram_response)['ok']
-        
-    else:
-        import json; import urllib.request; import urllib.parse
-        telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.parse.urlencode(telegram_params)
-        telegram_response = urllib.request.urlopen(telegram_endpoint).read()
-        return json.loads(telegram_response)['ok']
+    if custom_endpoint is not None and custom_endpoint != '':
+        telegram_endpoint = custom_endpoint
+
+    # handle case where no internet or url is invalid
+    try:
+        if _python2_env():
+            import json; import urllib
+            telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.urlencode(telegram_params)
+            telegram_response = urllib.urlopen(telegram_endpoint).read()
+            return json.loads(telegram_response)['ok']
+
+        else:
+            import json; import urllib.request; import urllib.parse
+            telegram_endpoint = telegram_endpoint + '/sendMessage.php?' + urllib.parse.urlencode(telegram_params)
+            telegram_response = urllib.request.urlopen(telegram_endpoint).read()
+            return json.loads(telegram_response)['ok']
+
+    except Exception as e:
+        return False
 
 def keyboard(keys_and_modifiers = None):
     if not _started():
