@@ -81,6 +81,15 @@ r.mouse('up')
 r.close()
 ```
 
+#### TELEGRAM NOTIFICATION&ensp;:phone:
+```python
+r.telegram('1234567890', 'ID can be a string or number') 
+r.telegram(1234567890, 'Hello World. 世界, 你好。Hai Dunia. ஹலோ உலகம்.')
+r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the message')
+r.telegram(1234567890, 'Sent using my VPS server endpoint https://tebel.org/rpapybot')
+r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endpoint')
+```
+
 # API Reference
 
 [**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
