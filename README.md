@@ -92,15 +92,15 @@ r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endp
 
 # API Reference
 
-[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
+[**Usage Tips**](#usage-tips)&ensp;|&ensp;[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
 
----
+#### USAGE TIPS
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, [simply look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
 
-You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode). This RPA package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) by design and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully [control error handling](https://github.com/tebelorg/RPA-Python/issues/269) if you wish to, eg snapshot of missing element or posting to custom API endpoint.
+You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully [control error handling](https://github.com/tebelorg/RPA-Python/issues/269) if you wish to, eg snapshot of missing element or posting to custom API endpoint.
 
->For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding parent folder location to install and invoke TagUI ([forked version](https://github.com/tebelorg/TagUI) optimised for this package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
+For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding parent folder location to install and invoke TagUI ([forked version](https://github.com/tebelorg/TagUI) optimised for this package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id='email'] is an XPath pointing to the webpage element having the id attribute 'email'.
