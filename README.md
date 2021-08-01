@@ -92,9 +92,11 @@ r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endp
 
 # API Reference
 
-[**Tips**](#general-tips)&ensp;|&ensp;[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
+[**Notes**](#general-notes)&ensp;|&ensp;[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
 
-#### GENERAL TIPS
+---
+
+#### GENERAL NOTES
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, [simply look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
 
