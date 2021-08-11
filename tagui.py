@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.43.0'
+__version__ = '1.44.0'
 
 import subprocess
 import os
@@ -509,7 +509,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
         browser_option = 'headless'
     
     # entry shell command to invoke tagui process
-    tagui_cmd = tagui_executable + ' rpa_python ' + browser_option
+    tagui_cmd = '"' + tagui_executable + '"' + ' rpa_python ' + browser_option
 
     # run tagui end processes script to flush dead processes
     # for eg execution ended with ctrl+c or forget to close()
@@ -531,7 +531,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
             if _process.poll() is not None:
                 print('[RPA][ERROR] - following happens when starting TagUI...')
                 print('')
-                os.system('"' + tagui_cmd + '"')
+                os.system(tagui_cmd)
                 print('')
                 _tagui_visual = False
                 _tagui_chrome = False
