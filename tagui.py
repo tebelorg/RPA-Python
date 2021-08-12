@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.44.0'
+__version__ = '1.44.1'
 
 import subprocess
 import os
@@ -531,6 +531,10 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
             if _process.poll() is not None:
                 print('[RPA][ERROR] - following happens when starting TagUI...')
                 print('')
+                print('The following command is executed to start TagUI -')
+                print(tagui_cmd)
+                print('')
+                print('It leads to following output when starting TagUI -')
                 os.system(tagui_cmd)
                 print('')
                 _tagui_visual = False
