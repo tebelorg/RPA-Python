@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.44**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
+[**v1.45**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -98,9 +98,9 @@ r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endp
 
 #### GENERAL NOTES
 
-See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, [simply look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 20-30X faster, without normal UI interaction delays, [see this hack](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610532082).
+See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, [simply look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python#core-functions). To run 10X faster instead of normal human speed, use [turbo mode](https://github.com/tebelorg/RPA-Python/issues/297) (read the caveats!).
 
-You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping in headless mode). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully [control error handling](https://github.com/tebelorg/RPA-Python/issues/269) if you wish to, eg snapshot of missing element or posting to custom API endpoint.
+You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully [control error handling](https://github.com/tebelorg/RPA-Python/issues/269) if you wish to, eg snapshot of missing element or posting to custom API endpoint.
 
 For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding parent folder location to install and invoke TagUI ([forked version](https://github.com/tebelorg/TagUI) optimised for this package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
@@ -122,7 +122,7 @@ pack()||for deploying package without internet
 update()||for updating package without internet
 debug()|True or False|print & log debug info to rpa_python.log
 
->_by default Chrome runs with visible mode, to run Chrome invisibly use init(headless_mode = True)_
+>_by default RPA for Python runs at normal human speed, to run 10X faster use init(turbo_mode = True)_
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose

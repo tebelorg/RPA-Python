@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.44.1'
+__version__ = '1.45.0'
 
 import subprocess
 import os
@@ -429,7 +429,7 @@ def setup():
 
     return True
 
-def init(visual_automation = False, chrome_browser = True, headless_mode = False):
+def init(visual_automation = False, chrome_browser = True, headless_mode = False, turbo_mode = False):
     """start and connect to tagui process by checking tagui live mode readiness"""
 
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory, _tagui_download_directory
@@ -507,7 +507,20 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
         browser_option = 'chrome'
     if headless_mode:
         browser_option = 'headless'
-    
+
+    # special handling for turbo mode to run 10X faster
+    tagui_chrome_php = tagui_directory + '/' + 'src' + '/' + 'tagui_chrome.php'
+    tagui_header_js = tagui_directory + '/' + 'src' + '/' + 'tagui_header.js'
+    tagui_sikuli_py = tagui_directory + '/' + 'src' + '/' + 'tagui.sikuli/tagui.py'
+    if not turbo_mode:
+        dump(load(tagui_chrome_php).replace('$scan_period = 10000;', '$scan_period = 100000;'), tagui_chrome_php)
+        dump(load(tagui_header_js).replace('function sleep(ms) {ms *= 0.1; //', 'function sleep(ms) { //').replace("chrome_step('Input.insertText',{text: value});};", "for (var character = 0, length = value.length; character < length; character++) {\nchrome_step('Input.dispatchKeyEvent',{type: 'char', text: value[character]});}};"), tagui_header_js)
+        dump(load(tagui_sikuli_py).replace('scan_period = 0.05\n\n# teleport mouse instead of moving to target\nSettings.MoveMouseDelay = 0', 'scan_period = 0.5'), tagui_sikuli_py)
+    else:
+        dump(load(tagui_chrome_php).replace('$scan_period = 100000;', '$scan_period = 10000;'), tagui_chrome_php)
+        dump(load(tagui_header_js).replace('function sleep(ms) { //', 'function sleep(ms) {ms *= 0.1; //').replace("for (var character = 0, length = value.length; character < length; character++) {\nchrome_step('Input.dispatchKeyEvent',{type: 'char', text: value[character]});}};", "chrome_step('Input.insertText',{text: value});};"), tagui_header_js)
+        dump(load(tagui_sikuli_py).replace('scan_period = 0.5', 'scan_period = 0.05\n\n# teleport mouse instead of moving to target\nSettings.MoveMouseDelay = 0'), tagui_sikuli_py)
+
     # entry shell command to invoke tagui process
     tagui_cmd = '"' + tagui_executable + '"' + ' rpa_python ' + browser_option
 

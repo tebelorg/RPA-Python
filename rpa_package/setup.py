@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='rpa',
-    version='1.44.1',
-    py_modules=['rpa'], install_requires=['tagui>=1.44.1'],
+    version='1.45.0',
+    py_modules=['rpa'], install_requires=['tagui>=1.45.0'],
     author='Ken Soh',
     author_email='opensource@tebel.org',
     license='Apache License 2.0',
