@@ -934,8 +934,8 @@ def exist(element_identifier = None):
                     return False
 
     send('exist_result = exist(\'' + _sdq(element_identifier) + '\').toString()')
-    send('dump exist_result to rpa_python.txt')
-    if _tagui_output() == 'true':
+    send('dump `exist_result` to rpa_python.txt')
+    if _tagui_output().rstrip() == 'true':
         return True
     else:
         return False
