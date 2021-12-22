@@ -961,7 +961,7 @@ def url(webpage_url = None):
             return False
 
     else:
-        send('dump url() to rpa_python.txt')
+        send('dump `url()` to rpa_python.txt')
         url_result = _tagui_output()
         return url_result
 
@@ -1144,7 +1144,7 @@ def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = 
 
     else:
         send('read ' + _sdq(element_identifier) + ' to read_result')
-        send('dump read_result to rpa_python.txt')
+        send('dump `read_result` to rpa_python.txt')
         read_result = _tagui_output()
         return read_result
 
@@ -1495,7 +1495,7 @@ def popup(string_in_url = None):
     send('js chrome_targetid = found_targetid')
 
     # check if chrome_targetid is successfully set to sessionid of popup tab
-    send('dump chrome_targetid to rpa_python.txt')
+    send('dump `chrome_targetid` to rpa_python.txt')
     popup_result = _tagui_output()
     if popup_result != '':
         return True
@@ -1538,7 +1538,7 @@ def dom(statement_to_run = None):
 
     else:
         send('dom ' + statement_to_run)
-        send('dump dom_result to rpa_python.txt')
+        send('dump `dom_result` to rpa_python.txt')
         dom_result = _tagui_output()
         return dom_result
 
@@ -1613,7 +1613,7 @@ def present(element_identifier = None):
                     return False
 
     send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
-    send('dump present_result to rpa_python.txt')
+    send('dump `present_result` to rpa_python.txt')
     if _tagui_output() == 'true':
         return True
     else:
@@ -1632,7 +1632,7 @@ def count(element_identifier = None):
         return int(0)
 
     send('count_result = count(\'' + _sdq(element_identifier) + '\').toString()')
-    send('dump count_result to rpa_python.txt')
+    send('dump `count_result` to rpa_python.txt')
     return int(_tagui_output())
 
 def title():
@@ -1644,7 +1644,7 @@ def title():
         print('[RPA][ERROR] - title() requires init(chrome_browser = True)')
         return ''
 
-    send('dump title() to rpa_python.txt')
+    send('dump `title()` to rpa_python.txt')
     title_result = _tagui_output()
     return title_result
 
@@ -1657,7 +1657,7 @@ def text():
         print('[RPA][ERROR] - text() requires init(chrome_browser = True)')
         return ''
 
-    send('dump text() to rpa_python.txt')
+    send('dump `text()` to rpa_python.txt')
     text_result = _tagui_output()
     return text_result
 
@@ -1666,7 +1666,7 @@ def timer():
         print('[RPA][ERROR] - use init() before using timer()')
         return float(0)
 
-    send('dump timer() to rpa_python.txt')
+    send('dump `timer()` to rpa_python.txt')
     timer_result = _tagui_output()
     return float(timer_result)
 
@@ -1679,7 +1679,7 @@ def mouse_xy():
         print('[RPA][ERROR] - mouse_xy() requires init(visual_automation = True)')
         return ''
 
-    send('dump mouse_xy() to rpa_python.txt')
+    send('dump `mouse_xy()` to rpa_python.txt')
     mouse_xy_result = _tagui_output()
     return mouse_xy_result
 
@@ -1692,7 +1692,7 @@ def mouse_x():
         print('[RPA][ERROR] - mouse_x() requires init(visual_automation = True)')
         return int(0)
 
-    send('dump mouse_x() to rpa_python.txt')
+    send('dump `mouse_x()` to rpa_python.txt')
     mouse_x_result = _tagui_output()
     return int(mouse_x_result)
 
@@ -1705,7 +1705,7 @@ def mouse_y():
         print('[RPA][ERROR] - mouse_y() requires init(visual_automation = True)')
         return int(0)
 
-    send('dump mouse_y() to rpa_python.txt')
+    send('dump `mouse_y()` to rpa_python.txt')
     mouse_y_result = _tagui_output()
     return int(mouse_y_result)
 
@@ -1719,7 +1719,7 @@ def clipboard(text_to_put = None):
         return False
 
     if text_to_put is None:
-        send('dump clipboard() to rpa_python.txt')
+        send('dump `clipboard()` to rpa_python.txt')
         clipboard_result = _tagui_output()
         return clipboard_result
 
