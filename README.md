@@ -199,7 +199,7 @@ I would like to credit and express my appreciation below :heart:, and you are in
 - [CasperJS](https://github.com/casperjs/casperjs) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
 - [PhantomJS](https://github.com/ariya/phantomjs) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
 - [SlimerJS](https://github.com/laurentj/slimerjs) - Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
-- [Philip Vollet](https://www.linkedin.com/in/philipvollet) from Germany, for spreading the word. Philip is a veteran in NLP and open-source. His sharing of RPA for Python helps spread the word to the broader open-source community that there's [pip install rpa](https://www.linkedin.com/posts/philipvollet_github-tebelorgrpa-python-python-package-activity-6823555313950699520-JjEk).
+- [Philip Vollet](https://www.linkedin.com/in/philipvollet) from Germany, for spreading the word. Philip is a veteran in NLP and open-source. His sharing of RPA for Python helps spread the word to the broader open-source community that there's [pip install rpa](https://www.linkedin.com/posts/philipvollet_datascience-deeplearning-machinelearning-activity-6884853626183938048-Eqg3).
 
 ![Philip's LinkedIn Post](https://raw.githubusercontent.com/tebelorg/Tump/master/philip_vollet.png)
 
