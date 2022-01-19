@@ -16,7 +16,7 @@ To use it in Jupyter notebook, Python script or interactive shell -
 import rpa as r
 ```
 
-Notes on different operating systems and optional visual automation mode -
+Notes on operating systems and optional visual automation mode -
 - :rainbow_flag: **Windows -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
 - :apple: **macOS -** due to tighter security, [install PHP manually](https://github.com/tebelorg/RPA-Python/issues/335#issuecomment-989470056) and see solutions for [PhantomJS](https://github.com/tebelorg/RPA-Python/issues/79) and [Java popups](https://github.com/tebelorg/RPA-Python/issues/78)
 - :penguin: **Linux -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
@@ -29,7 +29,7 @@ RPA for Python's simple and powerful API makes robotic process automation fun! Y
 ```python
 r.init()
 r.url('https://www.google.com')
-r.type('//*[@name="q"]', 'decentralization[enter]')
+r.type('//*[@name="q"]', 'decentralisation[enter]')
 print(r.read('result-stats'))
 r.snap('page', 'results.png')
 r.close()
@@ -41,7 +41,7 @@ r.init(visual_automation = True)
 r.dclick('outlook_icon.png')
 r.click('new_mail.png')
 ...
-r.type('message_box.png', 'message')
+r.type('message_box.png', 'Hi Gillian,[enter]This is...')
 r.click('send_button.png')
 r.close()
 ```
@@ -62,7 +62,7 @@ r.init(visual_automation = True, chrome_browser = False)
 r.keyboard('[cmd][space]')
 r.keyboard('safari[enter]')
 r.keyboard('[cmd]t')
-r.keyboard('mortal kombat[enter]')
+r.keyboard('snatcher[enter]')
 r.wait(2.5)
 r.snap('page.png', 'results.png')
 r.close()
@@ -107,9 +107,9 @@ For fine-grained control on web browser file download location, use [download_lo
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id='email'] is an XPath pointing to the webpage element having the id attribute 'email'.
 
-- :globe_with_meridians: For web automation, the web element identifier can be [XPath selector](https://www.linkedin.com/posts/kensoh_xpath-rpa-tagui-activity-6829673864633704448-Iw-D), CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout() function. PS - if you are going to use a Chrome extension for XPaths, use [SelectorsHub](https://chrome.google.com/webstore/detail/selectorshub/ndgimibanhlabgdgjcpbbndiehljcpfh?hl=en).
+- :globe_with_meridians: For web automation, the web element identifier can be [XPath selector](https://www.linkedin.com/posts/kensoh_xpath-rpa-tagui-activity-6829673864633704448-Iw-D), CSS selector, or the following attributes - id, name, class, title, aria-label, text(), href, in decreasing order of priority. Recommend writing XPath manually or simply using attributes. There is automatic waiting for an element to appear before timeout happens, and error is returned that the element cannot be found. To change the default timeout of 10 seconds, use timeout(). PS - if you are using a Chrome extension for XPaths, use [SelectorsHub](https://chrome.google.com/webstore/detail/selectorshub/ndgimibanhlabgdgjcpbbndiehljcpfh?hl=en).
 
-- :camera_flash: An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications, terminal window or web browser). If the image file specified does not exist, OCR will be used to search for that text on the screen to act on the UI element containing the text, eg r.click('Submit Form.png'). Transparency (0% opacity) is supported in .png images. x, y coordinates of elements on the screen can be used as well. Notes for visually [automating 2 monitors](https://github.com/tebelorg/RPA-Python/issues/252#issuecomment-844277454), macOS Retina display [issue and solution](https://github.com/tebelorg/RPA-Python/issues/170#issuecomment-843168745).
+- :camera_flash: An element identifier can also be a .png or .bmp image snapshot representing the UI element (can be on desktop applications, terminal window or web browser). If the image file specified does not exist, OCR will be used to search for that text on the screen to act on the UI element containing the text, eg r.click('Submit Form.png'). Transparency (0% opacity) is supported in .png images. x, y coordinates of elements on the screen can be used as well. Notes for visually [automating 2 monitors](https://github.com/tebelorg/RPA-Python/issues/252#issuecomment-844277454), and macOS [Retina display issue](https://github.com/tebelorg/RPA-Python/issues/170#issuecomment-843168745).
 
 - :page_facing_up: A further image identifier example is a png image of a window (PDF viewer, MS Word, textbox etc) with the center content of the image set as transparent. This allows using read() and snap() to perform OCR and save snapshots of application windows, containers, frames, textboxes with varying content. See this [image example](https://user-images.githubusercontent.com/10379601/124394598-b59cfd80-dd32-11eb-93bb-68504c91afb9.png) of a PDF frame with content removed to be transparent. For read() and snap(), x1, y1, x2, y2 coordinates pair can be used to define the region of interest on the screen to perform OCR or capture snapshot.
 
@@ -186,9 +186,9 @@ timer()||return time elapsed in sec between calls as float
 
 TagUI is a leading open-source RPA software :robot: with tens of thousands of users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, to embark on a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope that [RPA for Python and ML frameworks](https://www.linkedin.com/posts/nived-n-776470139_rpa-tagui-automation-activity-6805844546950438912-Wiq4) would be good friends, and `pip install rpa` would make life easier for Python users. I am maintaining the package in my personal time and I'm happy that tens of thousands of people use it now.
+Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope that [RPA for Python and ML frameworks](https://www.linkedin.com/posts/nived-n-776470139_rpa-tagui-automation-activity-6805844546950438912-Wiq4) would be [good friends](https://www.linkedin.com/posts/kensoh_the-first-rpa-ml-solution-to-solve-wordle-activity-6889414822706987008-xNjv), and `pip install rpa` would make life easier for Python users. I'm maintaining the package in my personal time and I'm happy that tens of thousands of people use it.
 
-At only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture. Work is now under way by other open-source folks to create TagUI packages for [C# .NET](https://www.nuget.org/packages/tagui) and [Go](https://www.linkedin.com/posts/kensoh_hi-fans-of-go-programming-language-would-activity-6804658389772324864-_OgH) languages.
+At only ~1k lines of code, it would make my day to see developers of other languages port this project over to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture. Work is in progress by other open-source folks to create TagUI packages for [C# .NET](https://www.nuget.org/packages/tagui) and [Go](https://www.linkedin.com/posts/kensoh_hi-fans-of-go-programming-language-would-activity-6804658389772324864-_OgH) languages.
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
