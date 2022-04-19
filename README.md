@@ -192,7 +192,7 @@ At only ~1k lines of code, it would make my day to see developers of other langu
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
-I would like to credit and express my appreciation below :heart:, and you are invited to [connect on LinkedIn](https://www.linkedin.com/in/kensoh) -
+I would like to credit and express my appreciation below :heart:, and you are invited to [connect on email](mailto:ken@tebel.org) -
 
 - [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
 - [SikuliX](https://github.com/RaiMan/SikuliX1) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
