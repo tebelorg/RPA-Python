@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.45.0'
+__version__ = '1.46.0'
 
 import subprocess
 import os
@@ -248,7 +248,11 @@ def coord(x_coordinate = 0, y_coordinate = 0):
 def debug(on_off = None):
     """function to set debug mode, eg print debug info"""
     global _tagui_debug
-    if on_off is not None: _tagui_debug = on_off
+    if on_off is not None:
+        if isinstance(on_off, int):
+            _tagui_debug = on_off
+        else:
+           send('// ' + on_off) 
     return _tagui_debug
 
 def tagui_location(location = None):

@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.45**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
+[**v1.46**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Run on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/rpa_chat)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -120,7 +120,7 @@ init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup 
 close()||close TagUI, Chrome browser, SikuliX
 pack()||for deploying package without internet
 update()||for updating package without internet
-debug()|True or False|print & log debug info to rpa_python.log
+debug()|True or False or text_to_log|print & log debug info to rpa_python.log
 
 >_by default RPA for Python runs at normal human speed, to run 10X faster use init(turbo_mode = True)_
 
