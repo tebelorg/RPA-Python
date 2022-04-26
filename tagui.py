@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.46.0'
+__version__ = '1.47.0'
 
 import subprocess
 import os
@@ -21,6 +21,9 @@ _tagui_delay = 0.1
 
 # default debug flag to print debug output
 _tagui_debug = False
+
+# error flag to raise exception on error
+_tagui_error = False
 
 # flag to track if tagui session is started
 _tagui_started = False
@@ -232,8 +235,9 @@ def _patch_macos_pjs():
         print('[RPA][INFO] - downloading latest PhantomJS to fix OpenSSL issue')
         download('https://github.com/tebelorg/Tump/releases/download/v1.0.0/phantomjs-2.1.1-macosx.zip', 'phantomjs.zip')
         if not os.path.isfile('phantomjs.zip'):
-            print('[RPA][ERROR] - unable to download latest PhantomJS v2.1.1')
-            os.chdir(original_directory); return False
+            os.chdir(original_directory)
+            show_error('[RPA][ERROR] - unable to download latest PhantomJS v2.1.1')
+            return False
         unzip('phantomjs.zip'); os.rename('phantomjs', 'phantomjs_old'); os.rename('phantomjs-2.1.1-macosx', 'phantomjs')
         if os.path.isfile('phantomjs.zip'): os.remove('phantomjs.zip')
         os.system('chmod -R 755 phantomjs > /dev/null 2>&1')
@@ -255,6 +259,22 @@ def debug(on_off = None):
            send('// ' + on_off) 
     return _tagui_debug
 
+def error(on_off = None):
+    """function to set mode to raise exception on error"""
+    global _tagui_error
+    if on_off is not None: _tagui_error = on_off
+    return _tagui_error
+
+def show_error(error_message = None):
+    """function to raise exception with given message"""
+    if error_message is None:
+        error_message = '[RPA][ERROR] - unknown error encountered'
+    if not error():
+        print(error_message)
+    else:
+        raise Exception(error_message)
+    return False
+
 def tagui_location(location = None):
     """function to set location of TagUI installation"""
     global _tagui_location
@@ -266,10 +286,10 @@ def unzip(file_to_unzip = None, unzip_location = None):
     import zipfile
 
     if file_to_unzip is None or file_to_unzip == '':
-        print('[RPA][ERROR] - filename missing for unzip()')
+        show_error('[RPA][ERROR] - filename missing for unzip()')
         return False
     elif not os.path.isfile(file_to_unzip):
-        print('[RPA][ERROR] - file specified missing for unzip()')
+        show_error('[RPA][ERROR] - file specified missing for unzip()')
         return False
 
     zip_file = zipfile.ZipFile(file_to_unzip, 'r')
@@ -302,7 +322,7 @@ def setup():
     elif platform.system() == 'Darwin': tagui_zip_file = 'TagUI_macOS.zip'
     elif platform.system() == 'Windows': tagui_zip_file = 'TagUI_Windows.zip'
     else:
-        print('[RPA][ERROR] - unknown ' + platform.system() + ' operating system to setup TagUI')
+        show_error('[RPA][ERROR] - unknown ' + platform.system() + ' operating system to setup TagUI')
         return False
     
     if not os.path.isfile('rpa_python.zip'):
@@ -319,7 +339,7 @@ def setup():
         # unzip downloaded zip file to user home folder
         unzip(home_directory + '/' + tagui_zip_file, home_directory)
         if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
-            print('[RPA][ERROR] - unable to unzip TagUI to ' + home_directory)
+            show_error('[RPA][ERROR] - unable to unzip TagUI to ' + home_directory)
             return False
 
     else:
@@ -333,7 +353,7 @@ def setup():
         if not os.path.isdir(home_directory + '/tagui'): os.mkdir(home_directory + '/tagui')
         unzip(home_directory + '/' + tagui_zip_file, home_directory + '/tagui')
         if not os.path.isfile(home_directory + '/' + 'tagui' + '/' + 'src' + '/' + 'tagui'):
-            print('[RPA][ERROR] - unable to unzip TagUI to ' + home_directory)
+            show_error('[RPA][ERROR] - unable to unzip TagUI to ' + home_directory)
             return False
 
     # set correct tagui folder for different operating systems
@@ -370,7 +390,7 @@ def setup():
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
         if os.system('chmod -R 755 "' + tagui_directory + '" > /dev/null 2>&1') != 0:
-            print('[RPA][ERROR] - unable to set permissions for .tagui folder')
+            show_error('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False 
 
         # check that php, a dependency for tagui, is installed and working
@@ -395,7 +415,7 @@ def setup():
         # invoking chmod to set all files with execute permissions
         # and update delta tagui/src/tagui with execute permission
         if os.system('chmod -R 755 "' + tagui_directory + '" > /dev/null 2>&1') != 0:
-            print('[RPA][ERROR] - unable to set permissions for .tagui folder')
+            show_error('[RPA][ERROR] - unable to set permissions for .tagui folder')
             return False
 
         # patch PhantomJS to solve OpenSSL issue
@@ -439,7 +459,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory, _tagui_download_directory
 
     if _tagui_started:
-        print('[RPA][ERROR] - use close() before using init() again')
+        show_error('[RPA][ERROR] - use close() before using init() again')
         return False
 
     # reset id to track instruction count from rpa python to tagui
@@ -557,6 +577,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
                 _tagui_visual = False
                 _tagui_chrome = False
                 _tagui_started = False
+                show_error()
                 return False
 
             # read next line of output from tagui process live mode interface
@@ -575,7 +596,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
                 # also check _tagui_started to handle unexpected termination
                 while _tagui_started and not _ready(): pass
                 if not _tagui_started:
-                    print('[RPA][ERROR] - TagUI process ended unexpectedly')
+                    show_error('[RPA][ERROR] - TagUI process ended unexpectedly')
                     return False
 
                 # remove generated tagui flow, js code and custom functions files
@@ -596,10 +617,10 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
                 return True
 
     except Exception as e:
-        print('[RPA][ERROR] - ' + str(e))
         _tagui_visual = False
         _tagui_chrome = False
         _tagui_started = False
+        show_error('[RPA][ERROR] - ' + str(e))
         return False
 
 def pack():
@@ -740,7 +761,7 @@ print('[RPA][INFO] - done. RPA for Python updated to version ' + __version__)
         return True
 
     except Exception as e:
-        print('[RPA][ERROR] - ' + str(e))
+        show_error('[RPA][ERROR] - ' + str(e))
         return False
 
 def _ready():
@@ -775,7 +796,7 @@ def _ready():
             return False
 
     except Exception as e:
-        print('[RPA][ERROR] - ' + str(e))
+        show_error('[RPA][ERROR] - ' + str(e))
         return False
 
 def send(tagui_instruction = None):
@@ -784,7 +805,7 @@ def send(tagui_instruction = None):
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome
 
     if not _tagui_started:
-        print('[RPA][ERROR] - use init() before using send()')
+        show_error('[RPA][ERROR] - use init() before using send()')
         return False
 
     if tagui_instruction is None or tagui_instruction == '': return True
@@ -792,10 +813,10 @@ def send(tagui_instruction = None):
     try:
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
-            print('[RPA][ERROR] - no active TagUI process to send()')
             _tagui_visual = False
             _tagui_chrome = False
             _tagui_started = False
+            show_error('[RPA][ERROR] - no active TagUI process to send()')
             return False
 
         # escape special characters for them to reach tagui correctly
@@ -829,7 +850,7 @@ def send(tagui_instruction = None):
         # also check _tagui_started to handle unexpected termination
         while _tagui_started and not _ready(): pass
         if not _tagui_started:
-            print('[RPA][ERROR] - TagUI process ended unexpectedly')
+            show_error('[RPA][ERROR] - TagUI process ended unexpectedly')
             return False
 
         # increment id and prepare for next instruction
@@ -838,7 +859,7 @@ def send(tagui_instruction = None):
         return True
 
     except Exception as e:
-        print('[RPA][ERROR] - ' + str(e))
+        show_error('[RPA][ERROR] - ' + str(e))
         return False
 
 def close():
@@ -847,16 +868,16 @@ def close():
     global _process, _tagui_started, _tagui_id, _tagui_visual, _tagui_chrome, _tagui_init_directory
 
     if not _tagui_started:
-        print('[RPA][ERROR] - use init() before using close()')
+        show_error('[RPA][ERROR] - use init() before using close()')
         return False
 
     try:
         # failsafe exit if tagui process gets killed for whatever reason
         if _process.poll() is not None:
-            print('[RPA][ERROR] - no active TagUI process to close()')
             _tagui_visual = False
             _tagui_chrome = False
             _tagui_started = False
+            show_error('[RPA][ERROR] - no active TagUI process to close()')
             return False
 
         # send 'done' instruction to terminate live mode and exit tagui
@@ -899,15 +920,15 @@ def close():
         return True
 
     except Exception as e:
-        print('[RPA][ERROR] - ' + str(e))
         _tagui_visual = False
         _tagui_chrome = False
         _tagui_started = False
+        show_error('[RPA][ERROR] - ' + str(e))
         return False
 
 def exist(element_identifier = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using exist()')
+        show_error('[RPA][ERROR] - use init() before using exist()')
         return False
 
     if element_identifier is None or element_identifier == '':
@@ -918,13 +939,13 @@ def exist(element_identifier = None):
         if _visual():
             return True
         else:
-            print('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
             return False
 
     # pre-emptive checks if image files are specified for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not _visual():
-            print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     # assume that (x,y) coordinates for visual automation always exist
@@ -934,7 +955,7 @@ def exist(element_identifier = None):
                 if _visual():
                     return True
                 else:
-                    print('[RPA][ERROR] - x, y coordinates require init(visual_automation = True)')
+                    show_error('[RPA][ERROR] - x, y coordinates require init(visual_automation = True)')
                     return False
 
     send('exist_result = exist(\'' + _sdq(element_identifier) + '\').toString()')
@@ -946,11 +967,11 @@ def exist(element_identifier = None):
 
 def url(webpage_url = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using url()')
+        show_error('[RPA][ERROR] - use init() before using url()')
         return False
 
     if not _chrome():
-        print('[RPA][ERROR] - url() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - url() requires init(chrome_browser = True)')
         return False
 
     if webpage_url is not None and webpage_url != '':
@@ -961,7 +982,7 @@ def url(webpage_url = None):
             else:
                 return True
         else:
-            print('[RPA][ERROR] - URL does not begin with http:// or https:// ')
+            show_error('[RPA][ERROR] - URL does not begin with http:// or https:// ')
             return False
 
     else:
@@ -971,18 +992,18 @@ def url(webpage_url = None):
 
 def click(element_identifier = None, test_coordinate = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using click()')
+        show_error('[RPA][ERROR] - use init() before using click()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for click()')
+        show_error('[RPA][ERROR] - target missing for click()')
         return False
 
     if test_coordinate is not None and isinstance(test_coordinate, int):
         element_identifier = coord(element_identifier, test_coordinate)
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('click ' + _sdq(element_identifier)):
@@ -993,18 +1014,18 @@ def click(element_identifier = None, test_coordinate = None):
 
 def rclick(element_identifier = None, test_coordinate = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using rclick()')
+        show_error('[RPA][ERROR] - use init() before using rclick()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for rclick()')
+        show_error('[RPA][ERROR] - target missing for rclick()')
         return False
 
     if test_coordinate is not None and isinstance(test_coordinate, int):
         element_identifier = coord(element_identifier, test_coordinate)
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('rclick ' + _sdq(element_identifier)):
@@ -1015,18 +1036,18 @@ def rclick(element_identifier = None, test_coordinate = None):
 
 def dclick(element_identifier = None, test_coordinate = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using dclick()')
+        show_error('[RPA][ERROR] - use init() before using dclick()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for dclick()')
+        show_error('[RPA][ERROR] - target missing for dclick()')
         return False
 
     if test_coordinate is not None and isinstance(test_coordinate, int):
         element_identifier = coord(element_identifier, test_coordinate)
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('dclick ' + _sdq(element_identifier)):
@@ -1037,18 +1058,18 @@ def dclick(element_identifier = None, test_coordinate = None):
 
 def hover(element_identifier = None, test_coordinate = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using hover()')
+        show_error('[RPA][ERROR] - use init() before using hover()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for hover()')
+        show_error('[RPA][ERROR] - target missing for hover()')
         return False
 
     if test_coordinate is not None and isinstance(test_coordinate, int):
         element_identifier = coord(element_identifier, test_coordinate)
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('hover ' + _sdq(element_identifier)):
@@ -1059,15 +1080,15 @@ def hover(element_identifier = None, test_coordinate = None):
 
 def type(element_identifier = None, text_to_type = None, test_coordinate = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using type()')
+        show_error('[RPA][ERROR] - use init() before using type()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for type()')
+        show_error('[RPA][ERROR] - target missing for type()')
         return False
 
     if text_to_type is None or text_to_type == '':
-        print('[RPA][ERROR] - text missing for type()')
+        show_error('[RPA][ERROR] - text missing for type()')
         return False
 
     if test_coordinate is not None and isinstance(text_to_type, int):
@@ -1075,7 +1096,7 @@ def type(element_identifier = None, text_to_type = None, test_coordinate = None)
         text_to_type = test_coordinate
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('type ' + _sdq(element_identifier) + ' as ' + _esq(text_to_type)):
@@ -1086,19 +1107,19 @@ def type(element_identifier = None, text_to_type = None, test_coordinate = None)
 
 def select(element_identifier = None, option_value = None, test_coordinate1 = None, test_coordinate2 = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using select()')
+        show_error('[RPA][ERROR] - use init() before using select()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for select()')
+        show_error('[RPA][ERROR] - target missing for select()')
         return False
 
     if option_value is None or option_value == '':
-        print('[RPA][ERROR] - option value missing for select()')
+        show_error('[RPA][ERROR] - option value missing for select()')
         return False
 
     if element_identifier.lower() in ['page.png', 'page.bmp'] or option_value.lower() in ['page.png', 'page.bmp']:
-        print('[RPA][ERROR] - page.png / page.bmp identifiers invalid for select()')
+        show_error('[RPA][ERROR] - page.png / page.bmp identifiers invalid for select()')
         return False
 
     if test_coordinate1 is not None and test_coordinate2 is not None and \
@@ -1109,16 +1130,16 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
     # pre-emptive checks if image files are specified for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not _visual():
-            print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     if option_value.lower().endswith('.png') or option_value.lower().endswith('.bmp'):
         if not _visual():
-            print('[RPA][ERROR] - ' + option_value + ' identifier requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - ' + option_value + ' identifier requires init(visual_automation = True)')
             return False
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('select ' + _sdq(element_identifier) + ' as ' + _esq(option_value)):
@@ -1129,11 +1150,11 @@ def select(element_identifier = None, option_value = None, test_coordinate1 = No
 
 def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = None, test_coordinate3 = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using read()')
+        show_error('[RPA][ERROR] - use init() before using read()')
         return ''
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for read()')
+        show_error('[RPA][ERROR] - target missing for read()')
         return ''
 
     if test_coordinate1 is not None and isinstance(test_coordinate1, int):
@@ -1143,7 +1164,7 @@ def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = 
                 element_identifier = element_identifier + coord(test_coordinate2, test_coordinate3)
 
     if element_identifier.lower() != 'page' and not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return ''
 
     else:
@@ -1154,19 +1175,19 @@ def read(element_identifier = None, test_coordinate1 = None, test_coordinate2 = 
 
 def snap(element_identifier = None, filename_to_save = None, test_coord1 = None, test_coord2 = None, test_coord3 = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using snap()')
+        show_error('[RPA][ERROR] - use init() before using snap()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for snap()')
+        show_error('[RPA][ERROR] - target missing for snap()')
         return False
 
     if filename_to_save is None or filename_to_save == '':
-        print('[RPA][ERROR] - filename missing for snap()')
+        show_error('[RPA][ERROR] - filename missing for snap()')
         return False
 
     if test_coord2 is not None and test_coord3 is None:
-        print('[RPA][ERROR] - filename missing for snap()')
+        show_error('[RPA][ERROR] - filename missing for snap()')
         return False
 
     if isinstance(element_identifier, int) and isinstance(filename_to_save, int):
@@ -1178,7 +1199,7 @@ def snap(element_identifier = None, filename_to_save = None, test_coord1 = None,
                     filename_to_save = test_coord3
 
     if element_identifier.lower() != 'page' and not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('snap ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
@@ -1189,11 +1210,11 @@ def snap(element_identifier = None, filename_to_save = None, test_coord1 = None,
 
 def load(filename_to_load = None):
     if filename_to_load is None or filename_to_load == '':
-        print('[RPA][ERROR] - filename missing for load()')
+        show_error('[RPA][ERROR] - filename missing for load()')
         return ''
 
     elif not os.path.isfile(filename_to_load):
-        print('[RPA][ERROR] - cannot load file ' + filename_to_load)
+        show_error('[RPA][ERROR] - cannot load file ' + filename_to_load)
         return ''
 
     else:
@@ -1208,11 +1229,11 @@ def echo(text_to_echo = ''):
 
 def dump(text_to_dump = None, filename_to_save = None):
     if text_to_dump is None:
-        print('[RPA][ERROR] - text missing for dump()')
+        show_error('[RPA][ERROR] - text missing for dump()')
         return False
 
     elif filename_to_save is None or filename_to_save == '':
-        print('[RPA][ERROR] - filename missing for dump()')
+        show_error('[RPA][ERROR] - filename missing for dump()')
         return False
 
     else:
@@ -1223,11 +1244,11 @@ def dump(text_to_dump = None, filename_to_save = None):
 
 def write(text_to_write = None, filename_to_save = None):
     if text_to_write is None:
-        print('[RPA][ERROR] - text missing for write()')
+        show_error('[RPA][ERROR] - text missing for write()')
         return False
 
     elif filename_to_save is None or filename_to_save == '':
-        print('[RPA][ERROR] - filename missing for write()')
+        show_error('[RPA][ERROR] - filename missing for write()')
         return False
 
     else:
@@ -1253,11 +1274,11 @@ def ask(text_to_prompt = ''):
 
 def telegram(telegram_id = None, text_to_send = None, custom_endpoint = None):
     if telegram_id is None or telegram_id == '':
-        print('[RPA][ERROR] - Telegram ID missing for telegram()')
+        show_error('[RPA][ERROR] - Telegram ID missing for telegram()')
         return False
 
     if text_to_send is None or text_to_send == '':
-        print('[RPA][ERROR] - text message missing for telegram()')
+        show_error('[RPA][ERROR] - text message missing for telegram()')
         return False
 
     # in case number is given instead of string
@@ -1288,15 +1309,15 @@ def telegram(telegram_id = None, text_to_send = None, custom_endpoint = None):
 
 def keyboard(keys_and_modifiers = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using keyboard()')
+        show_error('[RPA][ERROR] - use init() before using keyboard()')
         return False
 
     if keys_and_modifiers is None or keys_and_modifiers == '':
-        print('[RPA][ERROR] - keys to type missing for keyboard()')
+        show_error('[RPA][ERROR] - keys to type missing for keyboard()')
         return False
 
     if not _visual():
-        print('[RPA][ERROR] - keyboard() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - keyboard() requires init(visual_automation = True)')
         return False
 
     elif not send('keyboard ' + _esq(keys_and_modifiers)):
@@ -1307,19 +1328,19 @@ def keyboard(keys_and_modifiers = None):
 
 def mouse(mouse_action = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using mouse()')
+        show_error('[RPA][ERROR] - use init() before using mouse()')
         return False
 
     if mouse_action is None or mouse_action == '':
-        print('[RPA][ERROR] - \'down\' / \'up\' missing for mouse()')
+        show_error('[RPA][ERROR] - \'down\' / \'up\' missing for mouse()')
         return False
 
     if not _visual():
-        print('[RPA][ERROR] - mouse() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - mouse() requires init(visual_automation = True)')
         return False
 
     elif mouse_action.lower() != 'down' and mouse_action.lower() != 'up':
-        print('[RPA][ERROR] - \'down\' / \'up\' missing for mouse()')
+        show_error('[RPA][ERROR] - \'down\' / \'up\' missing for mouse()')
         return False
 
     elif not send('mouse ' + mouse_action):
@@ -1330,21 +1351,21 @@ def mouse(mouse_action = None):
 
 def table(element_identifier = None, filename_to_save = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using table()')
+        show_error('[RPA][ERROR] - use init() before using table()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for table()')
+        show_error('[RPA][ERROR] - target missing for table()')
         return False
 
     elif filename_to_save is None or filename_to_save == '':
-        print('[RPA][ERROR] - filename missing for table()')
+        show_error('[RPA][ERROR] - filename missing for table()')
         return False
 
     element_identifier = str(element_identifier)
 
     if not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('table ' + _sdq(element_identifier) + ' to ' + _esq(filename_to_save)):
@@ -1358,7 +1379,7 @@ def wait(delay_in_seconds = 5.0):
 
 def check(condition_to_check = None, text_if_true = '', text_if_false = ''):
     if condition_to_check is None:
-        print('[RPA][ERROR] - condition missing for check()')
+        show_error('[RPA][ERROR] - condition missing for check()')
         return False
 
     if condition_to_check:
@@ -1371,19 +1392,19 @@ def check(condition_to_check = None, text_if_true = '', text_if_false = ''):
 
 def upload(element_identifier = None, filename_to_upload = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using upload()')
+        show_error('[RPA][ERROR] - use init() before using upload()')
         return False
 
     if element_identifier is None or element_identifier == '':
-        print('[RPA][ERROR] - target missing for upload()')
+        show_error('[RPA][ERROR] - target missing for upload()')
         return False
 
     elif filename_to_upload is None or filename_to_upload == '':
-        print('[RPA][ERROR] - filename missing for upload()')
+        show_error('[RPA][ERROR] - filename missing for upload()')
         return False
 
     elif not exist(element_identifier):
-        print('[RPA][ERROR] - cannot find ' + element_identifier)
+        show_error('[RPA][ERROR] - cannot find ' + element_identifier)
         return False
 
     elif not send('upload ' + _sdq(element_identifier) + ' as ' + _esq(filename_to_upload)):
@@ -1396,7 +1417,7 @@ def download(download_url = None, filename_to_save = None):
     """function for python 2/3 compatible file download from url"""
 
     if download_url is None or download_url == '':
-        print('[RPA][ERROR] - download URL missing for download()')
+        show_error('[RPA][ERROR] - download URL missing for download()')
         return False
 
     # if not given, use last part of url as filename to save
@@ -1416,8 +1437,8 @@ def download(download_url = None, filename_to_save = None):
             import urllib.request; urllib.request.urlretrieve(download_url, filename_to_save)
 
     except Exception as e:
-        print('[RPA][ERROR] - failed downloading from ' + download_url + '...')
         print(str(e))
+        show_error('[RPA][ERROR] - failed downloading from ' + download_url + '...')
         return False
 
     # take the existence of downloaded file as success
@@ -1425,16 +1446,16 @@ def download(download_url = None, filename_to_save = None):
         return True
 
     else:
-        print('[RPA][ERROR] - failed downloading to ' + filename_to_save)
+        show_error('[RPA][ERROR] - failed downloading to ' + filename_to_save)
         return False
 
 def frame(main_frame = None, sub_frame = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using frame()')
+        show_error('[RPA][ERROR] - use init() before using frame()')
         return False
 
     if not _chrome():
-        print('[RPA][ERROR] - frame() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - frame() requires init(chrome_browser = True)')
         return False
 
     # reset webpage context to document root, by sending custom tagui javascript code
@@ -1449,7 +1470,7 @@ def frame(main_frame = None, sub_frame = None):
     # set webpage context to main frame specified, by sending custom tagui javascript code
     frame_identifier = '(//frame|//iframe)[@name="' + main_frame + '" or @id="' + main_frame + '"]'
     if not exist(frame_identifier):
-        print('[RPA][ERROR] - cannot find frame with @name or @id as \'' + main_frame + '\'')
+        show_error('[RPA][ERROR] - cannot find frame with @name or @id as \'' + main_frame + '\'')
         return False
 
     send('js new_context = "mainframe_context"')
@@ -1463,7 +1484,7 @@ def frame(main_frame = None, sub_frame = None):
     if sub_frame is not None and sub_frame != '':
         frame_identifier = '(//frame|//iframe)[@name="' + sub_frame + '" or @id="' + sub_frame + '"]'
         if not exist(frame_identifier):
-            print('[RPA][ERROR] - cannot find sub frame with @name or @id as \'' + sub_frame + '\'')
+            show_error('[RPA][ERROR] - cannot find sub frame with @name or @id as \'' + sub_frame + '\'')
             return False
 
         send('js new_context = "subframe_context"')
@@ -1477,11 +1498,11 @@ def frame(main_frame = None, sub_frame = None):
 
 def popup(string_in_url = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using popup()')
+        show_error('[RPA][ERROR] - use init() before using popup()')
         return False
 
     if not _chrome():
-        print('[RPA][ERROR] - popup() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - popup() requires init(chrome_browser = True)')
         return False
 
     # reset webpage context to main page, by sending custom tagui javascript code
@@ -1504,7 +1525,7 @@ def popup(string_in_url = None):
     if popup_result != '':
         return True
     else:
-        print('[RPA][ERROR] - cannot find popup tab containing URL string \'' + string_in_url + '\'')
+        show_error('[RPA][ERROR] - cannot find popup tab containing URL string \'' + string_in_url + '\'')
         return False
 
 def api(url_to_query = None):
@@ -1514,7 +1535,7 @@ def api(url_to_query = None):
 
 def run(command_to_run = None):
     if command_to_run is None or command_to_run == '':
-        print('[RPA][ERROR] - command(s) missing for run()')
+        show_error('[RPA][ERROR] - command(s) missing for run()')
         return ''
 
     else:
@@ -1529,15 +1550,15 @@ def run(command_to_run = None):
 
 def dom(statement_to_run = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using dom()')
+        show_error('[RPA][ERROR] - use init() before using dom()')
         return ''
 
     if statement_to_run is None or statement_to_run == '':
-        print('[RPA][ERROR] - statement(s) missing for dom()')
+        show_error('[RPA][ERROR] - statement(s) missing for dom()')
         return ''
 
     if not _chrome():
-        print('[RPA][ERROR] - dom() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - dom() requires init(chrome_browser = True)')
         return ''
 
     else:
@@ -1548,15 +1569,15 @@ def dom(statement_to_run = None):
 
 def vision(command_to_run = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using vision()')
+        show_error('[RPA][ERROR] - use init() before using vision()')
         return False
 
     if command_to_run is None or command_to_run == '':
-        print('[RPA][ERROR] - command(s) missing for vision()')
+        show_error('[RPA][ERROR] - command(s) missing for vision()')
         return False
 
     if not _visual():
-        print('[RPA][ERROR] - vision() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - vision() requires init(visual_automation = True)')
         return False
 
     elif not send('vision ' + command_to_run):
@@ -1567,7 +1588,7 @@ def vision(command_to_run = None):
 
 def timeout(timeout_in_seconds = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using timeout()')
+        show_error('[RPA][ERROR] - use init() before using timeout()')
         return False
 
     global _tagui_timeout
@@ -1586,7 +1607,7 @@ def timeout(timeout_in_seconds = None):
 
 def present(element_identifier = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using present()')
+        show_error('[RPA][ERROR] - use init() before using present()')
         return False
 
     if element_identifier is None or element_identifier == '':
@@ -1597,13 +1618,13 @@ def present(element_identifier = None):
         if _visual():
             return True
         else:
-            print('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - page.png / page.bmp requires init(visual_automation = True)')
             return False
 
     # pre-emptive checks if image files are specified for visual automation
     if element_identifier.lower().endswith('.png') or element_identifier.lower().endswith('.bmp'):
         if not _visual():
-            print('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
+            show_error('[RPA][ERROR] - ' + element_identifier + ' identifier requires init(visual_automation = True)')
             return False
 
     # assume that (x,y) coordinates for visual automation always exist
@@ -1613,7 +1634,7 @@ def present(element_identifier = None):
                 if _visual():
                     return True
                 else:
-                    print('[RPA][ERROR] - x, y coordinates require init(visual_automation = True)')
+                    show_error('[RPA][ERROR] - x, y coordinates require init(visual_automation = True)')
                     return False
 
     send('present_result = present(\'' + _sdq(element_identifier) + '\').toString()')
@@ -1625,14 +1646,14 @@ def present(element_identifier = None):
 
 def count(element_identifier = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using count()')
+        show_error('[RPA][ERROR] - use init() before using count()')
         return int(0)
 
     if element_identifier is None or element_identifier == '':
         return int(0)
 
     if not _chrome():
-        print('[RPA][ERROR] - count() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - count() requires init(chrome_browser = True)')
         return int(0)
 
     send('count_result = count(\'' + _sdq(element_identifier) + '\').toString()')
@@ -1641,11 +1662,11 @@ def count(element_identifier = None):
 
 def title():
     if not _started():
-        print('[RPA][ERROR] - use init() before using title()')
+        show_error('[RPA][ERROR] - use init() before using title()')
         return ''
 
     if not _chrome():
-        print('[RPA][ERROR] - title() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - title() requires init(chrome_browser = True)')
         return ''
 
     send('dump title() to rpa_python.txt')
@@ -1654,11 +1675,11 @@ def title():
 
 def text():
     if not _started():
-        print('[RPA][ERROR] - use init() before using text()')
+        show_error('[RPA][ERROR] - use init() before using text()')
         return ''
 
     if not _chrome():
-        print('[RPA][ERROR] - text() requires init(chrome_browser = True)')
+        show_error('[RPA][ERROR] - text() requires init(chrome_browser = True)')
         return ''
 
     send('dump text() to rpa_python.txt')
@@ -1667,7 +1688,7 @@ def text():
 
 def timer():
     if not _started():
-        print('[RPA][ERROR] - use init() before using timer()')
+        show_error('[RPA][ERROR] - use init() before using timer()')
         return float(0)
 
     send('dump timer() to rpa_python.txt')
@@ -1676,11 +1697,11 @@ def timer():
 
 def mouse_xy():
     if not _started():
-        print('[RPA][ERROR] - use init() before using mouse_xy()')
+        show_error('[RPA][ERROR] - use init() before using mouse_xy()')
         return ''
 
     if not _visual():
-        print('[RPA][ERROR] - mouse_xy() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - mouse_xy() requires init(visual_automation = True)')
         return ''
 
     send('dump mouse_xy() to rpa_python.txt')
@@ -1689,11 +1710,11 @@ def mouse_xy():
 
 def mouse_x():
     if not _started():
-        print('[RPA][ERROR] - use init() before using mouse_x()')
+        show_error('[RPA][ERROR] - use init() before using mouse_x()')
         return int(0)
 
     if not _visual():
-        print('[RPA][ERROR] - mouse_x() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - mouse_x() requires init(visual_automation = True)')
         return int(0)
 
     send('dump mouse_x() to rpa_python.txt')
@@ -1702,11 +1723,11 @@ def mouse_x():
 
 def mouse_y():
     if not _started():
-        print('[RPA][ERROR] - use init() before using mouse_y()')
+        show_error('[RPA][ERROR] - use init() before using mouse_y()')
         return int(0)
 
     if not _visual():
-        print('[RPA][ERROR] - mouse_y() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - mouse_y() requires init(visual_automation = True)')
         return int(0)
 
     send('dump mouse_y() to rpa_python.txt')
@@ -1715,11 +1736,11 @@ def mouse_y():
 
 def clipboard(text_to_put = None):
     if not _started():
-        print('[RPA][ERROR] - use init() before using clipboard()')
+        show_error('[RPA][ERROR] - use init() before using clipboard()')
         return False
 
     if not _visual():
-        print('[RPA][ERROR] - clipboard() requires init(visual_automation = True)')
+        show_error('[RPA][ERROR] - clipboard() requires init(visual_automation = True)')
         return False
 
     if text_to_put is None:
@@ -1736,14 +1757,14 @@ def clipboard(text_to_put = None):
 def download_location(location = None):
     global _tagui_download_directory
     if not _started():
-        print('[RPA][ERROR] - use init() before using download_location()')
+        show_error('[RPA][ERROR] - use init() before using download_location()')
         return False
 
     if location is None:
         return _tagui_download_directory
 
     if "'" in location:
-        print('[RPA][ERROR] - single quote in location not supported here')
+        show_error('[RPA][ERROR] - single quote in location not supported here')
         return False
 
     if platform.system() == 'Windows':
