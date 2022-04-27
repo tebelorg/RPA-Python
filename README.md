@@ -100,7 +100,7 @@ r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endp
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, [simply look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python/issues/240#issuecomment-839981773). To run 10X faster instead of normal human speed, use [turbo mode](https://github.com/tebelorg/RPA-Python/issues/297) (read the caveats!).
 
-You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). You can fully [control error handling](https://github.com/tebelorg/RPA-Python/issues/269) if you wish to, eg snapshot of missing element or posting to custom API endpoint.
+You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python#core-functions). Fully control error handling by [setting error(True)](https://github.com/tebelorg/RPA-Python/issues/299#issuecomment-1110361923) to raise exception on error, and manage with Python's try-except.
 
 For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding parent folder location to install and invoke TagUI ([forked version](https://github.com/tebelorg/TagUI) optimised for this package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
@@ -120,6 +120,7 @@ init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup 
 close()||close TagUI, Chrome browser, SikuliX
 pack()||for deploying package without internet
 update()||for updating package without internet
+error()|True or False|set to True to raise exception on error
 debug()|True or False or text_to_log|print & log debug info to rpa_python.log
 
 >_by default RPA for Python runs at normal human speed, to run 10X faster use init(turbo_mode = True)_
