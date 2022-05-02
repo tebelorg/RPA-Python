@@ -555,7 +555,7 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
     try:
         # launch tagui using subprocess
         _process = subprocess.Popen(
-            tagui_cmd, shell=True,
+            tagui_cmd, shell=False,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
