@@ -83,6 +83,7 @@ r.close()
 
 #### TELEGRAM NOTIFICATION&ensp;:phone:
 ```python
+# first, look up @rpapybot from the Telegram app to approve receiving of messages
 r.telegram('1234567890', 'ID can be string or number, r.init() is not required')
 r.telegram(1234567890, 'Hello World. Olá Mundo. नमस्ते दुनिया. 안녕하세요 세계. 世界,你好。')
 r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the message')
