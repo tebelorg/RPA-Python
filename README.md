@@ -190,7 +190,7 @@ TagUI is a leading open-source RPA software :robot: with tens of thousands of us
 
 Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope that RPA for Python and ML frameworks would be good friends, and `pip install rpa` would make life easier for Python users. I maintain the package in my personal time and I'm happy that tens of thousands of people use it.
 
-At only ~1k lines of code, it would make my day to see developers of other languages port this project to their favourite programming language. See ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py), and its intuitive architecture. Work is in progress by other open-source folks to create TagUI packages for [C# .NET](https://www.nuget.org/packages/tagui) and Go languages.
+For techincal info, see its intuitive architecture below and ample comments in its [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py).
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
