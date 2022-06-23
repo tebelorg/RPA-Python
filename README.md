@@ -143,7 +143,7 @@ dump()|text_to_dump, filename_to_save|save text to file
 write()|text_to_write, filename_to_save|append text to file
 ask()|text_to_prompt|ask & return user input
 
->_to wait for an element to appear until timeout() value, use hover(). to drag-and-drop, [you can do this](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)_
+>_to wait for an element to appear until timeout() value, use hover(). to drag-and-drop, [do this](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)_
 
 #### PRO FUNCTIONS
 Function|Parameters|Purpose
