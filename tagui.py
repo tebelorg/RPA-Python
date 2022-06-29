@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.47.0'
+__version__ = '1.48.0'
 
 import subprocess
 import os
@@ -1389,6 +1389,41 @@ def check(condition_to_check = None, text_if_true = '', text_if_false = ''):
         print(text_if_false)
 
     return True
+
+def bin(file_to_bin = None, password = None, server = 'https://tebel.org/bin/'):
+    if not _started():
+        show_error('[RPA][ERROR] - use init() before using bin()')
+        return ''
+
+    if file_to_bin is None or file_to_bin == '':
+        show_error('[RPA][ERROR] - file_to_bin required for bin()')
+        return ''
+
+    else:
+        file_to_bin = os.path.abspath(file_to_bin)
+        if not os.path.isfile(file_to_bin):
+            show_error('[RPA][ERROR] - cannot find ' + file_to_bin)
+            return ''
+
+        original_url = url(); url(server)
+        if not exist('//*[@id = "message"]'):
+            show_error('[RPA][ERROR] - cannot connect to ' + server)
+            return ''
+
+        file_head, file_tail = os.path.split(file_to_bin)
+        type('//*[@id = "message"]', file_tail)
+        if password is not None:
+            type('//*[@id = "passwordinput"]', password)
+        click('//*[@id = "attach"]')
+        upload('#file', file_to_bin)
+        click('//*[@id = "sendbutton"]')
+
+        bin_url = read('//*[@id = "pastelink"]/a/@href')
+        if bin_url == '':
+            show_error('[RPA][ERROR] - failed uploading to ' + server)
+        if original_url != 'about:blank':
+            url(original_url)
+        return bin_url
 
 def upload(element_identifier = None, filename_to_upload = None):
     if not _started():
