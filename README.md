@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.47**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Try on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/pythonrpa)
+[**v1.48**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Try on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/pythonrpa)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -91,6 +91,14 @@ r.telegram(1234567890, 'Sent using my VPS server endpoint https://tebel.org/rpap
 r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endpoint')
 ```
 
+#### SECURE TEMPORARY STORAGE&ensp;:package:
+```python
+# securely share files up to 10 MB which self-destruct after 1 week
+# dedicated PrivateBin server with zero knowledge of shared files
+bin_url = r.bin('rpa_report.pdf', 'password (optional)')
+r.telegram(1234567890, 'Download RPA Report at ' + bin_url)
+```
+
 # API Reference
 
 [**Notes**](#general-notes)&ensp;|&ensp;[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
@@ -101,7 +109,7 @@ r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endp
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, simply [look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python/issues/240#issuecomment-839981773). To run 10X faster instead of normal human speed, use [turbo mode](https://github.com/tebelorg/RPA-Python/issues/297) (read the caveats!). Some CAPTCHAs can be solved using services like [2Captcha](https://2captcha.com) or directly by [replicating user actions](https://github.com/tebelorg/RPA-Python/issues/399#issuecomment-1163879428).
 
-You can even run on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python/issues/36#issuecomment-543670292).
+[Securely share files](https://github.com/tebelorg/RPA-Python/issues/396#issuecomment-1169409452) up to 10 MB with built-in temporary online storage, on dedicated [PrivateBin server](https://tebel.org/bin/). You can even run RPA on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python/issues/36#issuecomment-543670292).
 
 Fully control error handling by [setting error(True)](https://github.com/tebelorg/RPA-Python/issues/299#issuecomment-1110361923) to raise Python exception on error, and manage with try-except. For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding default folder location to install and invoke TagUI (a [forked version](https://github.com/tebelorg/TagUI) optimised for rpa package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
@@ -153,6 +161,7 @@ keyboard()|keys_and_modifiers (using visual automation)|send keystrokes to scree
 mouse()|'down' or 'up' (using visual automation)|send mouse event to screen
 wait()|delay_in_seconds (default 5 seconds)|explicitly wait for some time
 table()|table number or XPath, filename_to_save|save webpage table to CSV
+bin()|file_to_bin, password (optional but recommended)|secure temporary storage
 upload()|element_identifier (CSS only), filename_to_upload|upload file to web element
 download()|download_url, filename_to_save(optional)|download from URL to file
 unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified location
