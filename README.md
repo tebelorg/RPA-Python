@@ -1,6 +1,6 @@
 # RPA for Python :snake:
 
-[**v1.48**](https://github.com/tebelorg/RPA-Python/releases)&ensp;|&ensp;[**Use Cases**](#use-cases)&ensp;|&ensp;[**API Reference**](#api-reference)&ensp;|&ensp;[**About & Credits**](#about--credits)&ensp;|&ensp;[**Try on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;|&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;|&ensp;[**Telegram Chat**](https://t.me/pythonrpa)
+[**v1.48**](https://github.com/tebelorg/RPA-Python/releases)&ensp;•&ensp;[**Use Cases**](#use-cases)&ensp;•&ensp;[**API Reference**](#api-reference)&ensp;•&ensp;[**About & Credits**](#about--credits)&ensp;•&ensp;[**Try on Cloud**](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing)&ensp;•&ensp;[**PyCon Video**](https://www.youtube.com/watch?v=F2aQKWx_EAE)&ensp;•&ensp;[**Telegram Chat**](https://t.me/pythonrpa)
 
 >_This tool was previously known as TagUI for Python. [More details](https://github.com/tebelorg/RPA-Python/issues/100) on the name change, which is backward compatible so existing scripts written with `import tagui as t` and `t.function()` will still work._
 
@@ -195,11 +195,11 @@ timer()||return time elapsed in sec between calls as float
 
 # About & Credits
 
-TagUI is a leading open-source RPA software :robot: with tens of thousands of users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, for a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. My wife and I also spent a couple of months in Budapest Hungary, as well as Chiang Mai Thailand for visa runs. In 2018, I joined AI Singapore to continue development of TagUI.
+TagUI is a leading open-source RPA software :robot: with tens of thousands of users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, for a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. In 2018, I joined AI Singapore to continue development of TagUI.
 
 Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope that RPA for Python and ML frameworks would be good friends, and `pip install rpa` would make life easier for Python users. I maintain the package in my personal time and I'm happy that tens of thousands of people use it.
 
-For techincal info, see its intuitive architecture below and ample comments in its [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py).
+For technical info, see its intuitive architecture below and ample comments in this [single-file package](https://github.com/tebelorg/RPA-Python/blob/master/tagui.py).
 
 ![RPA for Python architecture](https://raw.githubusercontent.com/tebelorg/Tump/master/TagUI-Python/architecture.png)
 
