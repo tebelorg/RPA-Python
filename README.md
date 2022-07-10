@@ -217,7 +217,7 @@ I would like to credit and express my appreciation to these amazing open-source 
 # License
 RPA for Python is open-source software released under Apache 2.0 license
 
-# Mindly
+# One Last Thing.. Mindly
 I rarely make product recommendations, other than the [amazing OpenRPA software](https://github.com/open-rpa/openrpa), and the open-source RPA tools I personally worked on. I'd like to recommend [Mindly mindmapping app](https://www.mindlyapp.com) available on mobile and macOS.
 
 A mindmap is an intuitive way to store, organise and retrieve info, as it mimics how the mind works - relationships between different concepts and memories. It's perfect to make productive use of time pockets on the go.
