@@ -101,7 +101,7 @@ r.telegram(1234567890, 'Download RPA Report at ' + bin_url)
 
 # API Reference
 
-[**Notes**](#general-notes)&ensp;|&ensp;[**Element Identifiers**](#element-identifiers)&ensp;|&ensp;[**Core Functions**](#core-functions)&ensp;|&ensp;[**Basic Functions**](#basic-functions)&ensp;|&ensp;[**Pro Functions**](#pro-functions)&ensp;|&ensp;[**Helper Functions**](#helper-functions)
+[**Notes**](#general-notes)&ensp;•&ensp;[**Element Identifiers**](#element-identifiers)&ensp;•&ensp;[**Core Functions**](#core-functions)&ensp;•&ensp;[**Basic Functions**](#basic-functions)&ensp;•&ensp;[**Pro Functions**](#pro-functions)&ensp;•&ensp;[**Helper Functions**](#helper-functions)
 
 ---
 
