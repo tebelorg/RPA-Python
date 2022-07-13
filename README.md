@@ -205,11 +205,11 @@ For technical info, see its intuitive architecture below and ample comments in t
 
 I would like to credit and express my appreciation to these amazing open-source contributors below :heart:
 
-- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
-- [SikuliX](https://github.com/RaiMan/SikuliX1) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
-- [CasperJS](https://github.com/casperjs/casperjs) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
-- [PhantomJS](https://github.com/ariya/phantomjs) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
-- [SlimerJS](https://github.com/laurentj/slimerjs) - Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
+- [TagUI](https://github.com/kelaberetiv/TagUI) by AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
+- [SikuliX](https://github.com/RaiMan/SikuliX1) by Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
+- [CasperJS](https://github.com/casperjs/casperjs) by Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
+- [PhantomJS](https://github.com/ariya/phantomjs) by Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
+- [SlimerJS](https://github.com/laurentj/slimerjs) by Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
 - [Philip Vollet](https://www.linkedin.com/in/philipvollet) from Germany, for spreading the word. Philip is a veteran in NLP and open-source. His sharing of RPA for Python helps spread the word to the vast and lovely open-source community about [pip install rpa](https://www.linkedin.com/posts/philipvollet_datascience-deeplearning-machinelearning-activity-6884853626183938048-Eqg3).
 
 ![Philip's LinkedIn Post](https://raw.githubusercontent.com/tebelorg/Tump/master/philip_vollet.png)
