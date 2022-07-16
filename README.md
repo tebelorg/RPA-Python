@@ -41,7 +41,7 @@ r.init(visual_automation = True)
 r.dclick('outlook_icon.png')
 r.click('new_mail.png')
 ...
-r.type('message_box.png', 'Hi Gillian,[enter]This is...')
+r.type('message_box.png', 'Hi Gillian,[enter]This is ...')
 r.click('send_button.png')
 r.close()
 ```
@@ -49,7 +49,7 @@ r.close()
 #### OCR AUTOMATION&ensp;🧿
 ```python
 r.init(visual_automation = True, chrome_browser = False)
-print(r.read('pdf_window.png'))
+print(r.read('pdf_report_window.png'))
 print(r.read('image_preview.png'))
 r.hover('anchor_element.png')
 print(r.read(r.mouse_x(), r.mouse_y(), r.mouse_x() + 400, r.mouse_y() + 200))
@@ -71,7 +71,7 @@ r.close()
 #### MOUSE AUTOMATION&ensp;:mouse:
 ```python
 r.init(visual_automation = True)
-r.type(600, 300, 'open source')
+r.type(600, 300, 'neo kobe city')
 r.click(900, 300)
 r.snap('page.png', 'results.png')
 r.hover('button_to_drag.png')
@@ -83,20 +83,18 @@ r.close()
 
 #### TELEGRAM NOTIFICATION&ensp;:phone:
 ```python
-# first, look up @rpapybot from Telegram app to approve receiving of messages
+# first, look up @rpapybot on your Telegram app to approve receiving messages
 r.telegram('1234567890', 'ID can be string or number, r.init() is not required')
 r.telegram(1234567890, 'Hello World. Olá Mundo. नमस्ते दुनिया. 안녕하세요 세계. 世界,你好。')
 r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the message')
-r.telegram(1234567890, 'Sent using my VPS server endpoint https://tebel.org/rpapybot')
-r.telegram(1234567890, 'Sent using your own hosted endpoint', 'https://your_endpoint')
 ```
 
 #### SECURE TEMPORARY STORAGE&ensp;:package:
 ```python
 # securely share files up to 10 MB which will self-destruct after 1 week
-# on a dedicated PrivateBin server with zero knowledge of shared files
-bin_url = r.bin('rpa_report.pdf', 'password (optional)')
-r.telegram(1234567890, 'Download RPA Report at ' + bin_url)
+# using a dedicated PrivateBin server with zero knowledge of shared files
+bin_url = r.bin('secret_agent_report.pdf', 'optional password')
+r.telegram(1234567890, 'Access confidential report at ' + bin_url)
 ```
 
 # API Reference
