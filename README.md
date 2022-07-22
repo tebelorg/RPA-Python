@@ -82,17 +82,16 @@ r.close()
 ```
 
 #### TELEGRAM NOTIFICATION&ensp;:phone:
+>_first, look up @rpapybot on your Telegram app to approve receiving messages_
 ```python
-# first, look up @rpapybot on your Telegram app to approve receiving messages
 r.telegram('1234567890', 'ID can be string or number, r.init() is not required')
 r.telegram(1234567890, 'Hello World. Olá Mundo. नमस्ते दुनिया. 안녕하세요 세계. 世界,你好。')
 r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the message')
 ```
 
 #### SECURE TEMPORARY STORAGE&ensp;:package:
+>_securely share files up to 10 MB on PrivateBin, which will self-destruct after 1 week_
 ```python
-# securely share files up to 10 MB which will self-destruct after 1 week
-# using a dedicated PrivateBin server with zero knowledge of shared files
 bin_url = r.bin('secret_agent_report.pdf', 'optional password')
 r.telegram(1234567890, 'Access confidential report at ' + bin_url)
 ```
@@ -123,52 +122,52 @@ An element identifier helps to tell RPA for Python exactly which element on the 
 #### CORE FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-init()|visual_automation = False, chrome_browser = True|start TagUI, auto-setup on first run
-close()||close TagUI, Chrome browser, SikuliX
-pack()||for deploying package without internet
-update()||for updating package without internet
-error()|True or False|set to True to raise exception on error
-debug()|True or False or text_to_log|print & log debug info to rpa_python.log
+`init()`|`visual_automation=False`,`chrome_browser=True`|start TagUI, auto-setup on first run
+`close()`||close TagUI, Chrome browser, SikuliX
+`pack()`||for deploying package without internet
+`update()`||for updating package without internet
+`error()`|`True` or `False`|set to True to raise exception on error
+`debug()`|`True` or `False` or `text_to_log`|print & log debug info to rpa_python.log
 
 >_by default RPA for Python runs at normal human speed, to run 10X faster use init(turbo_mode = True)_
 
 #### BASIC FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-url()|webpage_url (no parameter to return current URL)|go to web URL
-click()|element_identifier (or x, y using visual automation)| left-click on element
-rclick()|element_identifier (or x, y using visual automation)|right-click on element
-dclick()|element_identifier (or x, y using visual automation)|double-click on element
-hover()|element_identifier (or x, y using visual automation)|move mouse to element
-type()|element_identifier (or x, y), text_to_type / '[enter]' / '[clear]'|enter text at element
-select()|element_identifier (or x, y), option_value / option_text / x, y|choose dropdown option
-read()|element_identifier (page = web page) (or x1, y1, x2, y2)|fetch & return element text
-snap()|element_identifier (page = web page), filename_to_save|save screenshot to file
-load()|filename_to_load|load & return file content
-dump()|text_to_dump, filename_to_save|save text to file
-write()|text_to_write, filename_to_save|append text to file
-ask()|text_to_prompt|ask & return user input
+`url()`|`webpage_url` (no parameter to return current URL)|go to web URL
+`click()`|`element_identifier` (or x, y using visual automation)| left-click on element
+`rclick()`|`element_identifier` (or x, y using visual automation)|right-click on element
+`dclick()`|`element_identifier` (or x, y using visual automation)|double-click on element
+`hover()`|`element_identifier` (or x, y using visual automation)|move mouse to element
+`type()`|`element_identifier` (or x, y), `text` (`'[enter]'`/`'[clear]'`)|enter text at element
+`select()`|`element_identifier` (or x, y), `value or text` (or x, y)|choose dropdown option
+`read()`|`element_identifier` (`'page'` is web page) (or x1, y1, x2, y2)|return element text
+`snap()`|`element_identifier` (`'page'` is web page), `filename_to_save`|save screenshot to file
+`load()`|`filename_to_load`|return file content
+`dump()`|`text_to_dump`, `filename_to_save`|save text to file
+`write()`|`text_to_write`, `filename_to_save`|append text to file
+`ask()`|`text_to_prompt`|ask & return user input
 
 >_to wait for an element to appear until timeout() value, use hover(). to drag-and-drop, [do it this way](https://github.com/tebelorg/RPA-Python/issues/58#issuecomment-570778431)_
 
 #### PRO FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-telegram()|telegram_id, text_to_send (first look up @rpapybot)|send Telegram message
-keyboard()|keys_and_modifiers (using visual automation)|send keystrokes to screen
-mouse()|'down' or 'up' (using visual automation)|send mouse event to screen
-wait()|delay_in_seconds (default 5 seconds)|explicitly wait for some time
-table()|table number or XPath, filename_to_save|save webpage table to CSV
-bin()|file_to_bin, password (optional but recommended)|secure temporary storage
-upload()|element_identifier (CSS only), filename_to_upload|upload file to web element
-download()|download_url, filename_to_save(optional)|download from URL to file
-unzip()|file_to_unzip, unzip_location (optional)|unzip zip file to specified location
-frame()|main_frame id or name, sub_frame (optional)|set web frame, frame() to reset
-popup()|string_in_url (no parameter to reset to main page)|set context to web popup tab
-run()|command_to_run (use ; between commands)|run OS command & return output
-dom()|statement_to_run (JS code to run in browser)|run code in DOM & return output
-vision()|command_to_run (Python code for SikuliX)|run custom SikuliX commands
-timeout()|timeout_in_seconds (blank returns current timeout)|change wait timeout (default 10s)
+`telegram()`|`telegram_id`, `text_to_send` (first look up @rpapybot)|send Telegram message
+`keyboard()`|`keys_and_modifiers` (using visual automation)|send keystrokes to screen
+`mouse()`|`'down'` or `'up'` (using visual automation)|send mouse event to screen
+`wait()`|`delay_in_seconds` (default 5 seconds)|explicitly wait for some time
+`table()`|`table number` or `XPath`, `filename_to_save`|save webpage table to CSV
+`bin()`|`file_to_bin`, `password` (optional but recommended)|secure temporary storage
+`upload()`|`element_identifier` (CSS), `filename_to_upload`|upload file to web element
+`download()`|`download_url`, `filename_to_save` (optional)|download from URL to file
+`unzip()`|`file_to_unzip`, `unzip_location` (optional)|unzip zip file to specified location
+`frame()`|`main_frame id or name`, `sub_frame` (optional)|set web frame, frame() to reset
+`popup()`|`string_in_url` (no parameter to reset to main page)|set context to web popup tab
+`run()`|`command_to_run` (use ; between commands)|run OS command & return output
+`dom()`|`statement_to_run` (JS code to run in browser)|run code in DOM & return output
+`vision()`|`command_to_run` (Python code for SikuliX)|run custom SikuliX commands
+`timeout()`|`timeout_in_seconds` (blank returns current timeout)|change wait timeout (default 10s)
 
 keyboard() modifiers and special keys -
 >_[shift] [ctrl] [alt] [win] [cmd] [clear] [space] [enter] [backspace] [tab] [esc] [up] [down] [left] [right] [pageup] [pagedown] [delete] [home] [end] [insert] [f1] .. [f15] [printscreen] [scrolllock] [pause] [capslock] [numlock]_
@@ -176,18 +175,18 @@ keyboard() modifiers and special keys -
 #### HELPER FUNCTIONS
 Function|Parameters|Purpose
 :-------|:---------|:------
-exist()|element_identifier|return True or False if element exists before timeout
-present()|element_identifier|return True or False if element is present now
-count()|element_identifier|return number of web elements as integer
-clipboard()|text_to_put or no parameter|put text or return clipboard text as string
-get_text()|source_text, left, right, count = 1|return text between left & right markers
-del_chars()|source_text, characters|return text after deleting given characters
-mouse_xy()||return '(x,y)' coordinates of mouse as string
-mouse_x()||return x coordinate of mouse as integer
-mouse_y()||return y coordinate of mouse as integer
-title()||return page title of current web page as string
-text()||return text content of current web page as string
-timer()||return time elapsed in sec between calls as float
+`exist()`|`element_identifier`|True or False if element shows before timeout
+`present()`|`element_identifier`|return True or False if element is present now
+`count()`|`element_identifier`|return number of web elements as integer
+`clipboard()`|`text_to_put` or no parameter|put text or return clipboard text as string
+`get_text()`|`source_text`,`left`,`right`,`count=1`|return text between left & right markers
+`del_chars()`|`source_text`,`characters`|return text after deleting given characters
+`mouse_xy()`||return '(x,y)' coordinates of mouse as string
+`mouse_x()`||return x coordinate of mouse as integer
+`mouse_y()`||return y coordinate of mouse as integer
+`title()`||return page title of current web page as string
+`text()`||return text content of current web page as string
+`timer()`||return time elapsed in sec between calls as float
 
 >_to type a large amount of text quickly, use clipboard() and keyboard() to paste instead of type()_
 
@@ -203,11 +202,11 @@ For technical info, see its intuitive architecture below and ample comments in t
 
 I would like to credit and express my appreciation to these amazing open-source contributors below :heart:
 
-- [TagUI](https://github.com/kelaberetiv/TagUI) by AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
-- [SikuliX](https://github.com/RaiMan/SikuliX1) by Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
-- [CasperJS](https://github.com/casperjs/casperjs) by Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
-- [PhantomJS](https://github.com/ariya/phantomjs) by Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
-- [SlimerJS](https://github.com/laurentj/slimerjs) by Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
+- [TagUI](https://github.com/kelaberetiv/TagUI) - AI Singapore from Singapore / [@aisingapore](https://www.aisingapore.org)
+- [SikuliX](https://github.com/RaiMan/SikuliX1) - Raimund Hocke from Germany / [@RaiMan](https://github.com/RaiMan)
+- [CasperJS](https://github.com/casperjs/casperjs) - Nicolas Perriault from France / [@n1k0](https://github.com/n1k0)
+- [PhantomJS](https://github.com/ariya/phantomjs) - Ariya Hidayat from Indonesia / [@ariya](https://github.com/ariya)
+- [SlimerJS](https://github.com/laurentj/slimerjs) - Laurent Jouanneau from France / [@laurentj](https://github.com/laurentj)
 - [Philip Vollet](https://www.linkedin.com/in/philipvollet) from Germany, for spreading the word. Philip is a veteran in NLP and open-source. His sharing of RPA for Python helps spread the word to the vast and lovely open-source community about [pip install rpa](https://www.linkedin.com/posts/philipvollet_datascience-deeplearning-machinelearning-activity-6884853626183938048-Eqg3).
 
 ![Philip's LinkedIn Post](https://raw.githubusercontent.com/tebelorg/Tump/master/philip_vollet.png)
@@ -215,8 +214,8 @@ I would like to credit and express my appreciation to these amazing open-source 
 # License
 RPA for Python is open-source software released under Apache 2.0 license
 
-# One Last Thing.. Mindly
-I rarely make product recommendations, other than the [amazing OpenRPA software](https://github.com/open-rpa/openrpa), and the open-source RPA tools I personally worked on. I'd like to recommend [Mindly mindmapping app](https://www.mindlyapp.com) available on mobile and macOS.
+# One Last Thing.. `Mindly`
+I rarely make product recommendations, other than the [amazing OpenRPA software](https://github.com/open-rpa/openrpa), and the open-source RPA tools I personally worked on. I'd like to recommend [Mindly mindmapping app](https://www.mindlyapp.com) available on phone and macOS.
 
 A mindmap is an intuitive way to store, organise and retrieve info, as it mimics how the mind works - relationships between different concepts and memories. It's perfect to make productive use of time pockets on the go.
 
