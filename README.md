@@ -17,7 +17,7 @@ import rpa as r
 ```
 
 Notes on operating systems and optional visual automation mode -
-- :rainbow_flag: **Windows -** if visual automation is cranky, try setting your display zoom level to recommended % or 100%
+- :rainbow_flag: **Windows -** if visual automation is faulty, try setting your display zoom level to recommended % or 100%
 - :apple: **macOS -** due to tighter security, [install PHP manually](https://github.com/tebelorg/RPA-Python/issues/335#issuecomment-989470056) and see solutions for [PhantomJS](https://github.com/tebelorg/RPA-Python/issues/79) and [Java popups](https://github.com/tebelorg/RPA-Python/issues/78)
 - :penguin: **Linux -** visual automation mode requires special setup on Linux, see how to [install OpenCV and Tesseract](https://sikulix-2014.readthedocs.io/en/latest/newslinux.html)
 
