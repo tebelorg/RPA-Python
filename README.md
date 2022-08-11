@@ -90,7 +90,7 @@ r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the mess
 ```
 
 #### SECURE TEMPORARY STORAGE&ensp;:package:
->_securely share files up to 50 MB on PrivateBin, which will self-destruct after 1 week_
+>_securely share files up to 100 MB on PrivateBin, which will self-destruct after 1 week_
 ```python
 bin_url = r.bin('secret_agent_report.pdf', 'optional password')
 r.telegram(1234567890, 'Access confidential report at ' + bin_url)
@@ -106,7 +106,7 @@ r.telegram(1234567890, 'Access confidential report at ' + bin_url)
 
 See [sample Python script](https://github.com/tebelorg/RPA-Python/blob/master/sample.py), the [RPA Challenge solution](https://github.com/tebelorg/RPA-Python/issues/120#issuecomment-610518196), and [RedMart groceries example](https://github.com/tebelorg/RPA-Python/issues/24). To send a Telegram app notification, simply [look up @rpapybot](https://github.com/tebelorg/RPA-Python/issues/281#issue-942803794) to allow receiving messages. To automate Chrome browser invisibly, use [headless mode](https://github.com/tebelorg/RPA-Python/issues/240#issuecomment-839981773). To run 10X faster instead of normal human speed, use [turbo mode](https://github.com/tebelorg/RPA-Python/issues/297) (read the caveats!). Some CAPTCHAs can be solved using services like [2Captcha](https://2captcha.com) or directly by [replicating user actions](https://github.com/tebelorg/RPA-Python/issues/399#issuecomment-1163879428).
 
-[Securely share files](https://github.com/tebelorg/RPA-Python/issues/396#issuecomment-1169409452) up to 50 MB with built-in temporary online storage, on a dedicated [PrivateBin server](https://tebel.org/bin/). You can even run RPA on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python/issues/36#issuecomment-543670292).
+[Securely share files](https://github.com/tebelorg/RPA-Python/issues/396#issuecomment-1169409452) up to 100 MB with built-in temporary online storage, on a dedicated [PrivateBin server](https://tebel.org/bin/). You can even run RPA on your phone browser [using this Colab notebook](https://colab.research.google.com/drive/13bQO6G_hzE1teX35a3NZ4T5K-ICFFdB5?usp=sharing) (eg datascraping with up to 5 Colab sessions). By design this package has [enterprise security](https://github.com/kelaberetiv/TagUI/blob/master/README.md#enterprise-security-by-design) and you can install, update and use it [without the internet](https://github.com/tebelorg/RPA-Python/issues/36#issuecomment-543670292).
 
 Fully control error handling by [setting error(True)](https://github.com/tebelorg/RPA-Python/issues/299#issuecomment-1110361923) to raise Python exception on error, and manage with try-except. For fine-grained control on web browser file download location, use [download_location()](https://github.com/tebelorg/RPA-Python/issues/279#issuecomment-877749880). For overriding default folder location to install and invoke TagUI (a [forked version](https://github.com/tebelorg/TagUI) optimised for rpa package), use [tagui_location()](https://github.com/tebelorg/RPA-Python/issues/257#issuecomment-846602776).
 
