@@ -24,7 +24,7 @@ Notes on operating systems and optional visual automation mode -
 
 RPA for Python's simple and powerful API makes robotic process automation fun! You can use it to quickly automate away repetitive time-consuming tasks on websites, desktop applications, or the command line.
 
-As a bonus to users and token of my appreciation, any new bug reported will receive a 200 USD gift card from me at your preferred merchant. Any feature suggestion accepted will receive a 100 USD gift card.
+As a bonus and token of my appreciation, any new bug reported will be appreciated with a 200 USD gift card from your preferred merchant. Any feature suggestion accepted will be appreciated with a 100 USD gift card.
 
 #### WEB AUTOMATION&ensp;:spider_web:
 ```python
