@@ -195,7 +195,7 @@ Function|Parameters|Purpose
 
 TagUI is a leading open-source RPA software :robot: with tens of thousands of users. It was created in 2016-2017 when I left DBS Bank as a test automation engineer, for a one-year sabbatical to Eastern Europe. Most of its code base was written in Novi Sad Serbia. In 2018, I joined AI Singapore to continue development of TagUI.
 
-Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope `pip install rpa` would make life easier for Python users from all walks of life.
+Over a few months in 2019, I took on a daddy role full-time, taking care of my newborn baby girl and wife :cowboy_hat_face:🤱. In between nannying, I used my time pockets to create this Python package built on TagUI. I hope `pip install rpa` would make life easier for Python users from different walks of life.
 
 I had been maintaining the package (and a [forked version of TagUI](https://github.com/tebelorg/TagUI) optimised for it) in my personal time. But am delighted that [Marcelo Cecin](https://www.linkedin.com/in/marcelocecin/), [Luis Alejandro](https://www.linkedin.com/in/luis-alejandro/), [Jozsef Fulop](https://www.linkedin.com/in/jozseffulop86/), [Shyan Chua](https://www.linkedin.com/in/shyanchua/), [Laurence Liew](https://www.linkedin.com/in/laurenceliew/), [myself](https://www.linkedin.com/in/kensoh/), will be the new team maintaining this package. We're happy that tens of thousands of people use it. Enjoy! :snake:
 
