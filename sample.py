@@ -37,7 +37,7 @@ r.snap('logo', 'logo.png')
 # another example of interacting with a web page
 # include http:// or https:// in URL parameter
 r.url('https://duckduckgo.com')
-r.type('search_form_input_homepage', 'The search engine that doesn\'t track you.')
+r.type('searchbox_input', 'The search engine that doesn\'t track you.')
 r.snap('page', 'duckduckgo.png')
 r.wait(4.4)
 
