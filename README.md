@@ -29,9 +29,8 @@ As a bonus and token of my appreciation, any new bug reported will be appreciate
 #### WEB AUTOMATION&ensp;:spider_web:
 ```python
 r.init()
-r.url('https://www.google.com')
+r.url('https://duckduckgo.com')
 r.type('//*[@name="q"]', 'decentralisation[enter]')
-print(r.read('result-stats'))
 r.snap('page', 'results.png')
 r.close()
 ```
