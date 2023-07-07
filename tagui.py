@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.48.1'
+__version__ = '1.49.0'
 
 import subprocess
 import os
@@ -1349,6 +1349,36 @@ def mouse(mouse_action = None):
     else:
         return True
 
+def focus(app_to_focus = None):
+    if app_to_focus is None or app_to_focus == '':
+        show_error('[RPA][ERROR] - app to focus missing for focus()')
+        return False
+
+    else:
+        if platform.system() == 'Windows':
+            # download sendKeys.bat if not present
+            if not os.path.isfile('sendKeys.bat'):
+                sendKeys_url = 'https://github.com/tebelorg/Tump/releases/download/v1.0.0/sendKeys.bat'
+                if not download(sendKeys_url, 'sendKeys.bat'):
+                    show_error('[RPA][ERROR] - cannot download sendKeys.bat for focus()')
+                    return False
+            if os.system('sendKeys.bat "' + app_to_focus + '" "" > nul 2>&1') == 0:
+                return True
+            else:
+                show_error('[RPA][ERROR] - ' + app_to_focus + ' not found for focus()')
+                return False
+
+        elif platform.system() == 'Darwin':
+            if os.system('osascript -e \'tell application "' + app_to_focus + '" to activate\' > /dev/null 2>&1') == 0:
+                return True
+            else:
+                show_error('[RPA][ERROR] - ' + app_to_focus + ' not found for focus()')
+                return False
+
+        else:
+                show_error('[RPA][ERROR] - Linux not supported for focus()')
+                return False
+ 
 def table(element_identifier = None, filename_to_save = None):
     if not _started():
         show_error('[RPA][ERROR] - use init() before using table()')
