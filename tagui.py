@@ -2,7 +2,7 @@
 # Apache License 2.0, Copyright 2019 Tebel.Automation Private Limited
 # https://github.com/tebelorg/RPA-Python/blob/master/LICENSE.txt
 __author__ = 'Ken Soh <opensource@tebel.org>'
-__version__ = '1.49.0'
+__version__ = '1.50.0'
 
 import subprocess
 import os
@@ -245,6 +245,19 @@ def _patch_macos_pjs():
     else:
         return True
 
+def _patch_macos_py3():
+    """because newer macOS does not have python command only python3 command"""
+    if platform.system() == 'Darwin' and not os.path.isfile(tagui_location() + '/.tagui/src/py3_patched'):
+        if not os.system('python --version > /dev/null 2>&1') == 0:
+            if os.system('python3 --version > /dev/null 2>&1') == 0:
+                list_of_patch_files = [tagui_location() + '/.tagui/src/casperjs/bin/casperjs',
+                                       tagui_location() + '/.tagui/src/casperjs/tests/clitests/runtests.py',
+                                       tagui_location() + '/.tagui/src/slimerjs/slimerjs.py']
+                for patch_file in list_of_patch_files:
+                    dump(load(patch_file).replace('#!/usr/bin/env python', '#!/usr/bin/env python3'), patch_file)
+                dump('python updated to python 3', tagui_location() + '/.tagui/src/py3_patched')
+    return True
+
 def coord(x_coordinate = 0, y_coordinate = 0):
     """function to form a coordinate string from x and y integers"""
     return '(' + str(x_coordinate) + ',' + str(y_coordinate) + ')'
@@ -420,6 +433,8 @@ def setup():
 
         # patch PhantomJS to solve OpenSSL issue
         if not _patch_macos_pjs(): return False
+        # patch files to solve no python issue
+        if not _patch_macos_py3(): return False
         print('[RPA][INFO] - TagUI now ready for use in your Python environment')
 
     # perform Windows specific setup actions
@@ -488,6 +503,8 @@ def init(visual_automation = False, chrome_browser = True, headless_mode = False
 
     # on macOS, patch PhantomJS to latest v2.1.1 to solve OpenSSL issue
     if platform.system() == 'Darwin' and not _patch_macos_pjs(): return False
+    # newer macOS has no python command, patch some files header to python3
+    if platform.system() == 'Darwin' and not _patch_macos_py3(): return False
 
     # create entry flow to launch SikuliX accordingly
     if visual_automation:
