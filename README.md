@@ -159,7 +159,7 @@ Function|Parameters|Purpose
 `telegram()`|`telegram_id`, `text_to_send` (first look up @rpapybot)|send Telegram message
 `keyboard()`|`keys_and_modifiers` (using visual automation)|send keystrokes to screen
 `mouse()`|`'down'` or `'up'` (using visual automation)|send mouse event to screen
-`focus()`|`app_to_focus`|make application in focus
+`focus()`|`app_to_focus` (full name of app)|make application in focus
 `wait()`|`delay_in_seconds` (default 5 seconds)|explicitly wait for some time
 `table()`|`table number` or `XPath`, `filename_to_save`|save webpage table to CSV
 `bin()`|`file_to_bin`, `password` (optional but recommended)|secure temporary storage
