@@ -167,7 +167,7 @@ Function|Parameters|Purpose
 `download()`|`download_url`, `filename_to_save` (optional)|download from URL to file
 `unzip()`|`file_to_unzip`, `unzip_location` (optional)|unzip zip file to specified location
 `frame()`|`main_frame id or name`, `sub_frame` (optional)|set web frame, frame() to reset
-`popup()`|`string_in_url` (no parameter to reset to main page)|set context to web popup tab
+`popup()`|`string_in_url` (no parameter to reset to main page especially important when used with other popup() that controls other browser tab)|set context to web popup tab
 `run()`|`command_to_run` (use ; between commands)|run OS command & return output
 `dom()`|`statement_to_run` (JS code to run in browser)|run code in DOM & return output
 `vision()`|`command_to_run` (Python code for SikuliX)|run custom SikuliX commands
