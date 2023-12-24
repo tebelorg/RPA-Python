@@ -26,7 +26,7 @@ RPA for Python's simple and powerful API makes robotic process automation fun! Y
 
 As a bonus and token of my appreciation, any new bug reported will be appreciated with a US$200 gift card from your preferred merchant. Any feature suggestion accepted will be appreciated with a US$100 gift card.
 
-#### WEB AUTOMATION&ensp;:spider_web:
+#### WEB AUTOMATION
 ```python
 r.init()
 r.url('https://duckduckgo.com')
@@ -36,7 +36,7 @@ r.snap('page', 'results.png')
 r.close()
 ```
 
-#### VISUAL AUTOMATION&ensp;:see_no_evil:
+#### VISUAL AUTOMATION
 ```python
 r.init(visual_automation = True)
 r.dclick('outlook_icon.png')
@@ -47,7 +47,7 @@ r.click('send_button.png')
 r.close()
 ```
 
-#### OCR AUTOMATION&ensp;🧿
+#### OCR AUTOMATION
 ```python
 r.init(visual_automation = True, chrome_browser = False)
 print(r.read('pdf_report_window.png'))
@@ -57,7 +57,7 @@ print(r.read(r.mouse_x(), r.mouse_y(), r.mouse_x() + 400, r.mouse_y() + 200))
 r.close()
 ```
 
-#### KEYBOARD AUTOMATION&ensp;:musical_keyboard:
+#### KEYBOARD AUTOMATION
 ```python
 r.init(visual_automation = True, chrome_browser = False)
 r.keyboard('[cmd][space]')
@@ -69,7 +69,7 @@ r.snap('page.png', 'results.png')
 r.close()
 ```
 
-#### MOUSE AUTOMATION&ensp;:mouse:
+#### MOUSE AUTOMATION
 ```python
 r.init(visual_automation = True)
 r.type(600, 300, 'neo kobe city')
@@ -82,7 +82,7 @@ r.mouse('up')
 r.close()
 ```
 
-#### TELEGRAM NOTIFICATION&ensp;:phone:
+#### TELEGRAM NOTIFICATION
 >_first, look up @rpapybot on your Telegram app to approve receiving messages_
 ```python
 r.telegram('1234567890', 'ID can be string or number, r.init() is not required')
@@ -90,7 +90,7 @@ r.telegram(1234567890, 'Hello World. Olá Mundo. नमस्ते दुनि
 r.telegram(1234567890, 'Use backslash n for new line\nThis is line 2 of the message')
 ```
 
-#### SECURE TEMPORARY STORAGE&ensp;:package:
+#### SECURE TEMPORARY STORAGE
 >_securely share files up to 100 MB on PrivateBin, which will self-destruct after 1 week_
 ```python
 bin_url = r.bin('secret_agent_report.pdf', 'optional password')
