@@ -113,6 +113,8 @@ Fully control error handling by [setting error(True)](https://github.com/tebelor
 
 If you are using non-English operating system and get "invalid continuation byte" error, you can set code page to support UTF-8 or change your Python script's encoding to your OS encoding. [See this example for Chinese](https://github.com/tebelorg/RPA-Python/issues/451#issuecomment-1556169481). Use focus() to make Windows/Mac application windows to be in focus (see here for [pywin32 alternative](https://github.com/tebelorg/RPA-Python/issues/478#issuecomment-1653117053)).
 
+Some users might find it interesting or useful to use AI and machine learning (in particular LLM large language models), to help generate a template script, then they make the fine-tuning accordingly. [See this issue](https://github.com/tebelorg/RPA-Python/issues/540) on some questions that I asked Anthropic's Claude 3.5 Sonnet and its responses.
+
 #### ELEMENT IDENTIFIERS
 An element identifier helps to tell RPA for Python exactly which element on the user interface you want to interact with. For example, //\*[@id='email'] is an XPath pointing to the webpage element having the id attribute 'email'.
 
